@@ -1,0 +1,6 @@
+{
+  "name": "CatalogLab - Gestão Silk Print",
+  "description": "Sistema de gestão e catálogo digital com dashboard, kanban de pedidos, orçamentos, controle de clientes e vendas rápidas.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
