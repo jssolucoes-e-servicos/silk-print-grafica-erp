@@ -359,3 +359,131 @@ export interface WhatsAppChatMessage {
   orderCode?: string;
   quoteNumber?: string;
 }
+
+// ==========================================
+// POSTGRESQL DATABASE TYPES
+// ==========================================
+
+export type PostgresConnectionStatus = 'connected' | 'disconnected' | 'connecting' | 'error';
+
+export interface PostgresConfig {
+  connectionString?: string;
+  host: string;
+  port: number;
+  user: string;
+  password?: string;
+  database: string;
+  ssl: boolean;
+  status: PostgresConnectionStatus;
+  lastChecked?: string;
+  tablesCount?: number;
+  serverVersion?: string;
+  totalRecords?: Record<string, number>;
+}
+
+export interface DatabaseTableInfo {
+  tableName: string;
+  rowCount: number;
+  columnsCount: number;
+}
+
+// ==========================================
+// PRISMA ORM TYPES
+// ==========================================
+
+export interface PrismaModelField {
+  name: string;
+  type: string;
+  isId?: boolean;
+  isRequired?: boolean;
+  isList?: boolean;
+  relationName?: string;
+  mappedName?: string;
+}
+
+export interface PrismaModelMeta {
+  name: string;
+  tableName: string;
+  description: string;
+  fields: PrismaModelField[];
+  relations: string[];
+  recordsCount?: number;
+}
+
+export interface PrismaStatus {
+  isInitialized: boolean;
+  version: string;
+  modelsCount: number;
+  models: PrismaModelMeta[];
+  status: 'connected' | 'disconnected' | 'error';
+  lastChecked?: string;
+  message?: string;
+}
+
+// ==========================================
+// MINIO S3 STORAGE TYPES
+// ==========================================
+
+export type MinioConnectionStatus = 'connected' | 'disconnected' | 'connecting' | 'error';
+
+export interface MinioConfig {
+  endpoint: string; // ex: minio.meudominio.com.br or 192.168.1.100
+  port: number; // default 9000
+  useSSL: boolean;
+  accessKey: string;
+  secretKey?: string;
+  bucket: string; // default silkprint-files
+  status: MinioConnectionStatus;
+  lastChecked?: string;
+  totalBuckets?: number;
+  totalFiles?: number;
+}
+
+export interface MinioBucketItem {
+  name: string;
+  creationDate: string;
+}
+
+export interface MinioFileItem {
+  name: string;
+  size: number;
+  lastModified: string;
+  etag?: string;
+  url?: string;
+  category?: 'arte' | 'comprovante' | 'relatorio' | 'geral';
+}
+
+// ==========================================
+// N8N AUTOMATIONS & WEBHOOKS TYPES
+// ==========================================
+
+export type N8nConnectionStatus = 'connected' | 'disconnected' | 'connecting' | 'error';
+
+export interface N8nConfig {
+  baseUrl: string; // ex: https://n8n.meudominio.com.br
+  apiKey?: string;
+  webhookOrderCreated?: string;
+  webhookStatusChanged?: string;
+  webhookQuoteCreated?: string;
+  webhookFinancialAlert?: string;
+  status: N8nConnectionStatus;
+  lastChecked?: string;
+  enabledTriggers: {
+    orderCreated: boolean;
+    statusChanged: boolean;
+    quoteCreated: boolean;
+    financialAlert: boolean;
+  };
+}
+
+export interface N8nEventLog {
+  id: string;
+  eventType: 'order.created' | 'order.status_changed' | 'quote.created' | 'financial.alert' | 'manual.test';
+  targetUrl: string;
+  payload: any;
+  status: 'success' | 'failed' | 'pending';
+  httpStatus?: number;
+  response?: string;
+  timestamp: string;
+}
+

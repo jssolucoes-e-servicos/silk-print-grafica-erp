@@ -737,7 +737,15 @@ export const ModalDetalhesCliente: React.FC<ModalDetalhesClienteProps> = ({
               ) : (
                 <div className="space-y-2">
                   {clientOrders.map((ord) => {
-                    const st = STATUS_CONFIG[ord.status] || { label: ord.status, color: '#3b82f6', bg: 'bg-blue-500/20' };
+                    const st = STATUS_CONFIG[ord.status] || {
+                      label: ord.status,
+                      text: 'text-blue-400',
+                      bg: 'bg-blue-500/10',
+                      border: 'border-blue-500/25',
+                      badgeBg: 'bg-blue-500/20 text-blue-300 border-blue-500/30',
+                      dotColor: 'bg-blue-500',
+                      icon: '📦',
+                    };
                     return (
                       <div
                         key={ord.id}
@@ -760,8 +768,7 @@ export const ModalDetalhesCliente: React.FC<ModalDetalhesClienteProps> = ({
 
                         <div className="flex items-center gap-3">
                           <span
-                            className={`px-2.5 py-0.5 rounded text-[10px] font-bold uppercase ${st.bg} border`}
-                            style={{ color: st.color, borderColor: `${st.color}40` }}
+                            className={`px-2.5 py-0.5 rounded text-[10px] font-bold uppercase border ${st.badgeBg || (st.bg + ' ' + st.text + ' ' + st.border)}`}
                           >
                             {st.label}
                           </span>

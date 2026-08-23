@@ -481,9 +481,9 @@ export const MetricasScreen: React.FC<MetricasScreenProps> = ({ orders, products
                     <td className="py-3 pl-2">
                       <div className="flex items-center gap-3">
                         <span className="w-5 font-mono text-zinc-500 font-bold text-center">#{idx + 1}</span>
-                        {p.imageUrl ? (
+                        {p.image ? (
                           <img
-                            src={p.imageUrl}
+                            src={p.image}
                             alt={p.name}
                             className="w-9 h-9 rounded-lg object-cover bg-zinc-950 border border-zinc-800"
                           />

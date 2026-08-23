@@ -9,27 +9,35 @@ import {
   Layers,
   Store,
   Plus,
+  Database,
 } from 'lucide-react';
-import { SidebarMode } from '../types';
+import { SidebarMode, UserEmployee } from '../types';
+import { LogOut, UserCircle } from 'lucide-react';
 
 interface TopHeaderProps {
   sidebarMode: SidebarMode;
   currentRoute: string;
+  activeUser?: UserEmployee;
+  onLogout?: () => void;
   onToggleSidebarMode: () => void;
   onOpenCatalogPreview: () => void;
   onOpenNovaReceita: () => void;
   onNavigateToNovoOrcamento: () => void;
   onMobileMenuToggle: () => void;
+  onOpenDataControls?: () => void;
 }
 
 export const TopHeader: React.FC<TopHeaderProps> = ({
   sidebarMode,
   currentRoute,
+  activeUser,
+  onLogout,
   onToggleSidebarMode,
   onOpenCatalogPreview,
   onOpenNovaReceita,
   onNavigateToNovoOrcamento,
   onMobileMenuToggle,
+  onOpenDataControls,
 }) => {
   const getBreadcrumb = () => {
     const isGestao = sidebarMode === 'gestao';
@@ -97,6 +105,19 @@ export const TopHeader: React.FC<TopHeaderProps> = ({
 
       {/* Right: Actions */}
       <div className="flex items-center gap-2 md:gap-3">
+        {/* Real Data Status Badge Button */}
+        {onOpenDataControls && (
+          <button
+            onClick={onOpenDataControls}
+            className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-emerald-500/10 hover:bg-emerald-500/20 border border-emerald-500/30 text-emerald-400 text-xs font-semibold transition-all"
+            title="Clique para gerenciar o banco de dados real, sincronização e persistência"
+          >
+            <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+            <Database className="w-3.5 h-3.5" />
+            <span className="hidden sm:inline">Banco Real Ativo</span>
+          </button>
+        )}
+
         {/* Toggle Mode Button */}
         <button
           onClick={onToggleSidebarMode}
@@ -115,16 +136,30 @@ export const TopHeader: React.FC<TopHeaderProps> = ({
           )}
         </button>
 
-        {/* Notification Bell */}
-        <button
-          onClick={() => alert('Nenhuma notificação pendente.')}
-          className="relative p-2 rounded-lg bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 text-zinc-400 hover:text-zinc-200 transition-colors"
-          title="Notificações"
-        >
-          <Bell className="w-4 h-4" />
-          <span className="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-blue-500 ring-2 ring-zinc-950" />
-        </button>
+        {/* User Info & Logout */}
+        {activeUser && (
+          <div className="flex items-center gap-2 pl-2 border-l border-zinc-800">
+            <div className="hidden lg:flex flex-col text-right">
+              <span className="text-xs font-medium text-zinc-200 leading-tight truncate max-w-[140px]">
+                {activeUser.name}
+              </span>
+              <span className="text-[10px] text-blue-400 font-semibold tracking-wide uppercase">
+                {activeUser.jobTitle || 'Admin'}
+              </span>
+            </div>
+            {onLogout && (
+              <button
+                onClick={onLogout}
+                className="p-1.5 rounded-lg bg-zinc-900 hover:bg-red-950/40 hover:text-red-400 hover:border-red-800/50 border border-zinc-800 text-zinc-400 transition-colors"
+                title="Encerrar Sessão (Logout)"
+              >
+                <LogOut className="w-4 h-4" />
+              </button>
+            )}
+          </div>
+        )}
       </div>
     </header>
   );
 };
+

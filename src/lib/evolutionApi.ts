@@ -3,20 +3,20 @@ import { EvolutionConfig, WhatsAppChatMessage, EvolutionConnectionState } from '
 const EVOLUTION_CONFIG_STORAGE_KEY = 'smartgraph_evolution_api_config';
 const EVOLUTION_CHAT_STORAGE_KEY = 'smartgraph_evolution_chat_history';
 
-// Default initial config with informative placeholders
+// Default initial config - empty by default so user configures real VPS
 export const DEFAULT_EVOLUTION_CONFIG: EvolutionConfig = {
-  apiUrl: 'https://evo.graficasilkprint.com.br',
-  instanceName: 'silkprint',
-  apiKey: 'B6D711FCDE4D4FD5936544120E713976',
-  status: 'open',
-  phoneNumber: '5511998765432',
-  profileName: 'Silk Print Gráfica & Brindes',
-  lastChecked: new Date().toISOString(),
+  apiUrl: '',
+  instanceName: '',
+  apiKey: '',
+  status: 'disconnected',
+  phoneNumber: '',
+  profileName: '',
+  lastChecked: undefined,
   autoSync: true,
-  webhookUrl: 'https://smartgraph-crm.internal/api/webhook/evolution',
+  webhookUrl: '',
 };
 
-// Initial seed chat messages to demonstrate complete realistic workflow
+// Initial seed chat messages for demo reference
 const SEED_MESSAGES: Record<string, WhatsAppChatMessage[]> = {
   '5511987654321': [
     {
@@ -112,151 +112,169 @@ export function formatToWhatsAppJid(phone: string): string {
 }
 
 /**
- * Test Evolution API connection with current credentials
+ * Test Evolution API connection with current credentials via Real Server Proxy
  */
 export async function testEvolutionConnection(
   config: EvolutionConfig
-): Promise<{ success: boolean; state: EvolutionConnectionState; message: string; data?: any }> {
-  const cleanUrl = config.apiUrl.replace(/\/+$/, '');
+): Promise<{
+  success: boolean;
+  state: EvolutionConnectionState;
+  message: string;
+  latencyMs?: number;
+  httpStatus?: number;
+  data?: any;
+}> {
+  const cleanUrl = config.apiUrl.trim();
+  const instance = config.instanceName.trim();
+  const token = config.apiKey.trim();
+
+  if (!cleanUrl) {
+    return {
+      success: false,
+      state: 'disconnected',
+      message: 'Informe a URL da API Evolution na VPS (ex: https://evo.meudominio.com.br ou http://ip:8080).',
+    };
+  }
+
+  if (!instance) {
+    return {
+      success: false,
+      state: 'disconnected',
+      message: 'Informe o Nome da Instância da Evolution API.',
+    };
+  }
+
+  if (!token) {
+    return {
+      success: false,
+      state: 'disconnected',
+      message: 'Informe a Global API Key ou o Token da instância da Evolution API.',
+    };
+  }
+
+  try {
+    // Real call via Backend Express Proxy to bypass CORS and get raw diagnostic
+    const response = await fetch('/api/evolution/test-connection', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        apiUrl: cleanUrl,
+        instanceName: instance,
+        apiKey: token,
+      }),
+    });
+
+    const result = await response.json();
+
+    return {
+      success: result.success === true,
+      state: result.state || (result.success ? 'open' : 'disconnected'),
+      message: result.message || (result.success ? 'Instância conectada!' : 'Falha na conexão.'),
+      latencyMs: result.latencyMs,
+      httpStatus: result.httpStatus || response.status,
+      data: result.data,
+    };
+  } catch (err: any) {
+    console.error('Error contacting Evolution test endpoint:', err);
+    return {
+      success: false,
+      state: 'disconnected',
+      message: `Erro interno ao executar teste de conexão: ${err.message || 'Falha de rede'}`,
+    };
+  }
+}
+
+/**
+ * Request real QR Code or Pairing Code from Evolution API via Server Proxy
+ */
+export async function getEvolutionQrCode(
+  config: EvolutionConfig
+): Promise<{ success: boolean; qrcode?: string; pairingCode?: string; message: string; data?: any }> {
+  const cleanUrl = config.apiUrl.trim();
   const instance = config.instanceName.trim();
   const token = config.apiKey.trim();
 
   if (!cleanUrl || !instance) {
     return {
       success: false,
-      state: 'disconnected',
-      message: 'Informe a URL da API Evolution e o Nome da Instância.',
+      message: 'Preencha a URL da VPS e o Nome da Instância para solicitar o QR Code.',
     };
   }
 
   try {
-    // Evolution API standard endpoint for connection state:
-    // GET /instance/connectionState/{instance}
-    const response = await fetch(`${cleanUrl}/instance/connectionState/${instance}`, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-        apikey: token,
-        Authorization: `Bearer ${token}`,
-      },
-    });
-
-    if (response.ok) {
-      const data = await response.json();
-      const rawState = data?.instance?.state || data?.state || (data?.status === 'open' ? 'open' : 'connected');
-      
-      const state: EvolutionConnectionState =
-        rawState === 'open' || rawState === 'connected'
-          ? 'open'
-          : rawState === 'connecting'
-          ? 'connecting'
-          : rawState === 'qrcode'
-          ? 'qrcode'
-          : 'disconnected';
-
-      return {
-        success: state === 'open',
-        state,
-        message: state === 'open'
-          ? `Instância "${instance}" conectada e sincronizada com sucesso!`
-          : `Instância "${instance}" respondeu com estado: ${state}`,
-        data,
-      };
-    } else {
-      const errText = await response.text();
-      return {
-        success: false,
-        state: 'disconnected',
-        message: `Servidor Evolution respondeu com status ${response.status}: ${errText.slice(0, 100)}`,
-      };
-    }
-  } catch (err: any) {
-    // When in browser client communicating to private/self-hosted VPS without CORS or network block,
-    // we handle gracefully and return informative diagnostic
-    const isCorsOrNetwork = err?.name === 'TypeError' || err?.message?.includes('fetch');
-    
-    return {
-      success: true, // Graceful fallback simulation in development/sandboxed preview
-      state: 'open',
-      message: isCorsOrNetwork
-        ? `Conectividade com VPS Evolution validada! (Instância "${instance}" pronta para disparo)`
-        : `Erro ao contatar VPS: ${err?.message || 'Falha de rede'}. Verifique se a VPS aceita CORS ou proxy.`,
-    };
-  }
-}
-
-/**
- * Request QR Code or Pairing Code from Evolution API
- */
-export async function getEvolutionQrCode(
-  config: EvolutionConfig
-): Promise<{ success: boolean; qrcode?: string; pairingCode?: string; message: string }> {
-  const cleanUrl = config.apiUrl.replace(/\/+$/, '');
-  const instance = config.instanceName.trim();
-  const token = config.apiKey.trim();
-
-  try {
-    const response = await fetch(`${cleanUrl}/instance/connect/${instance}`, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-        apikey: token,
-        Authorization: `Bearer ${token}`,
-      },
-    });
-
-    if (response.ok) {
-      const data = await response.json();
-      const qrcode = data?.base64 || data?.qrcode?.base64 || data?.code;
-      const pairingCode = data?.pairingCode;
-
-      return {
-        success: true,
-        qrcode,
-        pairingCode,
-        message: 'QR Code gerado com sucesso!',
-      };
-    }
-  } catch (err) {
-    console.warn('Direct connect fetch fallback:', err);
-  }
-
-  // Sample mock QR Code visual payload for preview demonstration
-  return {
-    success: true,
-    qrcode: 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200" viewBox="0 0 24 24" fill="none" stroke="%233b82f6" stroke-width="1.5"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><path d="M7 7h.01M17 7h.01M17 17h.01M7 17h.01M10 7h4M7 10v4M17 10v4M10 17h4"/></svg>',
-    pairingCode: '7829-4105',
-    message: 'QR Code da instância gerado para pareamento no WhatsApp.',
-  };
-}
-
-/**
- * Restart Evolution API instance
- */
-export async function restartEvolutionInstance(
-  config: EvolutionConfig
-): Promise<{ success: boolean; message: string }> {
-  const cleanUrl = config.apiUrl.replace(/\/+$/, '');
-  const instance = config.instanceName.trim();
-  const token = config.apiKey.trim();
-
-  try {
-    await fetch(`${cleanUrl}/instance/restart/${instance}`, {
+    const response = await fetch('/api/evolution/get-qrcode', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        apikey: token,
-        Authorization: `Bearer ${token}`,
       },
+      body: JSON.stringify({
+        apiUrl: cleanUrl,
+        instanceName: instance,
+        apiKey: token,
+      }),
     });
-  } catch (err) {
-    console.warn('Restart instance request dispatched:', err);
+
+    const result = await response.json();
+
+    return {
+      success: result.success === true,
+      qrcode: result.qrcode,
+      pairingCode: result.pairingCode,
+      message: result.message || (result.success ? 'QR Code gerado!' : 'Não foi possível obter o QR Code.'),
+      data: result.data,
+    };
+  } catch (err: any) {
+    return {
+      success: false,
+      message: `Falha na requisição de QR Code: ${err.message || 'Erro de rede'}`,
+    };
+  }
+}
+
+/**
+ * Restart Evolution API instance on VPS
+ */
+export async function restartEvolutionInstance(
+  config: EvolutionConfig
+): Promise<{ success: boolean; message: string; data?: any }> {
+  const cleanUrl = config.apiUrl.trim();
+  const instance = config.instanceName.trim();
+  const token = config.apiKey.trim();
+
+  if (!cleanUrl || !instance) {
+    return {
+      success: false,
+      message: 'Preencha a URL e Nome da Instância para reiniciar.',
+    };
   }
 
-  return {
-    success: true,
-    message: `Comando de reinicialização enviado para a instância "${instance}".`,
-  };
+  try {
+    const response = await fetch('/api/evolution/restart-instance', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        apiUrl: cleanUrl,
+        instanceName: instance,
+        apiKey: token,
+      }),
+    });
+
+    const result = await response.json();
+    return {
+      success: result.success === true,
+      message: result.message || 'Comando executado.',
+      data: result.data,
+    };
+  } catch (err: any) {
+    return {
+      success: false,
+      message: `Erro ao enviar comando de reinício para a VPS: ${err.message || 'Erro de rede'}`,
+    };
+  }
 }
 
 /**
@@ -269,7 +287,7 @@ export async function sendEvolutionTextMessage(
   extra?: { clientName?: string; orderCode?: string; quoteNumber?: string }
 ): Promise<{ success: boolean; message: WhatsAppChatMessage; error?: string }> {
   const cleanPhone = formatToWhatsAppJid(recipientPhone);
-  const cleanUrl = config.apiUrl.replace(/\/+$/, '');
+  const cleanUrl = config.apiUrl.trim();
   const instance = config.instanceName.trim();
   const token = config.apiKey.trim();
 
@@ -285,42 +303,59 @@ export async function sendEvolutionTextMessage(
     quoteNumber: extra?.quoteNumber,
   };
 
-  // Save to persistent local chat storage immediately
-  saveChatMessageToStorage(cleanPhone, localMsg);
-
-  // Attempt real POST call to Evolution API
-  if (cleanUrl && instance && token) {
-    try {
-      const response = await fetch(`${cleanUrl}/message/sendText/${instance}`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          apikey: token,
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({
-          number: cleanPhone,
-          text: messageText,
-          options: {
-            delay: 800,
-            presence: 'composing',
-          },
-        }),
-      });
-
-      if (response.ok) {
-        localMsg.status = 'delivered';
-        updateChatMessageInStorage(cleanPhone, localMsg.id, { status: 'delivered' });
-      }
-    } catch (err) {
-      console.warn('Evolution API message sent to local sync:', err);
-    }
+  // If credentials are not configured, warn immediately
+  if (!cleanUrl || !instance || !token) {
+    // Save to local storage for reference
+    saveChatMessageToStorage(cleanPhone, localMsg);
+    return {
+      success: false,
+      message: localMsg,
+      error: 'Evolution API não configurada. Configure a URL, Instância e Token na aba Integrações.',
+    };
   }
 
-  return {
-    success: true,
-    message: localMsg,
-  };
+  try {
+    const response = await fetch('/api/evolution/send-text', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        apiUrl: cleanUrl,
+        instanceName: instance,
+        apiKey: token,
+        number: cleanPhone,
+        text: messageText,
+      }),
+    });
+
+    const result = await response.json();
+
+    if (response.ok && result.success) {
+      localMsg.id = result.messageId || localMsg.id;
+      localMsg.status = 'delivered';
+      saveChatMessageToStorage(cleanPhone, localMsg);
+      return {
+        success: true,
+        message: localMsg,
+      };
+    } else {
+      localMsg.status = 'sent';
+      saveChatMessageToStorage(cleanPhone, localMsg);
+      return {
+        success: false,
+        message: localMsg,
+        error: result.error || `Erro HTTP ${response.status} ao disparar mensagem na VPS.`,
+      };
+    }
+  } catch (err: any) {
+    saveChatMessageToStorage(cleanPhone, localMsg);
+    return {
+      success: false,
+      message: localMsg,
+      error: `Falha de rede ao contatar servidor de envio: ${err.message}`,
+    };
+  }
 }
 
 /**
@@ -343,7 +378,6 @@ export function getChatMessagesForPhone(phone: string): WhatsAppChatMessage[] {
     console.error('Error fetching chat history:', err);
   }
 
-  // Return empty list if no prior conversation exists
   return [];
 }
 

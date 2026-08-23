@@ -28,9 +28,9 @@ export const PedidosOnlineScreen: React.FC<PedidosOnlineScreenProps> = ({
   const onlineOrders = orders.filter((o) => (o as any).isOnlineOrder);
 
   const totalCount = onlineOrders.length;
-  const pendentesCount = onlineOrders.filter((o) => o.status === 'aguardando_aprovacao').length;
+  const pendentesCount = onlineOrders.filter((o) => o.status === 'em_aberto' || o.status === 'aguardando_pagamento' || (o.status as string) === 'aguardando_aprovacao').length;
   const aprovadosCount = onlineOrders.filter(
-    (o) => o.status === 'em_producao' || o.status === 'pronto' || o.status === 'entregue'
+    (o) => o.status === 'em_producao' || o.status === 'aguardando_retirada' || o.status === 'em_transporte' || o.status === 'entregue' || (o.status as string) === 'pronto'
   ).length;
   const rejeitadosCount = onlineOrders.filter((o) => o.status === 'cancelado').length;
   const totalReceita = onlineOrders

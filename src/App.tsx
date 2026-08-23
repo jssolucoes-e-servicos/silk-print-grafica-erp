@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import confetti from 'canvas-confetti';
 import {
   SidebarMode,
@@ -26,12 +26,53 @@ import {
   INITIAL_EMPLOYEES,
   evaluateUserPermission,
 } from './lib/permissionsEngine';
+import {
+  fetchClients,
+  createClient,
+  updateClient,
+  deleteClient,
+  fetchOrders,
+  createOrder,
+  updateOrder,
+  updateOrderStatus,
+  updateOrderPaymentStatus,
+  addOrderMessage,
+  deleteOrder,
+  fetchQuotes,
+  createQuote,
+  updateQuote,
+  deleteQuote,
+  fetchProducts,
+  createProduct,
+  updateProduct,
+  deleteProduct,
+  fetchFinishings,
+  createFinishing,
+  updateFinishing,
+  deleteFinishing,
+  fetchTransactions,
+  createTransaction,
+  updateTransaction,
+  deleteTransaction,
+  fetchEmployees,
+  createEmployee,
+  updateEmployee,
+  deleteEmployee,
+  fetchAccessProfiles,
+  createAccessProfile,
+  updateAccessProfile,
+  deleteAccessProfile,
+  fetchCurrentUserProfile,
+  logoutApi,
+  getStoredAuthToken,
+} from './lib/realDataApi';
 
 // Components
 import { SidebarAdmin } from './components/SidebarAdmin';
 import { SidebarGestao } from './components/SidebarGestao';
 import { TopHeader } from './components/TopHeader';
 import { UserSimulatorBar } from './components/UserSimulatorBar';
+import { LoginScreen } from './components/screens/LoginScreen';
 
 // Modals
 import { ModalNovaReceita } from './components/modals/ModalNovaReceita';
@@ -47,6 +88,7 @@ import { ModalDetalhesCliente } from './components/modals/ModalDetalhesCliente';
 import { ModalDetalhesProduto } from './components/modals/ModalDetalhesProduto';
 import { ModalDetalhesTransacao } from './components/modals/ModalDetalhesTransacao';
 import { ModalWhatsAppChat } from './components/modals/ModalWhatsAppChat';
+import { ModalGerenciarDadosReais } from './components/modals/ModalGerenciarDadosReais';
 
 // Screens
 import { DashboardScreen } from './components/screens/DashboardScreen';
@@ -119,18 +161,22 @@ const INITIAL_FINISHINGS: FinishingItem[] = [
 ];
 
 export default function App() {
+  // Authentication & Session State
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
+  const [isCheckingAuth, setIsCheckingAuth] = useState<boolean>(true);
+
   // Navigation state
   const [sidebarMode, setSidebarMode] = useState<SidebarMode>('admin');
   const [currentRoute, setCurrentRoute] = useState<string>('dashboard');
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
-  // Core Data state
-  const [clients, setClients] = useState<Client[]>(INITIAL_CLIENTS);
-  const [orders, setOrders] = useState<Order[]>(INITIAL_ORDERS);
-  const [quotes, setQuotes] = useState<Quote[]>(INITIAL_QUOTES);
-  const [transactions, setTransactions] = useState<Transaction[]>(INITIAL_TRANSACTIONS);
-  const [products, setProducts] = useState<CatalogProduct[]>(CATALOG_PRODUCTS);
-  const [finishings, setFinishings] = useState<FinishingItem[]>(INITIAL_FINISHINGS);
+  // Core Data state (Initialized clean for production)
+  const [clients, setClients] = useState<Client[]>([]);
+  const [orders, setOrders] = useState<Order[]>([]);
+  const [quotes, setQuotes] = useState<Quote[]>([]);
+  const [transactions, setTransactions] = useState<Transaction[]>([]);
+  const [products, setProducts] = useState<CatalogProduct[]>([]);
+  const [finishings, setFinishings] = useState<FinishingItem[]>([]);
 
   // Access Control & Multi-Profile State
   const [accessProfiles, setAccessProfiles] = useState<AccessProfile[]>(INITIAL_ACCESS_PROFILES);
@@ -150,6 +196,7 @@ export default function App() {
   const [isUpgradeModalOpen, setIsUpgradeModalOpen] = useState(false);
   const [isTutoriaisModalOpen, setIsTutoriaisModalOpen] = useState(false);
   const [isCatalogPreviewOpen, setIsCatalogPreviewOpen] = useState(false);
+  const [isDataControlsOpen, setIsDataControlsOpen] = useState(false);
 
   // Order Details Modal state
   const [selectedOrderForDetails, setSelectedOrderForDetails] = useState<Order | null>(null);
@@ -179,6 +226,76 @@ export default function App() {
     clientName: '',
     clientPhone: '',
   });
+
+  // ==========================================
+  // REAL DATA SYNCHRONIZATION HOOK
+  // ==========================================
+  const loadAllRealData = useCallback(async () => {
+    try {
+      const [
+        loadedClients,
+        loadedOrders,
+        loadedQuotes,
+        loadedProducts,
+        loadedFinishings,
+        loadedTxs,
+        loadedEmployees,
+        loadedProfiles,
+      ] = await Promise.all([
+        fetchClients(),
+        fetchOrders(),
+        fetchQuotes(),
+        fetchProducts(),
+        fetchFinishings(),
+        fetchTransactions(),
+        fetchEmployees(),
+        fetchAccessProfiles(),
+      ]);
+
+      if (Array.isArray(loadedClients)) setClients(loadedClients);
+      if (Array.isArray(loadedOrders)) setOrders(loadedOrders);
+      if (Array.isArray(loadedQuotes)) setQuotes(loadedQuotes);
+      if (Array.isArray(loadedProducts)) setProducts(loadedProducts);
+      if (Array.isArray(loadedFinishings)) setFinishings(loadedFinishings);
+      if (Array.isArray(loadedTxs)) setTransactions(loadedTxs);
+      if (Array.isArray(loadedEmployees) && loadedEmployees.length > 0) {
+        setEmployees(loadedEmployees);
+        setActiveUser((prev) => loadedEmployees.find((e) => e.id === prev.id) || loadedEmployees[0]);
+      }
+      if (Array.isArray(loadedProfiles) && loadedProfiles.length > 0) setAccessProfiles(loadedProfiles);
+    } catch (err) {
+      console.error('[RealData] Synchronization warning:', err);
+    }
+  }, []);
+
+  // Initial Auth Check
+  useEffect(() => {
+    async function verifyAuth() {
+      try {
+        const profile = await fetchCurrentUserProfile();
+        if (profile && profile.user) {
+          setActiveUser(profile.user);
+          if (profile.assignedProfiles && profile.assignedProfiles.length > 0) {
+            setAccessProfiles(profile.assignedProfiles);
+          }
+          setIsAuthenticated(true);
+          await loadAllRealData();
+        } else {
+          setIsAuthenticated(false);
+        }
+      } catch {
+        setIsAuthenticated(false);
+      } finally {
+        setIsCheckingAuth(false);
+      }
+    }
+    verifyAuth();
+  }, [loadAllRealData]);
+
+  const handleLogout = async () => {
+    await logoutApi();
+    setIsAuthenticated(false);
+  };
 
   const handleOpenWhatsAppChat = (params: {
     clientName: string;
@@ -210,8 +327,8 @@ export default function App() {
     }
   };
 
-  // Handlers for Data Updates
-  const handleSaveTransaction = (
+  // Handlers for Data Updates with Persistent Backend API Sync
+  const handleSaveTransaction = async (
     txData: Omit<Transaction, 'id' | 'createdAt'>
   ) => {
     const newTx: Transaction = {
@@ -221,6 +338,11 @@ export default function App() {
     };
     setTransactions((prev) => [newTx, ...prev]);
     confetti({ particleCount: 40, spread: 60, origin: { y: 0.7 } });
+    try {
+      await createTransaction(newTx);
+    } catch (err) {
+      console.error('[Persist Error - Transaction]:', err);
+    }
   };
 
   const handleOpenTransactionDetails = (tx: Transaction) => {
@@ -228,49 +350,57 @@ export default function App() {
     setIsTransactionDetailsOpen(true);
   };
 
-  const handleUpdateTransaction = (updatedTx: Transaction) => {
+  const handleUpdateTransaction = async (updatedTx: Transaction) => {
     setTransactions((prev) =>
       prev.map((t) => (t.id === updatedTx.id ? updatedTx : t))
     );
     if (selectedTransactionForDetails && selectedTransactionForDetails.id === updatedTx.id) {
       setSelectedTransactionForDetails(updatedTx);
     }
+    try {
+      await updateTransaction(updatedTx);
+    } catch (err) {
+      console.error('[Persist Error - Update Transaction]:', err);
+    }
   };
 
-  const handleDeleteTransaction = (txId: string) => {
+  const handleDeleteTransaction = async (txId: string) => {
     setTransactions((prev) => prev.filter((t) => t.id !== txId));
     if (selectedTransactionForDetails && selectedTransactionForDetails.id === txId) {
       setIsTransactionDetailsOpen(false);
       setSelectedTransactionForDetails(null);
     }
-  };
-
-  const handleToggleTransactionStatus = (txId: string, newStatus: 'pago' | 'pendente') => {
-    setTransactions((prev) =>
-      prev.map((t) =>
-        t.id === txId
-          ? {
-              ...t,
-              status: newStatus,
-              paidAt: newStatus === 'pago' ? new Date().toISOString() : undefined,
-            }
-          : t
-      )
-    );
-    if (selectedTransactionForDetails && selectedTransactionForDetails.id === txId) {
-      setSelectedTransactionForDetails((prev) =>
-        prev
-          ? {
-              ...prev,
-              status: newStatus,
-              paidAt: newStatus === 'pago' ? new Date().toISOString() : undefined,
-            }
-          : null
-      );
+    try {
+      await deleteTransaction(txId);
+    } catch (err) {
+      console.error('[Persist Error - Delete Transaction]:', err);
     }
   };
 
-  const handleDuplicateTransaction = (tx: Transaction) => {
+  const handleToggleTransactionStatus = async (txId: string, newStatus: 'pago' | 'pendente') => {
+    const targetTx = transactions.find((t) => t.id === txId);
+    if (!targetTx) return;
+
+    const updatedTx: Transaction = {
+      ...targetTx,
+      status: newStatus,
+      paidAt: newStatus === 'pago' ? new Date().toISOString() : undefined,
+    };
+
+    setTransactions((prev) =>
+      prev.map((t) => (t.id === txId ? updatedTx : t))
+    );
+    if (selectedTransactionForDetails && selectedTransactionForDetails.id === txId) {
+      setSelectedTransactionForDetails(updatedTx);
+    }
+    try {
+      await updateTransaction(updatedTx);
+    } catch (err) {
+      console.error('[Persist Error - Toggle Transaction Status]:', err);
+    }
+  };
+
+  const handleDuplicateTransaction = async (tx: Transaction) => {
     const dup: Transaction = {
       ...tx,
       id: `tx-${Date.now()}`,
@@ -281,12 +411,22 @@ export default function App() {
     setTransactions((prev) => [dup, ...prev]);
     setSelectedTransactionForDetails(dup);
     confetti({ particleCount: 30, spread: 50, origin: { y: 0.7 } });
+    try {
+      await createTransaction(dup);
+    } catch (err) {
+      console.error('[Persist Error - Duplicate Transaction]:', err);
+    }
   };
 
-  const handleSaveClient = (newClient: Client) => {
+  const handleSaveClient = async (newClient: Client) => {
     setClients((prev) => [newClient, ...prev]);
     setLastCreatedClientId(newClient.id);
     confetti({ particleCount: 30, spread: 50, origin: { y: 0.7 } });
+    try {
+      await createClient(newClient);
+    } catch (err) {
+      console.error('[Persist Error - Client]:', err);
+    }
   };
 
   const handleOpenClientDetails = (client: Client) => {
@@ -294,20 +434,30 @@ export default function App() {
     setIsClientDetailsOpen(true);
   };
 
-  const handleUpdateClient = (updatedClient: Client) => {
+  const handleUpdateClient = async (updatedClient: Client) => {
     setClients((prev) =>
       prev.map((c) => (c.id === updatedClient.id ? updatedClient : c))
     );
     if (selectedClientForDetails && selectedClientForDetails.id === updatedClient.id) {
       setSelectedClientForDetails(updatedClient);
     }
+    try {
+      await updateClient(updatedClient);
+    } catch (err) {
+      console.error('[Persist Error - Update Client]:', err);
+    }
   };
 
-  const handleDeleteClient = (clientId: string) => {
+  const handleDeleteClient = async (clientId: string) => {
     setClients((prev) => prev.filter((c) => c.id !== clientId));
     if (selectedClientForDetails && selectedClientForDetails.id === clientId) {
       setIsClientDetailsOpen(false);
       setSelectedClientForDetails(null);
+    }
+    try {
+      await deleteClient(clientId);
+    } catch (err) {
+      console.error('[Persist Error - Delete Client]:', err);
     }
   };
 
@@ -316,16 +466,21 @@ export default function App() {
     setIsProductDetailsOpen(true);
   };
 
-  const handleUpdateProduct = (updatedProduct: CatalogProduct) => {
+  const handleUpdateProduct = async (updatedProduct: CatalogProduct) => {
     setProducts((prev) =>
       prev.map((p) => (p.id === updatedProduct.id ? updatedProduct : p))
     );
     if (selectedProductForDetails && selectedProductForDetails.id === updatedProduct.id) {
       setSelectedProductForDetails(updatedProduct);
     }
+    try {
+      await updateProduct(updatedProduct);
+    } catch (err) {
+      console.error('[Persist Error - Update Product]:', err);
+    }
   };
 
-  const handleDuplicateProduct = (product: CatalogProduct) => {
+  const handleDuplicateProduct = async (product: CatalogProduct) => {
     const dup: CatalogProduct = {
       ...product,
       id: `prod-${Date.now()}`,
@@ -334,11 +489,21 @@ export default function App() {
     setProducts((prev) => [dup, ...prev]);
     setSelectedProductForDetails(dup);
     confetti({ particleCount: 30, spread: 50, origin: { y: 0.7 } });
+    try {
+      await createProduct(dup);
+    } catch (err) {
+      console.error('[Persist Error - Duplicate Product]:', err);
+    }
   };
 
-  const handleSaveOrder = (newOrder: Order) => {
+  const handleSaveOrder = async (newOrder: Order) => {
     setOrders((prev) => [newOrder, ...prev]);
     confetti({ particleCount: 50, spread: 70, origin: { y: 0.7 } });
+    try {
+      await createOrder(newOrder);
+    } catch (err) {
+      console.error('[Persist Error - Order]:', err);
+    }
   };
 
   const handleAddQuoteItems = (newItems: QuoteItem[]) => {
@@ -349,18 +514,28 @@ export default function App() {
     setQuoteItems((prev) => prev.filter((item) => item.id !== id));
   };
 
-  const handleSaveQuote = (newQuote: Quote) => {
+  const handleSaveQuote = async (newQuote: Quote) => {
     setQuotes((prev) => [newQuote, ...prev]);
     setQuoteItems([]);
     confetti({ particleCount: 60, spread: 80, origin: { y: 0.6 } });
+    try {
+      await createQuote(newQuote);
+    } catch (err) {
+      console.error('[Persist Error - Quote]:', err);
+    }
   };
 
-  const handleUpdateOrderStatus = (orderId: string, newStatus: OrderStatus) => {
+  const handleUpdateOrderStatus = async (orderId: string, newStatus: OrderStatus) => {
     setOrders((prev) =>
       prev.map((o) => (o.id === orderId ? { ...o, status: newStatus } : o))
     );
     if (selectedOrderForDetails && selectedOrderForDetails.id === orderId) {
       setSelectedOrderForDetails((prev) => (prev ? { ...prev, status: newStatus } : null));
+    }
+    try {
+      await updateOrderStatus(orderId, newStatus);
+    } catch (err) {
+      console.error('[Persist Error - Order Status]:', err);
     }
   };
 
@@ -369,7 +544,7 @@ export default function App() {
     setIsOrderDetailsOpen(true);
   };
 
-  const handleUpdateOrderPaymentStatus = (
+  const handleUpdateOrderPaymentStatus = async (
     orderId: string,
     newPaymentStatus: 'pago' | 'pendente' | 'parcial'
   ) => {
@@ -381,9 +556,14 @@ export default function App() {
         prev ? { ...prev, paymentStatus: newPaymentStatus } : null
       );
     }
+    try {
+      await updateOrderPaymentStatus(orderId, newPaymentStatus);
+    } catch (err) {
+      console.error('[Persist Error - Order Payment]:', err);
+    }
   };
 
-  const handleAddOrderMessage = (orderId: string, message: OrderMessage) => {
+  const handleAddOrderMessage = async (orderId: string, message: OrderMessage) => {
     setOrders((prev) =>
       prev.map((o) =>
         o.id === orderId ? { ...o, messages: [...(o.messages || []), message] } : o
@@ -394,9 +574,14 @@ export default function App() {
         prev ? { ...prev, messages: [...(prev.messages || []), message] } : null
       );
     }
+    try {
+      await addOrderMessage(orderId, message);
+    } catch (err) {
+      console.error('[Persist Error - Order Message]:', err);
+    }
   };
 
-  const handleConvertQuoteToOrder = (quote: Quote) => {
+  const handleConvertQuoteToOrder = async (quote: Quote) => {
     const orderNumber = Math.floor(1000 + Math.random() * 9000);
     const newOrder: Order = {
       id: `ord-${Date.now()}`,
@@ -422,40 +607,85 @@ export default function App() {
     );
     confetti({ particleCount: 60, spread: 70, origin: { y: 0.6 } });
     handleNavigate('visao-geral', 'gestao');
+
+    try {
+      await createOrder(newOrder);
+      await updateQuote({ ...quote, status: 'convertido' });
+    } catch (err) {
+      console.error('[Persist Error - Convert Quote]:', err);
+    }
   };
 
-  const handleAddProduct = (newProd: CatalogProduct) => {
+  const handleAddProduct = async (newProd: CatalogProduct) => {
     setProducts((prev) => [newProd, ...prev]);
     confetti({ particleCount: 30, spread: 50, origin: { y: 0.7 } });
+    try {
+      await createProduct(newProd);
+    } catch (err) {
+      console.error('[Persist Error - Product]:', err);
+    }
   };
 
-  const handleDeleteProduct = (id: string) => {
+  const handleDeleteProduct = async (id: string) => {
     setProducts((prev) => prev.filter((p) => p.id !== id));
+    try {
+      await deleteProduct(id);
+    } catch (err) {
+      console.error('[Persist Error - Delete Product]:', err);
+    }
   };
 
-  const handleToggleProductInternal = (id: string) => {
+  const handleToggleProductInternal = async (id: string) => {
+    const target = products.find((p) => p.id === id);
+    if (!target) return;
+    const updated = { ...target, isInternal: !target.isInternal };
+
     setProducts((prev) =>
-      prev.map((p) => (p.id === id ? { ...p, isInternal: !p.isInternal } : p))
+      prev.map((p) => (p.id === id ? updated : p))
     );
+    try {
+      await updateProduct(updated);
+    } catch (err) {
+      console.error('[Persist Error - Toggle Product Internal]:', err);
+    }
   };
 
-  const handleAddFinishing = (newFinishing: FinishingItem) => {
+  const handleAddFinishing = async (newFinishing: FinishingItem) => {
     setFinishings((prev) => [newFinishing, ...prev]);
     confetti({ particleCount: 30, spread: 50, origin: { y: 0.7 } });
+    try {
+      await createFinishing(newFinishing);
+    } catch (err) {
+      console.error('[Persist Error - Finishing]:', err);
+    }
   };
 
-  const handleToggleFinishing = (id: string) => {
+  const handleToggleFinishing = async (id: string) => {
+    const target = finishings.find((f) => f.id === id);
+    if (!target) return;
+    const updated = { ...target, active: !target.active };
+
     setFinishings((prev) =>
-      prev.map((f) => (f.id === id ? { ...f, active: !f.active } : f))
+      prev.map((f) => (f.id === id ? updated : f))
     );
+    try {
+      await updateFinishing(updated);
+    } catch (err) {
+      console.error('[Persist Error - Toggle Finishing]:', err);
+    }
   };
 
-  const handleDeleteFinishing = (id: string) => {
+  const handleDeleteFinishing = async (id: string) => {
     setFinishings((prev) => prev.filter((f) => f.id !== id));
+    try {
+      await deleteFinishing(id);
+    } catch (err) {
+      console.error('[Persist Error - Delete Finishing]:', err);
+    }
   };
 
   // Profile Management Handlers
-  const handleCreateProfile = (
+  const handleCreateProfile = async (
     profileData: Omit<AccessProfile, 'id' | 'createdAt' | 'updatedAt'>
   ) => {
     const newProfile: AccessProfile = {
@@ -466,15 +696,25 @@ export default function App() {
     };
     setAccessProfiles((prev) => [...prev, newProfile]);
     confetti({ particleCount: 35, spread: 55, origin: { y: 0.7 } });
+    try {
+      await createAccessProfile(newProfile);
+    } catch (err) {
+      console.error('[Persist Error - Profile]:', err);
+    }
   };
 
-  const handleUpdateProfile = (updatedProfile: AccessProfile) => {
+  const handleUpdateProfile = async (updatedProfile: AccessProfile) => {
     setAccessProfiles((prev) =>
       prev.map((p) => (p.id === updatedProfile.id ? updatedProfile : p))
     );
+    try {
+      await updateAccessProfile(updatedProfile);
+    } catch (err) {
+      console.error('[Persist Error - Update Profile]:', err);
+    }
   };
 
-  const handleDeleteProfile = (profileId: string) => {
+  const handleDeleteProfile = async (profileId: string) => {
     // Remove profile from all users
     setEmployees((prev) =>
       prev.map((e) => ({
@@ -483,10 +723,15 @@ export default function App() {
       }))
     );
     setAccessProfiles((prev) => prev.filter((p) => p.id !== profileId));
+    try {
+      await deleteAccessProfile(profileId);
+    } catch (err) {
+      console.error('[Persist Error - Delete Profile]:', err);
+    }
   };
 
   // Employee Management Handlers
-  const handleAddEmployee = (
+  const handleAddEmployee = async (
     empData: Omit<UserEmployee, 'id' | 'createdAt'>
   ) => {
     const newEmp: UserEmployee = {
@@ -496,24 +741,61 @@ export default function App() {
     };
     setEmployees((prev) => [...prev, newEmp]);
     confetti({ particleCount: 30, spread: 50, origin: { y: 0.7 } });
+    try {
+      await createEmployee(newEmp);
+    } catch (err) {
+      console.error('[Persist Error - Employee]:', err);
+    }
   };
 
-  const handleUpdateEmployee = (updatedEmp: UserEmployee) => {
+  const handleUpdateEmployee = async (updatedEmp: UserEmployee) => {
     setEmployees((prev) =>
       prev.map((e) => (e.id === updatedEmp.id ? updatedEmp : e))
     );
     if (activeUser.id === updatedEmp.id) {
       setActiveUser(updatedEmp);
     }
+    try {
+      await updateEmployee(updatedEmp);
+    } catch (err) {
+      console.error('[Persist Error - Update Employee]:', err);
+    }
   };
 
-  const handleRemoveEmployee = (id: string) => {
+  const handleRemoveEmployee = async (id: string) => {
     setEmployees((prev) => prev.filter((e) => e.id !== id));
     if (activeUser.id === id && employees.length > 1) {
       const nextUser = employees.find((e) => e.id !== id) || employees[0];
       setActiveUser(nextUser);
     }
+    try {
+      await deleteEmployee(id);
+    } catch (err) {
+      console.error('[Persist Error - Delete Employee]:', err);
+    }
   };
+
+  if (isCheckingAuth) {
+    return (
+      <div className="min-h-screen bg-slate-950 flex flex-col items-center justify-center text-slate-300 font-sans">
+        <div className="w-10 h-10 border-4 border-blue-500/20 border-t-blue-500 rounded-full animate-spin mb-4" />
+        <p className="text-sm font-medium text-slate-400">Verificando credenciais de sessão corporativa...</p>
+      </div>
+    );
+  }
+
+  if (!isAuthenticated) {
+    return (
+      <LoginScreen
+        onLoginSuccess={(user, profiles, allowedScreens, isAdmin) => {
+          setActiveUser(user);
+          if (profiles && profiles.length > 0) setAccessProfiles(profiles);
+          setIsAuthenticated(true);
+          loadAllRealData();
+        }}
+      />
+    );
+  }
 
   return (
     <div className="flex h-screen bg-zinc-950 text-zinc-100 font-sans antialiased overflow-hidden select-none">
@@ -595,11 +877,14 @@ export default function App() {
         <TopHeader
           sidebarMode={sidebarMode}
           currentRoute={currentRoute}
+          activeUser={activeUser}
+          onLogout={handleLogout}
           onToggleSidebarMode={toggleSidebarMode}
           onOpenCatalogPreview={() => setIsCatalogPreviewOpen(true)}
           onOpenNovaReceita={() => setIsNovaReceitaOpen(true)}
           onNavigateToNovoOrcamento={() => handleNavigate('novo-orcamento', 'gestao')}
           onMobileMenuToggle={() => setIsMobileMenuOpen(true)}
+          onOpenDataControls={() => setIsDataControlsOpen(true)}
         />
 
         {/* Dynamic Screen View */}
@@ -678,7 +963,6 @@ export default function App() {
               orders={orders}
               clients={clients}
               onUpdateOrderStatus={handleUpdateOrderStatus}
-              onOpenNovoPedido={() => setIsNovoPedidoOpen(true)}
             />
           )}
 
@@ -837,15 +1121,13 @@ export default function App() {
             <AcabamentosScreen
               finishings={finishings}
               onAddFinishing={handleAddFinishing}
-              onToggleFinishing={handleToggleFinishing}
-              onDeleteFinishing={handleDeleteFinishing}
+              onRemoveFinishing={handleDeleteFinishing}
             />
           )}
 
           {currentRoute === 'agenda' && (
             <AgendaScreen
               orders={orders}
-              onOpenNovoPedido={() => setIsNovoPedidoOpen(true)}
             />
           )}
 
@@ -860,7 +1142,6 @@ export default function App() {
               orders={orders}
               clients={clients}
               onUpdateOrderStatus={handleUpdateOrderStatus}
-              onOpenNovoPedido={() => setIsNovoPedidoOpen(true)}
             />
           )}
 
@@ -1022,6 +1303,16 @@ export default function App() {
         initialMessage={whatsAppChatParams.initialMessage}
         orderCode={whatsAppChatParams.orderCode}
         quoteNumber={whatsAppChatParams.quoteNumber}
+      />
+
+      {/* Modal de Gestão de Dados Reais e Persistência */}
+      <ModalGerenciarDadosReais
+        isOpen={isDataControlsOpen}
+        onClose={() => setIsDataControlsOpen(false)}
+        onDataReloaded={loadAllRealData}
+        onNavigateToIntegracoes={() => {
+          handleNavigate('integracoes', 'admin');
+        }}
       />
     </div>
   );
