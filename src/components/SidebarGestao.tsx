@@ -11,7 +11,8 @@ import {
   ArrowLeft,
   LogOut,
 } from 'lucide-react';
-import { GestaoRoute, SidebarMode } from '../types';
+import { GestaoRoute, SidebarMode, UserEmployee, AccessProfile } from '../types';
+import { hasScreenPermission } from '../lib/permissionsEngine';
 
 interface SidebarGestaoProps {
   currentRoute: string;
@@ -19,6 +20,8 @@ interface SidebarGestaoProps {
   ordersCount: number;
   quotesCount: number;
   clientsCount: number;
+  activeUser?: UserEmployee;
+  profiles?: AccessProfile[];
 }
 
 export const SidebarGestao: React.FC<SidebarGestaoProps> = ({
@@ -27,6 +30,8 @@ export const SidebarGestao: React.FC<SidebarGestaoProps> = ({
   ordersCount,
   quotesCount,
   clientsCount,
+  activeUser,
+  profiles,
 }) => {
   const menuItems = [
     {
@@ -75,6 +80,11 @@ export const SidebarGestao: React.FC<SidebarGestaoProps> = ({
     },
   ];
 
+  // Dynamically filter menu items based on active user's permissions
+  const visibleMenuItems = activeUser && profiles
+    ? menuItems.filter((item) => hasScreenPermission(activeUser, item.id, profiles))
+    : menuItems;
+
   return (
     <aside
       id="sidebar-gestao-modulo"
@@ -103,7 +113,7 @@ export const SidebarGestao: React.FC<SidebarGestaoProps> = ({
         <div className="px-3 py-1 text-[10px] font-semibold tracking-wider text-zinc-500 uppercase">
           Módulo de Gestão
         </div>
-        {menuItems.map((item) => {
+        {visibleMenuItems.map((item) => {
           const Icon = item.icon;
           const isActive =
             currentRoute === item.id ||

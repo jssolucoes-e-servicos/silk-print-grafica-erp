@@ -17,12 +17,14 @@ interface OrcamentosListScreenProps {
   quotes: Quote[];
   onNavigateToNovoOrcamento: () => void;
   onConvertToOrder: (quote: Quote) => void;
+  onOpenWhatsAppChat?: (params: { clientName: string; clientPhone: string; initialMessage?: string; quoteNumber?: string }) => void;
 }
 
 export const OrcamentosListScreen: React.FC<OrcamentosListScreenProps> = ({
   quotes,
   onNavigateToNovoOrcamento,
   onConvertToOrder,
+  onOpenWhatsAppChat,
 }) => {
   const [searchTerm, setSearchTerm] = useState('');
 
@@ -116,15 +118,25 @@ export const OrcamentosListScreen: React.FC<OrcamentosListScreenProps> = ({
                     </td>
                     <td className="py-3 px-4 text-right space-x-1.5 whitespace-nowrap">
                       <button
+                        type="button"
                         onClick={() => {
-                          const text = `Olá ${quote.clientName}! Segue seu orçamento ${quote.number} da Silk Print Gráfica no valor de ${formatCurrency(quote.total)}. Validade até ${formatDate(quote.validityDate)}.`;
-                          window.open(
-                            `https://wa.me/55${quote.clientWhatsapp.replace(/\D/g, '')}?text=${encodeURIComponent(text)}`,
-                            '_blank'
-                          );
+                          const text = `Olá, *${quote.clientName}*! 📋 Segue seu orçamento *${quote.number}* da *Silk Print Gráfica* no valor de *${formatCurrency(quote.total)}* (Validade: ${formatDate(quote.validityDate)}).\n\nQualquer dúvida estamos à disposição!`;
+                          if (onOpenWhatsAppChat) {
+                            onOpenWhatsAppChat({
+                              clientName: quote.clientName,
+                              clientPhone: quote.clientWhatsapp,
+                              initialMessage: text,
+                              quoteNumber: quote.number,
+                            });
+                          } else {
+                            window.open(
+                              `https://wa.me/55${quote.clientWhatsapp.replace(/\D/g, '')}?text=${encodeURIComponent(text)}`,
+                              '_blank'
+                            );
+                          }
                         }}
-                        className="p-1.5 rounded bg-zinc-800 hover:bg-emerald-600 text-zinc-300 hover:text-white transition-colors"
-                        title="Enviar no WhatsApp"
+                        className="p-1.5 rounded-lg bg-zinc-800 hover:bg-emerald-600 text-zinc-300 hover:text-white transition-colors cursor-pointer"
+                        title="Abrir Conversa WhatsApp (Evolution API)"
                       >
                         <Send className="w-3.5 h-3.5" />
                       </button>

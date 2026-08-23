@@ -58,6 +58,7 @@ export const TopHeader: React.FC<TopHeaderProps> = ({
       pagamentos: 'Pagamentos',
       integracoes: 'Integrações',
       funcionarios: 'Colaboradores',
+      perfis: 'Perfis de Acesso',
     };
 
     return {

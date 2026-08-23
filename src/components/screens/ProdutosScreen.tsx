@@ -17,12 +17,14 @@ interface ProdutosScreenProps {
   products: CatalogProduct[];
   onOpenCatalogPreview: () => void;
   onAddProduct?: (prod: CatalogProduct) => void;
+  onOpenProductDetails?: (product: CatalogProduct) => void;
 }
 
 export const ProdutosScreen: React.FC<ProdutosScreenProps> = ({
   products,
   onOpenCatalogPreview,
   onAddProduct,
+  onOpenProductDetails,
 }) => {
   const [searchTerm, setSearchTerm] = useState('');
   const [tipoFilter, setTipoFilter] = useState('Todos');
@@ -91,14 +93,6 @@ export const ProdutosScreen: React.FC<ProdutosScreenProps> = ({
         </div>
 
         <div className="flex items-center gap-2.5 self-start sm:self-auto">
-          <button
-            onClick={onOpenCatalogPreview}
-            className="px-3.5 py-2 rounded-xl bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 text-xs font-semibold text-zinc-300 transition-colors flex items-center gap-1.5"
-          >
-            <ExternalLink className="w-3.5 h-3.5 text-blue-400" />
-            <span>Ver Catálogo Online</span>
-          </button>
-
           <button
             onClick={() => setIsModalOpen(true)}
             className="px-4 py-2 rounded-xl bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold transition-all shadow-sm flex items-center gap-1.5"
@@ -190,7 +184,8 @@ export const ProdutosScreen: React.FC<ProdutosScreenProps> = ({
           {filtered.map((prod) => (
             <div
               key={prod.id}
-              className="rounded-2xl bg-zinc-900/90 border border-zinc-800 p-4 flex flex-col justify-between hover:border-zinc-700 transition-colors"
+              onClick={() => onOpenProductDetails?.(prod)}
+              className="rounded-2xl bg-zinc-900/90 border border-zinc-800 p-4 flex flex-col justify-between hover:border-zinc-700 transition-colors cursor-pointer group hover:bg-zinc-850"
             >
               <div>
                 <div className="flex items-center justify-between gap-2 mb-2">

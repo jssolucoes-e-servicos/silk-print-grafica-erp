@@ -35,6 +35,7 @@ interface CatalogoEcommerceProdutosScreenProps {
   onAddProduct: (prod: CatalogProduct) => void;
   onDeleteProduct?: (id: string) => void;
   onToggleProductInternal?: (id: string) => void;
+  onOpenProductDetails?: (product: CatalogProduct) => void;
   initialTypeFilter?: 'todos' | 'ecommerce' | 'internos';
 }
 
@@ -67,6 +68,7 @@ export const CatalogoEcommerceProdutosScreen: React.FC<CatalogoEcommerceProdutos
   onAddProduct,
   onDeleteProduct,
   onToggleProductInternal,
+  onOpenProductDetails,
   initialTypeFilter = 'todos',
 }) => {
   // Product scope filter (All vs Ecommerce/Site vs Internal)
@@ -289,14 +291,6 @@ export const CatalogoEcommerceProdutosScreen: React.FC<CatalogoEcommerceProdutos
         </div>
 
         <div className="flex items-center gap-2.5 self-start sm:self-auto">
-          <button
-            onClick={onOpenCatalogPreview}
-            className="px-3.5 py-2 rounded-xl bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 text-xs font-semibold text-zinc-300 transition-colors flex items-center gap-1.5"
-          >
-            <ExternalLink className="w-3.5 h-3.5 text-blue-400" />
-            <span>Ver Catálogo</span>
-          </button>
-
           <button
             onClick={() => handleOpenAddModal(false)}
             className="px-4 py-2 rounded-xl bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold transition-all shadow-sm flex items-center gap-1.5 cursor-pointer"
@@ -527,7 +521,8 @@ export const CatalogoEcommerceProdutosScreen: React.FC<CatalogoEcommerceProdutos
             return (
               <div
                 key={prod.id}
-                className="rounded-2xl bg-zinc-900/80 border border-zinc-800/80 hover:border-zinc-700/90 transition-all shadow-sm overflow-hidden group"
+                onClick={() => onOpenProductDetails?.(prod)}
+                className="rounded-2xl bg-zinc-900/80 border border-zinc-800/80 hover:border-zinc-700/90 transition-all shadow-sm overflow-hidden group cursor-pointer hover:bg-zinc-850"
               >
                 {/* Main Card Row */}
                 <div className="p-3.5 sm:p-4 lg:grid lg:grid-cols-12 lg:gap-4 lg:items-center">
@@ -571,7 +566,10 @@ export const CatalogoEcommerceProdutosScreen: React.FC<CatalogoEcommerceProdutos
                       )}
                       {isKit && (
                         <button
-                          onClick={() => setExpandedKitId(isExpanded ? null : prod.id)}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setExpandedKitId(isExpanded ? null : prod.id);
+                          }}
                           className="mt-1 text-[11px] font-semibold text-blue-400 hover:text-blue-300 flex items-center gap-1 cursor-pointer"
                         >
                           <span>{prod.kitItems?.length} itens inclusos no kit</span>
@@ -638,7 +636,19 @@ export const CatalogoEcommerceProdutosScreen: React.FC<CatalogoEcommerceProdutos
                   </div>
 
                   {/* Col 5: Actions (Col-Span 1 on Desktop) */}
-                  <div className="mt-3 lg:mt-0 lg:col-span-1 pt-2 lg:pt-0 border-t lg:border-t-0 border-zinc-800/60 flex items-center justify-end gap-1.5">
+                  <div
+                    className="mt-3 lg:mt-0 lg:col-span-1 pt-2 lg:pt-0 border-t lg:border-t-0 border-zinc-800/60 flex items-center justify-end gap-1.5"
+                    onClick={(e) => e.stopPropagation()}
+                  >
+                    {/* View Details Button */}
+                    <button
+                      onClick={() => onOpenProductDetails?.(prod)}
+                      className="p-2 text-zinc-400 hover:text-blue-400 hover:bg-blue-500/10 rounded-lg transition-colors cursor-pointer"
+                      title="Ver Ficha e Ações"
+                    >
+                      <Eye className="w-4 h-4" />
+                    </button>
+
                     {/* Toggle Internal / Ecommerce */}
                     {onToggleProductInternal && (
                       <button
@@ -651,16 +661,6 @@ export const CatalogoEcommerceProdutosScreen: React.FC<CatalogoEcommerceProdutos
                         }
                       >
                         <RefreshCw className="w-3.5 h-3.5" />
-                      </button>
-                    )}
-
-                    {!isInternal && (
-                      <button
-                        onClick={onOpenCatalogPreview}
-                        className="p-2 text-zinc-400 hover:text-blue-400 hover:bg-blue-500/10 rounded-lg transition-colors cursor-pointer"
-                        title="Visualizar no catálogo"
-                      >
-                        <Eye className="w-4 h-4" />
                       </button>
                     )}
 

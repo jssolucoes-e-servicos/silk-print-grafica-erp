@@ -11,6 +11,8 @@ import {
   Transaction,
   CatalogProduct,
   FinishingItem,
+  AccessProfile,
+  UserEmployee,
 } from './types';
 import {
   INITIAL_CLIENTS,
@@ -19,11 +21,17 @@ import {
   INITIAL_TRANSACTIONS,
   CATALOG_PRODUCTS,
 } from './data/mockData';
+import {
+  INITIAL_ACCESS_PROFILES,
+  INITIAL_EMPLOYEES,
+  evaluateUserPermission,
+} from './lib/permissionsEngine';
 
 // Components
 import { SidebarAdmin } from './components/SidebarAdmin';
 import { SidebarGestao } from './components/SidebarGestao';
 import { TopHeader } from './components/TopHeader';
+import { UserSimulatorBar } from './components/UserSimulatorBar';
 
 // Modals
 import { ModalNovaReceita } from './components/modals/ModalNovaReceita';
@@ -35,6 +43,10 @@ import { ModalUpgrade } from './components/modals/ModalUpgrade';
 import { ModalTutoriais } from './components/modals/ModalTutoriais';
 import { ModalCatalogoPreview } from './components/modals/ModalCatalogoPreview';
 import { ModalDetalhesPedido } from './components/modals/ModalDetalhesPedido';
+import { ModalDetalhesCliente } from './components/modals/ModalDetalhesCliente';
+import { ModalDetalhesProduto } from './components/modals/ModalDetalhesProduto';
+import { ModalDetalhesTransacao } from './components/modals/ModalDetalhesTransacao';
+import { ModalWhatsAppChat } from './components/modals/ModalWhatsAppChat';
 
 // Screens
 import { DashboardScreen } from './components/screens/DashboardScreen';
@@ -55,6 +67,7 @@ import { ExportarScreen } from './components/screens/ExportarScreen';
 import { PagamentosScreen } from './components/screens/PagamentosScreen';
 import { IntegracoesScreen } from './components/screens/IntegracoesScreen';
 import { FuncionariosScreen } from './components/screens/FuncionariosScreen';
+import { PerfisAcessoScreen } from './components/screens/PerfisAcessoScreen';
 import { AcabamentosScreen } from './components/screens/AcabamentosScreen';
 import { AgendaScreen } from './components/screens/AgendaScreen';
 import { PedidosOnlineScreen } from './components/screens/PedidosOnlineScreen';
@@ -119,6 +132,11 @@ export default function App() {
   const [products, setProducts] = useState<CatalogProduct[]>(CATALOG_PRODUCTS);
   const [finishings, setFinishings] = useState<FinishingItem[]>(INITIAL_FINISHINGS);
 
+  // Access Control & Multi-Profile State
+  const [accessProfiles, setAccessProfiles] = useState<AccessProfile[]>(INITIAL_ACCESS_PROFILES);
+  const [employees, setEmployees] = useState<UserEmployee[]>(INITIAL_EMPLOYEES);
+  const [activeUser, setActiveUser] = useState<UserEmployee>(INITIAL_EMPLOYEES[0]);
+
   // Active drafting state for Novo Orçamento
   const [quoteItems, setQuoteItems] = useState<QuoteItem[]>([]);
   const [lastCreatedClientId, setLastCreatedClientId] = useState<string | undefined>(undefined);
@@ -136,6 +154,42 @@ export default function App() {
   // Order Details Modal state
   const [selectedOrderForDetails, setSelectedOrderForDetails] = useState<Order | null>(null);
   const [isOrderDetailsOpen, setIsOrderDetailsOpen] = useState(false);
+
+  // Client Details Modal state
+  const [selectedClientForDetails, setSelectedClientForDetails] = useState<Client | null>(null);
+  const [isClientDetailsOpen, setIsClientDetailsOpen] = useState(false);
+
+  // Product Details Modal state
+  const [selectedProductForDetails, setSelectedProductForDetails] = useState<CatalogProduct | null>(null);
+  const [isProductDetailsOpen, setIsProductDetailsOpen] = useState(false);
+
+  // Financial Transaction Details Modal state
+  const [selectedTransactionForDetails, setSelectedTransactionForDetails] = useState<Transaction | null>(null);
+  const [isTransactionDetailsOpen, setIsTransactionDetailsOpen] = useState(false);
+
+  // WhatsApp Evolution Chat Modal state
+  const [isWhatsAppChatOpen, setIsWhatsAppChatOpen] = useState(false);
+  const [whatsAppChatParams, setWhatsAppChatParams] = useState<{
+    clientName: string;
+    clientPhone: string;
+    initialMessage?: string;
+    orderCode?: string;
+    quoteNumber?: string;
+  }>({
+    clientName: '',
+    clientPhone: '',
+  });
+
+  const handleOpenWhatsAppChat = (params: {
+    clientName: string;
+    clientPhone: string;
+    initialMessage?: string;
+    orderCode?: string;
+    quoteNumber?: string;
+  }) => {
+    setWhatsAppChatParams(params);
+    setIsWhatsAppChatOpen(true);
+  };
 
   // Navigation handler
   const handleNavigate = (route: string, mode?: SidebarMode) => {
@@ -169,9 +223,116 @@ export default function App() {
     confetti({ particleCount: 40, spread: 60, origin: { y: 0.7 } });
   };
 
+  const handleOpenTransactionDetails = (tx: Transaction) => {
+    setSelectedTransactionForDetails(tx);
+    setIsTransactionDetailsOpen(true);
+  };
+
+  const handleUpdateTransaction = (updatedTx: Transaction) => {
+    setTransactions((prev) =>
+      prev.map((t) => (t.id === updatedTx.id ? updatedTx : t))
+    );
+    if (selectedTransactionForDetails && selectedTransactionForDetails.id === updatedTx.id) {
+      setSelectedTransactionForDetails(updatedTx);
+    }
+  };
+
+  const handleDeleteTransaction = (txId: string) => {
+    setTransactions((prev) => prev.filter((t) => t.id !== txId));
+    if (selectedTransactionForDetails && selectedTransactionForDetails.id === txId) {
+      setIsTransactionDetailsOpen(false);
+      setSelectedTransactionForDetails(null);
+    }
+  };
+
+  const handleToggleTransactionStatus = (txId: string, newStatus: 'pago' | 'pendente') => {
+    setTransactions((prev) =>
+      prev.map((t) =>
+        t.id === txId
+          ? {
+              ...t,
+              status: newStatus,
+              paidAt: newStatus === 'pago' ? new Date().toISOString() : undefined,
+            }
+          : t
+      )
+    );
+    if (selectedTransactionForDetails && selectedTransactionForDetails.id === txId) {
+      setSelectedTransactionForDetails((prev) =>
+        prev
+          ? {
+              ...prev,
+              status: newStatus,
+              paidAt: newStatus === 'pago' ? new Date().toISOString() : undefined,
+            }
+          : null
+      );
+    }
+  };
+
+  const handleDuplicateTransaction = (tx: Transaction) => {
+    const dup: Transaction = {
+      ...tx,
+      id: `tx-${Date.now()}`,
+      description: `${tx.description} (Cópia)`,
+      createdAt: new Date().toISOString().split('T')[0],
+      status: 'pendente',
+    };
+    setTransactions((prev) => [dup, ...prev]);
+    setSelectedTransactionForDetails(dup);
+    confetti({ particleCount: 30, spread: 50, origin: { y: 0.7 } });
+  };
+
   const handleSaveClient = (newClient: Client) => {
     setClients((prev) => [newClient, ...prev]);
     setLastCreatedClientId(newClient.id);
+    confetti({ particleCount: 30, spread: 50, origin: { y: 0.7 } });
+  };
+
+  const handleOpenClientDetails = (client: Client) => {
+    setSelectedClientForDetails(client);
+    setIsClientDetailsOpen(true);
+  };
+
+  const handleUpdateClient = (updatedClient: Client) => {
+    setClients((prev) =>
+      prev.map((c) => (c.id === updatedClient.id ? updatedClient : c))
+    );
+    if (selectedClientForDetails && selectedClientForDetails.id === updatedClient.id) {
+      setSelectedClientForDetails(updatedClient);
+    }
+  };
+
+  const handleDeleteClient = (clientId: string) => {
+    setClients((prev) => prev.filter((c) => c.id !== clientId));
+    if (selectedClientForDetails && selectedClientForDetails.id === clientId) {
+      setIsClientDetailsOpen(false);
+      setSelectedClientForDetails(null);
+    }
+  };
+
+  const handleOpenProductDetails = (product: CatalogProduct) => {
+    setSelectedProductForDetails(product);
+    setIsProductDetailsOpen(true);
+  };
+
+  const handleUpdateProduct = (updatedProduct: CatalogProduct) => {
+    setProducts((prev) =>
+      prev.map((p) => (p.id === updatedProduct.id ? updatedProduct : p))
+    );
+    if (selectedProductForDetails && selectedProductForDetails.id === updatedProduct.id) {
+      setSelectedProductForDetails(updatedProduct);
+    }
+  };
+
+  const handleDuplicateProduct = (product: CatalogProduct) => {
+    const dup: CatalogProduct = {
+      ...product,
+      id: `prod-${Date.now()}`,
+      name: `${product.name} (Cópia)`,
+    };
+    setProducts((prev) => [dup, ...prev]);
+    setSelectedProductForDetails(dup);
     confetti({ particleCount: 30, spread: 50, origin: { y: 0.7 } });
   };
 
@@ -293,6 +454,67 @@ export default function App() {
     setFinishings((prev) => prev.filter((f) => f.id !== id));
   };
 
+  // Profile Management Handlers
+  const handleCreateProfile = (
+    profileData: Omit<AccessProfile, 'id' | 'createdAt' | 'updatedAt'>
+  ) => {
+    const newProfile: AccessProfile = {
+      ...profileData,
+      id: `prof_${Date.now()}`,
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+    };
+    setAccessProfiles((prev) => [...prev, newProfile]);
+    confetti({ particleCount: 35, spread: 55, origin: { y: 0.7 } });
+  };
+
+  const handleUpdateProfile = (updatedProfile: AccessProfile) => {
+    setAccessProfiles((prev) =>
+      prev.map((p) => (p.id === updatedProfile.id ? updatedProfile : p))
+    );
+  };
+
+  const handleDeleteProfile = (profileId: string) => {
+    // Remove profile from all users
+    setEmployees((prev) =>
+      prev.map((e) => ({
+        ...e,
+        profileIds: e.profileIds.filter((pId) => pId !== profileId),
+      }))
+    );
+    setAccessProfiles((prev) => prev.filter((p) => p.id !== profileId));
+  };
+
+  // Employee Management Handlers
+  const handleAddEmployee = (
+    empData: Omit<UserEmployee, 'id' | 'createdAt'>
+  ) => {
+    const newEmp: UserEmployee = {
+      ...empData,
+      id: `emp-${Date.now()}`,
+      createdAt: new Date().toISOString(),
+    };
+    setEmployees((prev) => [...prev, newEmp]);
+    confetti({ particleCount: 30, spread: 50, origin: { y: 0.7 } });
+  };
+
+  const handleUpdateEmployee = (updatedEmp: UserEmployee) => {
+    setEmployees((prev) =>
+      prev.map((e) => (e.id === updatedEmp.id ? updatedEmp : e))
+    );
+    if (activeUser.id === updatedEmp.id) {
+      setActiveUser(updatedEmp);
+    }
+  };
+
+  const handleRemoveEmployee = (id: string) => {
+    setEmployees((prev) => prev.filter((e) => e.id !== id));
+    if (activeUser.id === id && employees.length > 1) {
+      const nextUser = employees.find((e) => e.id !== id) || employees[0];
+      setActiveUser(nextUser);
+    }
+  };
+
   return (
     <div className="flex h-screen bg-zinc-950 text-zinc-100 font-sans antialiased overflow-hidden select-none">
       {/* Desktop Sidebar: Admin or Gestao */}
@@ -304,6 +526,8 @@ export default function App() {
             onOpenUpgradeModal={() => setIsUpgradeModalOpen(true)}
             onOpenCatalogPreview={() => setIsCatalogPreviewOpen(true)}
             ordersCount={orders.length}
+            activeUser={activeUser}
+            profiles={accessProfiles}
           />
         ) : (
           <SidebarGestao
@@ -312,6 +536,8 @@ export default function App() {
             ordersCount={orders.length}
             quotesCount={quotes.length}
             clientsCount={clients.length}
+            activeUser={activeUser}
+            profiles={accessProfiles}
           />
         )}
       </div>
@@ -337,6 +563,8 @@ export default function App() {
                   setIsCatalogPreviewOpen(true);
                 }}
                 ordersCount={orders.length}
+                activeUser={activeUser}
+                profiles={accessProfiles}
               />
             ) : (
               <SidebarGestao
@@ -345,6 +573,8 @@ export default function App() {
                 ordersCount={orders.length}
                 quotesCount={quotes.length}
                 clientsCount={clients.length}
+                activeUser={activeUser}
+                profiles={accessProfiles}
               />
             )}
           </div>
@@ -353,6 +583,14 @@ export default function App() {
 
       {/* Main Content Area */}
       <div className="flex-1 flex flex-col h-full overflow-hidden bg-[#09090b]">
+        {/* User Simulation Bar for Access Control Testing */}
+        <UserSimulatorBar
+          employees={employees}
+          profiles={accessProfiles}
+          activeUser={activeUser}
+          onSelectUser={(u) => setActiveUser(u)}
+        />
+
         {/* Top Header */}
         <TopHeader
           sidebarMode={sidebarMode}
@@ -388,6 +626,7 @@ export default function App() {
               onNavigateToOrcamentos={() => handleNavigate('orcamentos', 'gestao')}
               onNavigateToPedidos={() => handleNavigate('pedidos', 'gestao')}
               onUpdateOrderStatus={handleUpdateOrderStatus}
+              onOpenOrderDetails={handleOpenOrderDetails}
             />
           )}
 
@@ -401,6 +640,7 @@ export default function App() {
               onOpenAdicionarItemModal={() => setIsAdicionarItemOpen(true)}
               onRemoveItem={handleRemoveQuoteItem}
               onSaveQuote={handleSaveQuote}
+              onOpenWhatsAppChat={handleOpenWhatsAppChat}
             />
           )}
 
@@ -409,6 +649,8 @@ export default function App() {
               clients={clients}
               onOpenNovoClienteModal={() => setIsNovoClienteOpen(true)}
               onNavigateToNovoOrcamento={() => handleNavigate('novo-orcamento', 'gestao')}
+              onOpenClientDetails={handleOpenClientDetails}
+              onOpenWhatsAppChat={handleOpenWhatsAppChat}
             />
           )}
 
@@ -417,6 +659,7 @@ export default function App() {
               quotes={quotes}
               onNavigateToNovoOrcamento={() => handleNavigate('novo-orcamento', 'gestao')}
               onConvertToOrder={handleConvertQuoteToOrder}
+              onOpenWhatsAppChat={handleOpenWhatsAppChat}
             />
           )}
 
@@ -426,6 +669,7 @@ export default function App() {
               onOpenNovoPedido={() => setIsNovoPedidoOpen(true)}
               onUpdateOrderStatus={handleUpdateOrderStatus}
               onOpenOrderDetails={handleOpenOrderDetails}
+              onOpenWhatsAppChat={handleOpenWhatsAppChat}
             />
           )}
 
@@ -444,6 +688,7 @@ export default function App() {
               onOpenNovaReceita={() => setIsNovaReceitaOpen(true)}
               onOpenNovaDespesa={() => setIsNovaDespesaOpen(true)}
               onOpenRelatorio={() => handleNavigate('relatorios', 'gestao')}
+              onOpenTransactionDetails={handleOpenTransactionDetails}
             />
           )}
 
@@ -455,6 +700,7 @@ export default function App() {
               onAddProduct={handleAddProduct}
               onDeleteProduct={handleDeleteProduct}
               onToggleProductInternal={handleToggleProductInternal}
+              onOpenProductDetails={handleOpenProductDetails}
               initialTypeFilter="todos"
             />
           )}
@@ -467,6 +713,7 @@ export default function App() {
               onAddProduct={handleAddProduct}
               onDeleteProduct={handleDeleteProduct}
               onToggleProductInternal={handleToggleProductInternal}
+              onOpenProductDetails={handleOpenProductDetails}
               initialTypeFilter="internos"
             />
           )}
@@ -562,8 +809,29 @@ export default function App() {
             />
           )}
 
-          {/* Admin: Funcionários */}
-          {currentRoute === 'funcionarios' && <FuncionariosScreen />}
+          {/* Admin: Funcionários & Permissões */}
+          {currentRoute === 'funcionarios' && (
+            <FuncionariosScreen
+              employees={employees}
+              profiles={accessProfiles}
+              onAddEmployee={handleAddEmployee}
+              onUpdateEmployee={handleUpdateEmployee}
+              onRemoveEmployee={handleRemoveEmployee}
+              onOpenProfilesScreen={() => handleNavigate('perfis', 'admin')}
+            />
+          )}
+
+          {/* Admin: Perfis de Acesso & Matriz de Permissões */}
+          {currentRoute === 'perfis' && (
+            <PerfisAcessoScreen
+              profiles={accessProfiles}
+              employees={employees}
+              onCreateProfile={handleCreateProfile}
+              onUpdateProfile={handleUpdateProfile}
+              onDeleteProfile={handleDeleteProfile}
+              onOpenEmployeesScreen={() => handleNavigate('funcionarios', 'admin')}
+            />
+          )}
 
           {currentRoute === 'acabamentos' && (
             <AcabamentosScreen
@@ -664,6 +932,96 @@ export default function App() {
         onUpdateStatus={handleUpdateOrderStatus}
         onUpdatePaymentStatus={handleUpdateOrderPaymentStatus}
         onAddMessage={handleAddOrderMessage}
+        onOpenWhatsAppChat={handleOpenWhatsAppChat}
+      />
+
+      {/* Modal Detalhes do Cliente */}
+      <ModalDetalhesCliente
+        client={selectedClientForDetails}
+        isOpen={isClientDetailsOpen}
+        onClose={() => {
+          setIsClientDetailsOpen(false);
+          setSelectedClientForDetails(null);
+        }}
+        orders={orders}
+        quotes={quotes}
+        transactions={transactions}
+        onUpdateClient={handleUpdateClient}
+        onDeleteClient={handleDeleteClient}
+        onOpenNovoPedidoParaCliente={(client) => {
+          setIsClientDetailsOpen(false);
+          setIsNovoPedidoOpen(true);
+        }}
+        onOpenNovoOrcamentoParaCliente={(client) => {
+          setIsClientDetailsOpen(false);
+          handleNavigate('novo-orcamento', 'gestao');
+        }}
+        onOpenNovaReceitaParaCliente={(client) => {
+          setIsClientDetailsOpen(false);
+          setIsNovaReceitaOpen(true);
+        }}
+        onOpenOrderDetails={handleOpenOrderDetails}
+        onOpenTransactionDetails={handleOpenTransactionDetails}
+        onOpenWhatsAppChat={handleOpenWhatsAppChat}
+      />
+
+      {/* Modal Detalhes do Produto */}
+      <ModalDetalhesProduto
+        product={selectedProductForDetails}
+        isOpen={isProductDetailsOpen}
+        onClose={() => {
+          setIsProductDetailsOpen(false);
+          setSelectedProductForDetails(null);
+        }}
+        orders={orders}
+        onUpdateProduct={handleUpdateProduct}
+        onDeleteProduct={handleDeleteProduct}
+        onToggleInternal={handleToggleProductInternal}
+        onDuplicateProduct={handleDuplicateProduct}
+        onOpenCatalogPreview={() => {
+          setIsProductDetailsOpen(false);
+          setIsCatalogPreviewOpen(true);
+        }}
+        onOpenNovoPedidoComProduto={(product) => {
+          setIsProductDetailsOpen(false);
+          setIsNovoPedidoOpen(true);
+        }}
+        onOpenOrderDetails={handleOpenOrderDetails}
+      />
+
+      {/* Modal Detalhes da Transação Financeira */}
+      <ModalDetalhesTransacao
+        transaction={selectedTransactionForDetails}
+        isOpen={isTransactionDetailsOpen}
+        onClose={() => {
+          setIsTransactionDetailsOpen(false);
+          setSelectedTransactionForDetails(null);
+        }}
+        clients={clients}
+        orders={orders}
+        onUpdateTransaction={handleUpdateTransaction}
+        onDeleteTransaction={handleDeleteTransaction}
+        onToggleStatus={handleToggleTransactionStatus}
+        onDuplicateTransaction={handleDuplicateTransaction}
+        onOpenClientDetails={(client) => {
+          setIsTransactionDetailsOpen(false);
+          handleOpenClientDetails(client);
+        }}
+        onOpenOrderDetails={(order) => {
+          setIsTransactionDetailsOpen(false);
+          handleOpenOrderDetails(order);
+        }}
+      />
+
+      {/* Modal WhatsApp Chat (Evolution API Integration) */}
+      <ModalWhatsAppChat
+        isOpen={isWhatsAppChatOpen}
+        onClose={() => setIsWhatsAppChatOpen(false)}
+        clientName={whatsAppChatParams.clientName}
+        clientPhone={whatsAppChatParams.clientPhone}
+        initialMessage={whatsAppChatParams.initialMessage}
+        orderCode={whatsAppChatParams.orderCode}
+        quoteNumber={whatsAppChatParams.quoteNumber}
       />
     </div>
   );

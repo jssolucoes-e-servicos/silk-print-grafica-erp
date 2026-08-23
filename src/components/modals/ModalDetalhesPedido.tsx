@@ -40,6 +40,7 @@ interface ModalDetalhesPedidoProps {
   onUpdatePaymentStatus?: (orderId: string, newPaymentStatus: 'pago' | 'pendente' | 'parcial') => void;
   onAddMessage?: (orderId: string, message: OrderMessage) => void;
   onOpenDeclaracao?: (order: Order) => void;
+  onOpenWhatsAppChat?: (params: { clientName: string; clientPhone: string; initialMessage?: string; orderCode?: string }) => void;
 }
 
 export const ModalDetalhesPedido: React.FC<ModalDetalhesPedidoProps> = ({
@@ -50,6 +51,7 @@ export const ModalDetalhesPedido: React.FC<ModalDetalhesPedidoProps> = ({
   onUpdatePaymentStatus,
   onAddMessage,
   onOpenDeclaracao,
+  onOpenWhatsAppChat,
 }) => {
   if (!isOpen || !order) return null;
 
@@ -114,9 +116,18 @@ export const ModalDetalhesPedido: React.FC<ModalDetalhesPedidoProps> = ({
     setLocalMessages((prev) => [...prev, newMsg]);
     if (onAddMessage) onAddMessage(order.id, newMsg);
 
-    const encoded = encodeURIComponent(msg);
-    const url = `https://wa.me/55${cleanPhone}?text=${encoded}`;
-    window.open(url, '_blank');
+    if (onOpenWhatsAppChat) {
+      onOpenWhatsAppChat({
+        clientName: order.clientName,
+        clientPhone: order.clientWhatsapp,
+        initialMessage: msg,
+        orderCode: order.code,
+      });
+    } else {
+      const encoded = encodeURIComponent(msg);
+      const url = `https://wa.me/55${cleanPhone}?text=${encoded}`;
+      window.open(url, '_blank');
+    }
   };
 
   const handleSendCustomMessage = (e: React.FormEvent) => {
@@ -133,9 +144,18 @@ export const ModalDetalhesPedido: React.FC<ModalDetalhesPedidoProps> = ({
     setLocalMessages((prev) => [...prev, newMsg]);
     if (onAddMessage) onAddMessage(order.id, newMsg);
 
-    const encoded = encodeURIComponent(customMsg);
-    const url = `https://wa.me/55${cleanPhone}?text=${encoded}`;
-    window.open(url, '_blank');
+    if (onOpenWhatsAppChat) {
+      onOpenWhatsAppChat({
+        clientName: order.clientName,
+        clientPhone: order.clientWhatsapp,
+        initialMessage: customMsg,
+        orderCode: order.code,
+      });
+    } else {
+      const encoded = encodeURIComponent(customMsg);
+      const url = `https://wa.me/55${cleanPhone}?text=${encoded}`;
+      window.open(url, '_blank');
+    }
     setCustomMsg('');
   };
 

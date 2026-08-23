@@ -15,7 +15,8 @@ import {
   ShieldCheck,
   LogOut,
 } from 'lucide-react';
-import { AdminRoute, SidebarMode } from '../types';
+import { AdminRoute, SidebarMode, UserEmployee, AccessProfile } from '../types';
+import { hasScreenPermission } from '../lib/permissionsEngine';
 
 interface SidebarAdminProps {
   currentRoute: string;
@@ -23,13 +24,26 @@ interface SidebarAdminProps {
   onOpenUpgradeModal?: () => void;
   onOpenCatalogPreview?: () => void;
   ordersCount: number;
+  activeUser?: UserEmployee;
+  profiles?: AccessProfile[];
+}
+
+interface MenuItem {
+  id: string;
+  label: string;
+  icon: any;
+  mode: SidebarMode;
+  targetRoute?: string;
+  badge?: string;
 }
 
 export const SidebarAdmin: React.FC<SidebarAdminProps> = ({
   currentRoute,
   onNavigate,
+  activeUser,
+  profiles,
 }) => {
-  const menuItems = [
+  const menuItems: MenuItem[] = [
     {
       id: 'dashboard',
       label: 'Dashboard',
@@ -98,7 +112,21 @@ export const SidebarAdmin: React.FC<SidebarAdminProps> = ({
       icon: UserCheck,
       mode: 'admin' as SidebarMode,
     },
+    {
+      id: 'perfis',
+      label: 'Perfis de Acesso',
+      icon: ShieldCheck,
+      mode: 'admin' as SidebarMode,
+    },
   ];
+
+  // Dynamic filter based on active user's permissions
+  const visibleMenuItems = activeUser && profiles
+    ? menuItems.filter((item) => {
+        if (item.id === 'gestao') return true;
+        return hasScreenPermission(activeUser, item.id, profiles);
+      })
+    : menuItems;
 
   return (
     <aside
@@ -127,7 +155,7 @@ export const SidebarAdmin: React.FC<SidebarAdminProps> = ({
         <div className="px-3 py-1 text-[10px] font-semibold tracking-wider text-zinc-500 uppercase">
           Menu Principal
         </div>
-        {menuItems.map((item) => {
+        {visibleMenuItems.map((item) => {
           const Icon = item.icon;
           const isActive =
             item.id === 'gestao'

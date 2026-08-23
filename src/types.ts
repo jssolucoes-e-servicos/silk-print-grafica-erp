@@ -16,6 +16,7 @@ export type AdminRoute =
   | 'pagamentos'
   | 'integracoes'
   | 'funcionarios'
+  | 'perfis'
   | 'configuracoes';
 
 export type GestaoRoute =
@@ -30,9 +31,96 @@ export type GestaoRoute =
   | 'agenda'
   | 'pedidos-online'
   | 'logistica'
-  | 'declaracao-conteudo';
+  | 'declaracao-conteudo'
+  | 'perfis';
 
 export type AppRoute = AdminRoute | GestaoRoute;
+
+// ==========================================
+// ACCESS CONTROL & PROFILES (RBAC / ABAC) - resource.action convention
+// ==========================================
+
+export type StandardActionFlag = 'view' | 'create' | 'edit' | 'delete' | 'report' | 'admin';
+export type ActionFlag = StandardActionFlag | string;
+
+export interface PermissionActionDef {
+  action: ActionFlag;
+  code: string; // e.g. 'customers.create'
+  description: string;
+  danger: 'low' | 'medium' | 'high' | 'critical';
+}
+
+export interface ResourceDefinition {
+  resource: string; // e.g. 'customers', 'products', 'orders'
+  name: string; // PT-BR Display Name
+  category: 'CRM & Sales' | 'Production & Operations' | 'Catalog & Pricing' | 'Finance & Accounting' | 'Administration & Security';
+  description: string;
+  route: AppRoute;
+  mode: SidebarMode;
+  apiEndpoint: string;
+  actions: PermissionActionDef[];
+}
+
+export interface SystemScreenDef {
+  id: string;
+  name: string;
+  category: 'Gestão Gráfica' | 'Comercial & Vendas' | 'Produção & Logística' | 'Financeiro & Fiscal' | 'Administração & Sistema';
+  description: string;
+  iconName: string;
+  route: AppRoute;
+  mode: SidebarMode;
+}
+
+export interface SystemRoutineDef {
+  id: string;
+  code: string; // e.g. 'orders.update_status', 'customers.create'
+  name: string;
+  category: 'Gestão de Pedidos' | 'Orçamentos & Propostas' | 'Cadastro & Clientes' | 'Catálogo & Preços' | 'Financeiro & Caixa' | 'Logística & Despacho' | 'Usuários & Segurança' | 'Configurações Globais';
+  description: string;
+  dangerLevel: 'baixo' | 'medio' | 'alto' | 'critico';
+}
+
+export interface AccessProfile {
+  id: string;
+  name: string;
+  code: string;
+  description: string;
+  color: string;
+  icon: string;
+  isSystemDefault?: boolean;
+  allowedPermissions: string[]; // List of 'resource.action' e.g. ['customers.view', 'customers.create', 'products.view']
+  allowedScreens: string[]; // List of SystemScreenDef.id or resource routes for backward compatibility
+  allowedRoutines: string[]; // List of routine codes or action codes
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface UserCustomPermission {
+  id: string;
+  permissionId: string; // 'resource.action' code (e.g. 'customers.delete', 'financial.admin') or screen ID
+  permissionType: 'screen' | 'routine' | 'action';
+  permissionName: string;
+  grantType: 'allow' | 'deny';
+  expiresAt: string | null; // null = permanente | ISO string = temporário
+  grantedAt: string;
+  grantedBy: string; // Nome do administrador que concedeu
+  reason: string; // Justificativa / Motivo
+}
+
+export interface UserEmployee {
+  id: string;
+  name: string;
+  email: string;
+  whatsapp: string;
+  avatar?: string;
+  jobTitle: string; // Ex: 'Arte-Finalista', 'Gerente Comercial', 'Operador de Máquinas'
+  department: 'Diretoria' | 'Comercial' | 'Arte & Pré-Impressão' | 'Produção' | 'Acabamento' | 'Logística' | 'Financeiro';
+  status: 'Ativo' | 'Pendente' | 'Bloqueado';
+  profileIds: string[]; // Múltiplos perfis de acesso ativos para o usuário!
+  customPermissions: UserCustomPermission[]; // Permissões avulsas (temporárias ou permanentes)
+  createdAt: string;
+  lastLogin?: string;
+}
 
 export type OrderStatus =
   | 'criando_arte'
@@ -182,6 +270,12 @@ export interface Transaction {
   category?: string;
   observations?: string;
   clientName?: string;
+  clientId?: string;
+  orderId?: string;
+  orderCode?: string;
+  paidAt?: string;
+  documentNumber?: string;
+  supplierName?: string;
   createdAt: string;
 }
 
@@ -214,6 +308,7 @@ export interface CatalogProduct {
   category: string;
   price: number;
   basePrice?: number;
+  cost?: number;
   unit: string;
   minQty?: number;
   image?: string;
@@ -222,8 +317,45 @@ export interface CatalogProduct {
   isM2?: boolean;
   baseM2Price?: number;
   productionTime?: string;
+  paperType?: string;
+  paperWeight?: string;
+  printType?: string;
+  compatibleFinishings?: string[];
   kitItems?: KitSubItem[];
   isActive?: boolean;
 }
 
 export type Product = CatalogProduct;
+
+// ==========================================
+// EVOLUTION API & WHATSAPP INTEGRATION TYPES
+// ==========================================
+
+export type EvolutionConnectionState = 'open' | 'close' | 'connecting' | 'qrcode' | 'disconnected' | 'error';
+
+export interface EvolutionConfig {
+  apiUrl: string; // ex: https://evo.meudominio.com.br
+  instanceName: string; // ex: silkprint
+  apiKey: string; // Global API Key ou Token da instância
+  status: EvolutionConnectionState;
+  phoneNumber?: string;
+  profileName?: string;
+  profilePicUrl?: string;
+  lastChecked?: string;
+  autoSync?: boolean;
+  webhookUrl?: string;
+}
+
+export interface WhatsAppChatMessage {
+  id: string;
+  remoteJid: string; // ex: 5511999999999
+  clientName?: string;
+  fromMe: boolean;
+  text: string;
+  timestamp: string;
+  status: 'pending' | 'sent' | 'delivered' | 'read' | 'error';
+  mediaType?: 'text' | 'image' | 'document' | 'audio';
+  mediaUrl?: string;
+  orderCode?: string;
+  quoteNumber?: string;
+}

@@ -35,6 +35,7 @@ interface GestaoVisaoGeralScreenProps {
   onNavigateToOrcamentos: () => void;
   onNavigateToPedidos: () => void;
   onUpdateOrderStatus: (orderId: string, newStatus: OrderStatus) => void;
+  onOpenOrderDetails?: (order: Order) => void;
 }
 
 export const GestaoVisaoGeralScreen: React.FC<GestaoVisaoGeralScreenProps> = ({
@@ -48,6 +49,7 @@ export const GestaoVisaoGeralScreen: React.FC<GestaoVisaoGeralScreenProps> = ({
   onNavigateToOrcamentos,
   onNavigateToPedidos,
   onUpdateOrderStatus,
+  onOpenOrderDetails,
 }) => {
   const [isNovoDropdownOpen, setIsNovoDropdownOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
@@ -339,7 +341,13 @@ export const GestaoVisaoGeralScreen: React.FC<GestaoVisaoGeralScreenProps> = ({
                         <div
                           key={order.id}
                           className="p-3 rounded-lg bg-zinc-900 border border-zinc-800 hover:border-blue-500/50 transition-all shadow-xs flex flex-col justify-between group cursor-pointer"
-                          onClick={() => setSelectedOrderDetails(order)}
+                          onClick={() => {
+                            if (onOpenOrderDetails) {
+                              onOpenOrderDetails(order);
+                            } else {
+                              setSelectedOrderDetails(order);
+                            }
+                          }}
                         >
                           <div>
                             <div className="flex items-center justify-between text-xs mb-1.5">

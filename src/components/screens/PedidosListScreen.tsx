@@ -29,6 +29,7 @@ interface PedidosListScreenProps {
   onOpenNovoPedido: () => void;
   onUpdateOrderStatus: (orderId: string, newStatus: OrderStatus) => void;
   onOpenOrderDetails: (order: Order) => void;
+  onOpenWhatsAppChat?: (params: { clientName: string; clientPhone: string; initialMessage?: string; orderCode?: string }) => void;
 }
 
 type TabFilter = 'andamento' | 'entregues' | 'todos';
@@ -50,6 +51,7 @@ export const PedidosListScreen: React.FC<PedidosListScreenProps> = ({
   onOpenNovoPedido,
   onUpdateOrderStatus,
   onOpenOrderDetails,
+  onOpenWhatsAppChat,
 }) => {
   const [activeTab, setActiveTab] = useState<TabFilter>('andamento');
   const [searchTerm, setSearchTerm] = useState('');
@@ -380,17 +382,29 @@ export const PedidosListScreen: React.FC<PedidosListScreenProps> = ({
                             <Eye className="w-3.5 h-3.5" />
                           </button>
 
-                          <a
-                            href={`https://wa.me/55${cleanPhone}?text=${encodeURIComponent(
-                              `Olá ${order.clientName}! Aqui é da Silk Print Gráfica referente ao seu pedido ${order.code}.`
-                            )}`}
-                            target="_blank"
-                            rel="noreferrer"
+                          <button
+                            type="button"
+                            onClick={() => {
+                              const msg = `Olá, *${order.clientName}*! 👋 Aqui é da *Silk Print Gráfica* referente ao seu pedido *${order.code}* (${order.description}). Como podemos te ajudar?`;
+                              if (onOpenWhatsAppChat) {
+                                onOpenWhatsAppChat({
+                                  clientName: order.clientName,
+                                  clientPhone: order.clientWhatsapp,
+                                  initialMessage: msg,
+                                  orderCode: order.code,
+                                });
+                              } else {
+                                window.open(
+                                  `https://wa.me/55${cleanPhone}?text=${encodeURIComponent(msg)}`,
+                                  '_blank'
+                                );
+                              }
+                            }}
                             className="p-1.5 rounded-lg bg-zinc-950 hover:bg-zinc-800 text-zinc-300 hover:text-emerald-400 border border-zinc-800 transition-colors cursor-pointer"
-                            title="Conversar no WhatsApp"
+                            title="Conversar no WhatsApp (Evolution API)"
                           >
                             <MessageCircle className="w-3.5 h-3.5" />
-                          </a>
+                          </button>
                         </div>
                       </td>
                     </tr>

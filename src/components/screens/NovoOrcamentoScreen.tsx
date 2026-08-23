@@ -27,6 +27,7 @@ interface NovoOrcamentoScreenProps {
   onRemoveItem: (id: string) => void;
   onSaveQuote: (quote: Quote) => void;
   createdClientId?: string;
+  onOpenWhatsAppChat?: (params: { clientName: string; clientPhone: string; initialMessage?: string }) => void;
 }
 
 export const NovoOrcamentoScreen: React.FC<NovoOrcamentoScreenProps> = ({
@@ -38,6 +39,7 @@ export const NovoOrcamentoScreen: React.FC<NovoOrcamentoScreenProps> = ({
   onRemoveItem,
   onSaveQuote,
   createdClientId,
+  onOpenWhatsAppChat,
 }) => {
   const [selectedClientId, setSelectedClientId] = useState<string>(
     createdClientId || (clients[0]?.id ?? '')
@@ -358,16 +360,24 @@ export const NovoOrcamentoScreen: React.FC<NovoOrcamentoScreenProps> = ({
                 <button
                   type="button"
                   onClick={() => {
-                    const text = `Olá ${selectedClient.name}! Aqui está o seu orçamento da Silk Print Gráfica no valor de ${formatCurrency(total)}. Validade até ${formatDate(validityDate)}.`;
-                    window.open(
-                      `https://wa.me/55${selectedClient.whatsapp.replace(/\D/g, '')}?text=${encodeURIComponent(text)}`,
-                      '_blank'
-                    );
+                    const text = `Olá, *${selectedClient.name}*! 📋 Aqui está o seu orçamento da *Silk Print Gráfica* no valor total de *${formatCurrency(total)}* com validade até ${formatDate(validityDate)}. Fico à disposição para tirar dúvidas ou iniciar a produção!`;
+                    if (onOpenWhatsAppChat) {
+                      onOpenWhatsAppChat({
+                        clientName: selectedClient.name,
+                        clientPhone: selectedClient.whatsapp,
+                        initialMessage: text,
+                      });
+                    } else {
+                      window.open(
+                        `https://wa.me/55${selectedClient.whatsapp.replace(/\D/g, '')}?text=${encodeURIComponent(text)}`,
+                        '_blank'
+                      );
+                    }
                   }}
-                  className="w-full py-2 bg-emerald-600/20 hover:bg-emerald-600/30 text-emerald-400 border border-emerald-500/30 font-semibold text-xs rounded-lg transition-colors flex items-center justify-center gap-1.5"
+                  className="w-full py-2 bg-emerald-600/20 hover:bg-emerald-600/30 text-emerald-400 border border-emerald-500/30 font-semibold text-xs rounded-lg transition-colors flex items-center justify-center gap-1.5 cursor-pointer"
                 >
                   <Send className="w-3.5 h-3.5" />
-                  <span>Enviar no WhatsApp</span>
+                  <span>Enviar no WhatsApp (Evolution)</span>
                 </button>
               </div>
             )}
