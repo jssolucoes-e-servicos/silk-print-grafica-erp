@@ -102,7 +102,7 @@ export const ModalNovoCliente: React.FC<ModalNovoClienteProps> = ({
           <form onSubmit={handleSubmit} className="p-6 space-y-4">
             <div>
               <label className="block text-xs font-semibold text-zinc-300 mb-1.5">
-                Nome <span className="text-amber-400">*</span>
+                Nome <span className="text-blue-400">*</span>
               </label>
               <input
                 type="text"
@@ -110,13 +110,13 @@ export const ModalNovoCliente: React.FC<ModalNovoClienteProps> = ({
                 autoFocus
                 value={nome}
                 onChange={(e) => setNome(e.target.value)}
-                className="w-full px-3.5 py-2.5 text-xs bg-zinc-950 border border-amber-500 rounded-lg text-zinc-100 focus:outline-hidden focus:ring-1 focus:ring-amber-500"
+                className="w-full px-3.5 py-2.5 text-xs bg-zinc-950 border border-blue-500 rounded-lg text-zinc-100 focus:outline-hidden focus:ring-1 focus:ring-blue-500"
               />
             </div>
 
             <div>
               <label className="block text-xs font-semibold text-zinc-300 mb-1.5">
-                WhatsApp <span className="text-amber-400">*</span>
+                WhatsApp <span className="text-blue-400">*</span>
               </label>
               <input
                 type="text"
@@ -125,7 +125,7 @@ export const ModalNovoCliente: React.FC<ModalNovoClienteProps> = ({
                 onChange={handlePhoneChange}
                 placeholder="(00) 00000-0000"
                 maxLength={15}
-                className="w-full px-3.5 py-2.5 text-xs bg-zinc-950 border border-zinc-800 rounded-lg text-zinc-100 placeholder-zinc-500 focus:outline-hidden focus:border-amber-500 font-mono"
+                className="w-full px-3.5 py-2.5 text-xs bg-zinc-950 border border-zinc-800 rounded-lg text-zinc-100 placeholder-zinc-500 focus:outline-hidden focus:border-blue-500 font-mono"
               />
             </div>
 
@@ -140,7 +140,7 @@ export const ModalNovoCliente: React.FC<ModalNovoClienteProps> = ({
               </button>
               <button
                 type="submit"
-                className="px-5 py-2 text-xs font-bold bg-amber-500 hover:bg-amber-400 text-zinc-950 rounded-lg transition-all"
+                className="px-5 py-2 text-xs font-bold bg-blue-600 hover:bg-blue-500 text-white rounded-lg transition-all"
               >
                 Cadastrar
               </button>
@@ -162,19 +162,19 @@ export const ModalNovoCliente: React.FC<ModalNovoClienteProps> = ({
                     value={cpfCnpj}
                     onChange={(e) => setCpfCnpj(e.target.value)}
                     placeholder="000.000.000-00"
-                    className="w-full px-3 py-2 text-xs bg-zinc-950 border border-amber-500/80 rounded-lg text-zinc-200 placeholder-zinc-600 focus:outline-hidden font-mono"
+                    className="w-full px-3 py-2 text-xs bg-zinc-950 border border-blue-500/80 rounded-lg text-zinc-200 placeholder-zinc-600 focus:outline-hidden font-mono"
                   />
                 </div>
                 <div>
                   <label className="block text-[11px] font-medium text-zinc-400 mb-1">
-                    Nome <span className="text-amber-400">*</span>
+                    Nome <span className="text-blue-400">*</span>
                   </label>
                   <input
                     type="text"
                     required
                     value={nome}
                     onChange={(e) => setNome(e.target.value)}
-                    className="w-full px-3 py-2 text-xs bg-zinc-950 border border-zinc-800 rounded-lg text-zinc-200 focus:outline-hidden focus:border-amber-500"
+                    className="w-full px-3 py-2 text-xs bg-zinc-950 border border-zinc-800 rounded-lg text-zinc-200 focus:outline-hidden focus:border-blue-500"
                   />
                 </div>
               </div>
@@ -182,7 +182,7 @@ export const ModalNovoCliente: React.FC<ModalNovoClienteProps> = ({
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div>
                   <label className="block text-[11px] font-medium text-zinc-400 mb-1">
-                    WhatsApp <span className="text-amber-400">*</span>
+                    WhatsApp <span className="text-blue-400">*</span>
                   </label>
                   <input
                     type="text"
@@ -191,7 +191,7 @@ export const ModalNovoCliente: React.FC<ModalNovoClienteProps> = ({
                     onChange={handlePhoneChange}
                     placeholder="(00) 00000-0000"
                     maxLength={15}
-                    className="w-full px-3 py-2 text-xs bg-zinc-950 border border-zinc-800 rounded-lg text-zinc-200 placeholder-zinc-600 focus:outline-hidden focus:border-amber-500 font-mono"
+                    className="w-full px-3 py-2 text-xs bg-zinc-950 border border-zinc-800 rounded-lg text-zinc-200 placeholder-zinc-600 focus:outline-hidden focus:border-blue-500 font-mono"
                   />
                 </div>
                 <div>
@@ -202,7 +202,7 @@ export const ModalNovoCliente: React.FC<ModalNovoClienteProps> = ({
                     type="email"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    className="w-full px-3 py-2 text-xs bg-zinc-950 border border-zinc-800 rounded-lg text-zinc-200 focus:outline-hidden focus:border-amber-500"
+                    className="w-full px-3 py-2 text-xs bg-zinc-950 border border-zinc-800 rounded-lg text-zinc-200 focus:outline-hidden focus:border-blue-500"
                   />
                 </div>
               </div>
@@ -219,7 +219,7 @@ export const ModalNovoCliente: React.FC<ModalNovoClienteProps> = ({
                     value={cep}
                     onChange={(e) => setCep(e.target.value)}
                     placeholder="00000-000"
-                    className="w-full px-3 py-2 text-xs bg-zinc-950 border border-zinc-800 rounded-lg text-zinc-200 placeholder-zinc-600 focus:outline-hidden focus:border-amber-500 font-mono"
+                    className="w-full px-3 py-2 text-xs bg-zinc-950 border border-zinc-800 rounded-lg text-zinc-200 placeholder-zinc-600 focus:outline-hidden focus:border-blue-500 font-mono"
                   />
                 </div>
                 <div>
@@ -230,7 +230,7 @@ export const ModalNovoCliente: React.FC<ModalNovoClienteProps> = ({
                     type="text"
                     value={endereco}
                     onChange={(e) => setEndereco(e.target.value)}
-                    className="w-full px-3 py-2 text-xs bg-zinc-950 border border-zinc-800 rounded-lg text-zinc-200 focus:outline-hidden focus:border-amber-500"
+                    className="w-full px-3 py-2 text-xs bg-zinc-950 border border-zinc-800 rounded-lg text-zinc-200 focus:outline-hidden focus:border-blue-500"
                   />
                 </div>
               </div>
@@ -244,7 +244,7 @@ export const ModalNovoCliente: React.FC<ModalNovoClienteProps> = ({
                     type="text"
                     value={numero}
                     onChange={(e) => setNumero(e.target.value)}
-                    className="w-full px-3 py-2 text-xs bg-zinc-950 border border-zinc-800 rounded-lg text-zinc-200 focus:outline-hidden focus:border-amber-500"
+                    className="w-full px-3 py-2 text-xs bg-zinc-950 border border-zinc-800 rounded-lg text-zinc-200 focus:outline-hidden focus:border-blue-500"
                   />
                 </div>
                 <div>
@@ -255,7 +255,7 @@ export const ModalNovoCliente: React.FC<ModalNovoClienteProps> = ({
                     type="text"
                     value={bairro}
                     onChange={(e) => setBairro(e.target.value)}
-                    className="w-full px-3 py-2 text-xs bg-zinc-950 border border-zinc-800 rounded-lg text-zinc-200 focus:outline-hidden focus:border-amber-500"
+                    className="w-full px-3 py-2 text-xs bg-zinc-950 border border-zinc-800 rounded-lg text-zinc-200 focus:outline-hidden focus:border-blue-500"
                   />
                 </div>
               </div>
@@ -269,7 +269,7 @@ export const ModalNovoCliente: React.FC<ModalNovoClienteProps> = ({
                     type="text"
                     value={estado}
                     onChange={(e) => setEstado(e.target.value)}
-                    className="w-full px-3 py-2 text-xs bg-zinc-950 border border-zinc-800 rounded-lg text-zinc-200 focus:outline-hidden focus:border-amber-500"
+                    className="w-full px-3 py-2 text-xs bg-zinc-950 border border-zinc-800 rounded-lg text-zinc-200 focus:outline-hidden focus:border-blue-500"
                   />
                 </div>
                 <div>
@@ -280,7 +280,7 @@ export const ModalNovoCliente: React.FC<ModalNovoClienteProps> = ({
                     type="text"
                     value={cidade}
                     onChange={(e) => setCidade(e.target.value)}
-                    className="w-full px-3 py-2 text-xs bg-zinc-950 border border-zinc-800 rounded-lg text-zinc-200 focus:outline-hidden focus:border-amber-500"
+                    className="w-full px-3 py-2 text-xs bg-zinc-950 border border-zinc-800 rounded-lg text-zinc-200 focus:outline-hidden focus:border-blue-500"
                   />
                 </div>
               </div>
@@ -293,7 +293,7 @@ export const ModalNovoCliente: React.FC<ModalNovoClienteProps> = ({
                 rows={3}
                 value={observacoes}
                 onChange={(e) => setObservacoes(e.target.value)}
-                className="w-full px-3 py-2 text-xs bg-zinc-950 border border-zinc-800 rounded-lg text-zinc-200 placeholder-zinc-600 focus:outline-hidden focus:border-amber-500"
+                className="w-full px-3 py-2 text-xs bg-zinc-950 border border-zinc-800 rounded-lg text-zinc-200 placeholder-zinc-600 focus:outline-hidden focus:border-blue-500"
               />
             </div>
 
@@ -308,7 +308,7 @@ export const ModalNovoCliente: React.FC<ModalNovoClienteProps> = ({
               </button>
               <button
                 type="submit"
-                className="px-5 py-2 text-xs font-bold bg-amber-500 hover:bg-amber-400 text-zinc-950 rounded-lg transition-all"
+                className="px-5 py-2 text-xs font-bold bg-blue-600 hover:bg-blue-500 text-white rounded-lg transition-all"
               >
                 Cadastrar
               </button>

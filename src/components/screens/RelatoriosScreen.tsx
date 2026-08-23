@@ -61,7 +61,7 @@ export const RelatoriosScreen: React.FC<RelatoriosScreenProps> = ({
                 type="date"
                 value={dataInicial}
                 onChange={(e) => setDataInicial(e.target.value)}
-                className="pl-3 pr-8 py-2 text-xs bg-zinc-950 border border-zinc-800 rounded-lg text-zinc-200 focus:outline-hidden focus:border-amber-500 font-mono"
+                className="pl-3 pr-8 py-2 text-xs bg-zinc-950 border border-zinc-800 rounded-lg text-zinc-200 focus:outline-hidden focus:border-blue-500 font-mono"
               />
             </div>
           </div>
@@ -73,14 +73,14 @@ export const RelatoriosScreen: React.FC<RelatoriosScreenProps> = ({
                 type="date"
                 value={dataFinal}
                 onChange={(e) => setDataFinal(e.target.value)}
-                className="pl-3 pr-8 py-2 text-xs bg-zinc-950 border border-zinc-800 rounded-lg text-zinc-200 focus:outline-hidden focus:border-amber-500 font-mono"
+                className="pl-3 pr-8 py-2 text-xs bg-zinc-950 border border-zinc-800 rounded-lg text-zinc-200 focus:outline-hidden focus:border-blue-500 font-mono"
               />
             </div>
           </div>
 
           <button
             type="button"
-            className="px-5 py-2 rounded-lg bg-amber-500 hover:bg-amber-400 text-zinc-950 text-xs font-bold transition-all flex items-center gap-1.5 shadow-sm"
+            className="px-5 py-2 rounded-lg bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold transition-all flex items-center gap-1.5 shadow-sm"
           >
             <Filter className="w-3.5 h-3.5" />
             <span>Filtrar</span>
@@ -151,7 +151,7 @@ export const RelatoriosScreen: React.FC<RelatoriosScreenProps> = ({
 
           <button
             onClick={handleExportPDF}
-            className="px-4 py-1.5 rounded-lg bg-amber-500 hover:bg-amber-400 text-zinc-950 text-xs font-bold flex items-center gap-1.5 transition-colors shadow-sm"
+            className="px-4 py-1.5 rounded-lg bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold flex items-center gap-1.5 transition-colors shadow-sm"
           >
             <Download className="w-3.5 h-3.5" />
             <span>Exportar PDF</span>
@@ -179,7 +179,7 @@ export const RelatoriosScreen: React.FC<RelatoriosScreenProps> = ({
                 <tbody className="divide-y divide-zinc-800/60 font-medium">
                   {orders.map((o) => (
                     <tr key={o.id}>
-                      <td className="py-2.5 px-3 font-mono font-bold text-amber-400">#{o.code}</td>
+                      <td className="py-2.5 px-3 font-mono font-bold text-blue-400">#{o.code}</td>
                       <td className="py-2.5 px-3 text-zinc-200">{o.clientName}</td>
                       <td className="py-2.5 px-3 font-mono text-zinc-400">{formatDate(o.createdAt)}</td>
                       <td className="py-2.5 px-3 capitalize">{o.status.replace('_', ' ')}</td>
@@ -212,7 +212,7 @@ export const RelatoriosScreen: React.FC<RelatoriosScreenProps> = ({
                 <tbody className="divide-y divide-zinc-800/60 font-medium">
                   {quotes.map((q) => (
                     <tr key={q.id}>
-                      <td className="py-2.5 px-3 font-mono font-bold text-amber-400">#{q.code}</td>
+                      <td className="py-2.5 px-3 font-mono font-bold text-blue-400">#{q.code}</td>
                       <td className="py-2.5 px-3 text-zinc-200">{q.clientName}</td>
                       <td className="py-2.5 px-3 font-mono text-zinc-400">{formatDate(q.validUntil)}</td>
                       <td className="py-2.5 px-3 capitalize">{q.status}</td>
@@ -245,7 +245,7 @@ export const RelatoriosScreen: React.FC<RelatoriosScreenProps> = ({
                     <tr key={p.id}>
                       <td className="py-2.5 px-3 text-zinc-200 font-semibold">{p.title}</td>
                       <td className="py-2.5 px-3 text-zinc-400">{p.category}</td>
-                      <td className="py-2.5 px-3 text-right font-mono font-bold text-amber-400">
+                      <td className="py-2.5 px-3 text-right font-mono font-bold text-blue-400">
                         {formatCurrency(p.basePrice)}
                       </td>
                     </tr>
@@ -283,7 +283,7 @@ export const RelatoriosScreen: React.FC<RelatoriosScreenProps> = ({
 
               <div className="p-4 rounded-lg bg-zinc-950 border border-zinc-800">
                 <div className="text-[11px] text-zinc-400">Lucro / Saldo Período</div>
-                <div className="text-xl font-mono font-bold text-amber-400 mt-1">
+                <div className="text-xl font-mono font-bold text-blue-400 mt-1">
                   {formatCurrency(
                     transactions
                       .filter((t) => t.type === 'receita' && t.status === 'pago')

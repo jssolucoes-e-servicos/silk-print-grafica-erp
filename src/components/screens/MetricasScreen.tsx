@@ -59,7 +59,7 @@ export const MetricasScreen: React.FC<MetricasScreenProps> = ({ orders, products
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         <div>
           <h1 className="text-xl md:text-2xl font-bold text-zinc-100 tracking-tight flex items-center gap-2.5">
-            <BarChart3 className="w-6 h-6 text-amber-400" />
+            <BarChart3 className="w-6 h-6 text-blue-400" />
             <span>Métricas do Catálogo Online</span>
           </h1>
           <p className="text-xs md:text-sm text-zinc-400 mt-0.5">
@@ -73,7 +73,7 @@ export const MetricasScreen: React.FC<MetricasScreenProps> = ({ orders, products
             type="button"
             onClick={() => setPeriod('7d')}
             className={`px-3 py-1.5 text-xs font-semibold rounded-lg transition-all ${
-              period === '7d' ? 'bg-amber-500 text-zinc-950 shadow-xs' : 'text-zinc-400 hover:text-zinc-200'
+              period === '7d' ? 'bg-blue-600 text-white shadow-xs' : 'text-zinc-400 hover:text-zinc-200'
             }`}
           >
             7 dias
@@ -82,7 +82,7 @@ export const MetricasScreen: React.FC<MetricasScreenProps> = ({ orders, products
             type="button"
             onClick={() => setPeriod('30d')}
             className={`px-3 py-1.5 text-xs font-semibold rounded-lg transition-all ${
-              period === '30d' ? 'bg-amber-500 text-zinc-950 shadow-xs' : 'text-zinc-400 hover:text-zinc-200'
+              period === '30d' ? 'bg-blue-600 text-white shadow-xs' : 'text-zinc-400 hover:text-zinc-200'
             }`}
           >
             30 dias
@@ -91,7 +91,7 @@ export const MetricasScreen: React.FC<MetricasScreenProps> = ({ orders, products
             type="button"
             onClick={() => setPeriod('mes')}
             className={`px-3 py-1.5 text-xs font-semibold rounded-lg transition-all ${
-              period === 'mes' ? 'bg-amber-500 text-zinc-950 shadow-xs' : 'text-zinc-400 hover:text-zinc-200'
+              period === 'mes' ? 'bg-blue-600 text-white shadow-xs' : 'text-zinc-400 hover:text-zinc-200'
             }`}
           >
             Este Mês
@@ -100,7 +100,7 @@ export const MetricasScreen: React.FC<MetricasScreenProps> = ({ orders, products
             type="button"
             onClick={() => setPeriod('ano')}
             className={`px-3 py-1.5 text-xs font-semibold rounded-lg transition-all ${
-              period === 'ano' ? 'bg-amber-500 text-zinc-950 shadow-xs' : 'text-zinc-400 hover:text-zinc-200'
+              period === 'ano' ? 'bg-blue-600 text-white shadow-xs' : 'text-zinc-400 hover:text-zinc-200'
             }`}
           >
             Ano Atual
@@ -114,7 +114,7 @@ export const MetricasScreen: React.FC<MetricasScreenProps> = ({ orders, products
         <div className="p-4 rounded-2xl bg-zinc-900/90 border border-zinc-800/90 space-y-1.5 shadow-md">
           <div className="flex items-center justify-between">
             <span className="text-xs font-semibold text-zinc-400">Visualizações</span>
-            <div className="w-7 h-7 rounded-lg bg-amber-500/10 text-amber-400 flex items-center justify-center">
+            <div className="w-7 h-7 rounded-lg bg-blue-500/10 text-blue-400 flex items-center justify-center">
               <Eye className="w-3.5 h-3.5" />
             </div>
           </div>
@@ -168,11 +168,11 @@ export const MetricasScreen: React.FC<MetricasScreenProps> = ({ orders, products
         <div className="p-4 rounded-2xl bg-zinc-900/90 border border-zinc-800/90 space-y-1.5 shadow-md">
           <div className="flex items-center justify-between">
             <span className="text-xs font-semibold text-zinc-400">Faturamento Online</span>
-            <div className="w-7 h-7 rounded-lg bg-amber-500/10 text-amber-400 flex items-center justify-center">
+            <div className="w-7 h-7 rounded-lg bg-blue-500/10 text-blue-400 flex items-center justify-center">
               <TrendingUp className="w-3.5 h-3.5" />
             </div>
           </div>
-          <div className="text-xl font-bold text-amber-400 font-mono">{formatCurrency(totalFaturamento)}</div>
+          <div className="text-xl font-bold text-blue-400 font-mono">{formatCurrency(totalFaturamento)}</div>
           <div className="text-[10px] text-emerald-400 flex items-center gap-0.5">
             <ArrowUpRight className="w-3 h-3" /> +28.5%
           </div>
@@ -202,7 +202,7 @@ export const MetricasScreen: React.FC<MetricasScreenProps> = ({ orders, products
             </div>
             <div className="flex items-center gap-3 text-[11px]">
               <div className="flex items-center gap-1.5">
-                <div className="w-2.5 h-2.5 rounded-xs bg-amber-500" />
+                <div className="w-2.5 h-2.5 rounded-xs bg-blue-500" />
                 <span className="text-zinc-400">Visualizações</span>
               </div>
               <div className="flex items-center gap-1.5">
@@ -224,7 +224,7 @@ export const MetricasScreen: React.FC<MetricasScreenProps> = ({ orders, products
                       {/* Bar 1: Views */}
                       <div
                         style={{ height: `${Math.max(heightViews, 12)}%` }}
-                        className="w-1/2 max-w-[20px] bg-amber-500/80 group-hover:bg-amber-400 rounded-t-sm transition-all relative flex justify-center"
+                        className="w-1/2 max-w-[20px] bg-blue-500/80 group-hover:bg-blue-400 rounded-t-sm transition-all relative flex justify-center"
                       >
                         <span className="absolute -top-6 text-[10px] font-mono text-zinc-300 opacity-0 group-hover:opacity-100 transition-opacity bg-zinc-950 px-1.5 py-0.5 rounded border border-zinc-800 z-10">
                           {d.views}
@@ -296,7 +296,7 @@ export const MetricasScreen: React.FC<MetricasScreenProps> = ({ orders, products
                 <span className="font-mono font-bold text-zinc-100">{whatsappClicks} (10.7%)</span>
               </div>
               <div className="w-full h-2 rounded-full bg-zinc-800 overflow-hidden">
-                <div className="h-full bg-amber-500 rounded-full w-[10.7%]" />
+                <div className="h-full bg-blue-500 rounded-full w-[10.7%]" />
               </div>
             </div>
 
@@ -326,7 +326,7 @@ export const MetricasScreen: React.FC<MetricasScreenProps> = ({ orders, products
         {/* Dispositivos */}
         <div className="p-5 rounded-2xl bg-zinc-900/90 border border-zinc-800/90 space-y-4 shadow-md">
           <div className="flex items-center gap-2">
-            <Smartphone className="w-4 h-4 text-amber-400" />
+            <Smartphone className="w-4 h-4 text-blue-400" />
             <h3 className="text-sm font-bold text-zinc-100">Dispositivos de Acesso</h3>
           </div>
 
@@ -337,7 +337,7 @@ export const MetricasScreen: React.FC<MetricasScreenProps> = ({ orders, products
                 <span className="font-mono font-bold text-zinc-100">82%</span>
               </div>
               <div className="w-full h-1.5 rounded-full bg-zinc-800 overflow-hidden">
-                <div className="h-full bg-amber-500 rounded-full w-[82%]" />
+                <div className="h-full bg-blue-500 rounded-full w-[82%]" />
               </div>
             </div>
 
@@ -366,7 +366,7 @@ export const MetricasScreen: React.FC<MetricasScreenProps> = ({ orders, products
         {/* Origem de Tráfego */}
         <div className="p-5 rounded-2xl bg-zinc-900/90 border border-zinc-800/90 space-y-4 shadow-md">
           <div className="flex items-center gap-2">
-            <Share2 className="w-4 h-4 text-amber-400" />
+            <Share2 className="w-4 h-4 text-blue-400" />
             <h3 className="text-sm font-bold text-zinc-100">Canais de Aquisição</h3>
           </div>
 
@@ -422,14 +422,14 @@ export const MetricasScreen: React.FC<MetricasScreenProps> = ({ orders, products
         {/* Cidades com Mais Acessos */}
         <div className="p-5 rounded-2xl bg-zinc-900/90 border border-zinc-800/90 space-y-4 shadow-md">
           <div className="flex items-center gap-2">
-            <TrendingUp className="w-4 h-4 text-amber-400" />
+            <TrendingUp className="w-4 h-4 text-blue-400" />
             <h3 className="text-sm font-bold text-zinc-100">Principais Cidades</h3>
           </div>
 
           <div className="space-y-2.5 pt-1 text-xs">
             <div className="flex items-center justify-between p-2 rounded-lg bg-zinc-950/60 border border-zinc-800/60">
               <span className="text-zinc-200 font-medium">São Paulo, SP</span>
-              <span className="font-mono text-amber-400 font-bold">54% dos acessos</span>
+              <span className="font-mono text-blue-400 font-bold">54% dos acessos</span>
             </div>
             <div className="flex items-center justify-between p-2 rounded-lg bg-zinc-950/60 border border-zinc-800/60">
               <span className="text-zinc-200 font-medium">Guarulhos, SP</span>
@@ -500,7 +500,7 @@ export const MetricasScreen: React.FC<MetricasScreenProps> = ({ orders, products
                         {p.category}
                       </span>
                     </td>
-                    <td className="py-3 font-mono font-bold text-amber-400">
+                    <td className="py-3 font-mono font-bold text-blue-400">
                       {formatCurrency(p.price)}
                     </td>
                     <td className="py-3 text-center font-mono text-zinc-200">

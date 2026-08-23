@@ -5,6 +5,7 @@ import {
   Client,
   Order,
   OrderStatus,
+  OrderMessage,
   Quote,
   QuoteItem,
   Transaction,
@@ -33,6 +34,7 @@ import { ModalNovoPedido } from './components/modals/ModalNovoPedido';
 import { ModalUpgrade } from './components/modals/ModalUpgrade';
 import { ModalTutoriais } from './components/modals/ModalTutoriais';
 import { ModalCatalogoPreview } from './components/modals/ModalCatalogoPreview';
+import { ModalDetalhesPedido } from './components/modals/ModalDetalhesPedido';
 
 // Screens
 import { DashboardScreen } from './components/screens/DashboardScreen';
@@ -57,6 +59,7 @@ import { AcabamentosScreen } from './components/screens/AcabamentosScreen';
 import { AgendaScreen } from './components/screens/AgendaScreen';
 import { PedidosOnlineScreen } from './components/screens/PedidosOnlineScreen';
 import { DeclaracaoConteudoScreen } from './components/screens/DeclaracaoConteudoScreen';
+import { LogisticaScreen } from './components/screens/LogisticaScreen';
 import { RelatoriosScreen } from './components/screens/RelatoriosScreen';
 
 const INITIAL_FINISHINGS: FinishingItem[] = [
@@ -130,6 +133,10 @@ export default function App() {
   const [isTutoriaisModalOpen, setIsTutoriaisModalOpen] = useState(false);
   const [isCatalogPreviewOpen, setIsCatalogPreviewOpen] = useState(false);
 
+  // Order Details Modal state
+  const [selectedOrderForDetails, setSelectedOrderForDetails] = useState<Order | null>(null);
+  const [isOrderDetailsOpen, setIsOrderDetailsOpen] = useState(false);
+
   // Navigation handler
   const handleNavigate = (route: string, mode?: SidebarMode) => {
     if (mode) {
@@ -191,6 +198,41 @@ export default function App() {
     setOrders((prev) =>
       prev.map((o) => (o.id === orderId ? { ...o, status: newStatus } : o))
     );
+    if (selectedOrderForDetails && selectedOrderForDetails.id === orderId) {
+      setSelectedOrderForDetails((prev) => (prev ? { ...prev, status: newStatus } : null));
+    }
+  };
+
+  const handleOpenOrderDetails = (order: Order) => {
+    setSelectedOrderForDetails(order);
+    setIsOrderDetailsOpen(true);
+  };
+
+  const handleUpdateOrderPaymentStatus = (
+    orderId: string,
+    newPaymentStatus: 'pago' | 'pendente' | 'parcial'
+  ) => {
+    setOrders((prev) =>
+      prev.map((o) => (o.id === orderId ? { ...o, paymentStatus: newPaymentStatus } : o))
+    );
+    if (selectedOrderForDetails && selectedOrderForDetails.id === orderId) {
+      setSelectedOrderForDetails((prev) =>
+        prev ? { ...prev, paymentStatus: newPaymentStatus } : null
+      );
+    }
+  };
+
+  const handleAddOrderMessage = (orderId: string, message: OrderMessage) => {
+    setOrders((prev) =>
+      prev.map((o) =>
+        o.id === orderId ? { ...o, messages: [...(o.messages || []), message] } : o
+      )
+    );
+    if (selectedOrderForDetails && selectedOrderForDetails.id === orderId) {
+      setSelectedOrderForDetails((prev) =>
+        prev ? { ...prev, messages: [...(prev.messages || []), message] } : null
+      );
+    }
   };
 
   const handleConvertQuoteToOrder = (quote: Quote) => {
@@ -228,6 +270,12 @@ export default function App() {
 
   const handleDeleteProduct = (id: string) => {
     setProducts((prev) => prev.filter((p) => p.id !== id));
+  };
+
+  const handleToggleProductInternal = (id: string) => {
+    setProducts((prev) =>
+      prev.map((p) => (p.id === id ? { ...p, isInternal: !p.isInternal } : p))
+    );
   };
 
   const handleAddFinishing = (newFinishing: FinishingItem) => {
@@ -321,11 +369,10 @@ export default function App() {
           {currentRoute === 'dashboard' && (
             <DashboardScreen
               products={products}
-              onOpenUpgradeModal={() => setIsUpgradeModalOpen(true)}
-              onOpenTutoriaisModal={() => setIsTutoriaisModalOpen(true)}
               onOpenCatalogPreview={() => setIsCatalogPreviewOpen(true)}
               onNavigateToGestao={() => handleNavigate('visao-geral', 'gestao')}
               onNavigateToProdutos={() => handleNavigate('produtos', 'admin')}
+              onNavigate={handleNavigate}
             />
           )}
 
@@ -378,6 +425,16 @@ export default function App() {
               orders={orders}
               onOpenNovoPedido={() => setIsNovoPedidoOpen(true)}
               onUpdateOrderStatus={handleUpdateOrderStatus}
+              onOpenOrderDetails={handleOpenOrderDetails}
+            />
+          )}
+
+          {currentRoute === 'logistica' && (
+            <LogisticaScreen
+              orders={orders}
+              clients={clients}
+              onUpdateOrderStatus={handleUpdateOrderStatus}
+              onOpenNovoPedido={() => setIsNovoPedidoOpen(true)}
             />
           )}
 
@@ -390,22 +447,27 @@ export default function App() {
             />
           )}
 
-          {/* Admin: Produtos do Catálogo / E-commerce */}
+          {/* Produtos (Unificado: Catálogo e Insumos Internos) */}
           {currentRoute === 'produtos' && (
             <CatalogoEcommerceProdutosScreen
               products={products}
               onOpenCatalogPreview={() => setIsCatalogPreviewOpen(true)}
               onAddProduct={handleAddProduct}
               onDeleteProduct={handleDeleteProduct}
+              onToggleProductInternal={handleToggleProductInternal}
+              initialTypeFilter="todos"
             />
           )}
 
-          {/* Gestão: Produtos Internos */}
+          {/* Gestão: Produtos Internos (Redirecionamento / Filtro Direto) */}
           {currentRoute === 'produtos-internos' && (
-            <ProdutosScreen
+            <CatalogoEcommerceProdutosScreen
               products={products}
               onOpenCatalogPreview={() => setIsCatalogPreviewOpen(true)}
               onAddProduct={handleAddProduct}
+              onDeleteProduct={handleDeleteProduct}
+              onToggleProductInternal={handleToggleProductInternal}
+              initialTypeFilter="internos"
             />
           )}
 
@@ -418,7 +480,17 @@ export default function App() {
           )}
 
           {/* Admin: Precificação */}
-          {currentRoute === 'precificacao' && <PrecificacaoScreen />}
+          {currentRoute === 'precificacao' && (
+            <ConfiguracoesScreen
+              initialTab="precificacao"
+              onOpenCatalogPreview={() => setIsCatalogPreviewOpen(true)}
+              onOpenUpgradeModal={() => setIsUpgradeModalOpen(true)}
+              clients={clients}
+              orders={orders}
+              products={products}
+              transactions={transactions}
+            />
+          )}
 
           {/* Admin: Métricas */}
           {currentRoute === 'metricas' && (
@@ -427,7 +499,10 @@ export default function App() {
 
           {/* Admin: Exportar */}
           {currentRoute === 'exportar' && (
-            <ExportarScreen
+            <ConfiguracoesScreen
+              initialTab="exportar"
+              onOpenCatalogPreview={() => setIsCatalogPreviewOpen(true)}
+              onOpenUpgradeModal={() => setIsUpgradeModalOpen(true)}
               clients={clients}
               orders={orders}
               products={products}
@@ -437,25 +512,55 @@ export default function App() {
 
           {/* Admin: Aparência */}
           {currentRoute === 'aparencia' && (
-            <AparenciaScreen
+            <ConfiguracoesScreen
+              initialTab="aparencia"
               onOpenCatalogPreview={() => setIsCatalogPreviewOpen(true)}
               onOpenUpgradeModal={() => setIsUpgradeModalOpen(true)}
+              clients={clients}
+              orders={orders}
+              products={products}
+              transactions={transactions}
             />
           )}
 
           {/* Admin: Configurações */}
           {currentRoute === 'configuracoes' && (
             <ConfiguracoesScreen
+              initialTab="geral"
               onOpenCatalogPreview={() => setIsCatalogPreviewOpen(true)}
               onOpenUpgradeModal={() => setIsUpgradeModalOpen(true)}
+              clients={clients}
+              orders={orders}
+              products={products}
+              transactions={transactions}
             />
           )}
 
           {/* Admin: Pagamentos */}
-          {currentRoute === 'pagamentos' && <PagamentosScreen />}
+          {currentRoute === 'pagamentos' && (
+            <ConfiguracoesScreen
+              initialTab="pagamentos"
+              onOpenCatalogPreview={() => setIsCatalogPreviewOpen(true)}
+              onOpenUpgradeModal={() => setIsUpgradeModalOpen(true)}
+              clients={clients}
+              orders={orders}
+              products={products}
+              transactions={transactions}
+            />
+          )}
 
           {/* Admin: Integrações */}
-          {currentRoute === 'integracoes' && <IntegracoesScreen />}
+          {currentRoute === 'integracoes' && (
+            <ConfiguracoesScreen
+              initialTab="integracoes"
+              onOpenCatalogPreview={() => setIsCatalogPreviewOpen(true)}
+              onOpenUpgradeModal={() => setIsUpgradeModalOpen(true)}
+              clients={clients}
+              orders={orders}
+              products={products}
+              transactions={transactions}
+            />
+          )}
 
           {/* Admin: Funcionários */}
           {currentRoute === 'funcionarios' && <FuncionariosScreen />}
@@ -483,8 +588,11 @@ export default function App() {
           )}
 
           {currentRoute === 'declaracao-conteudo' && (
-            <DeclaracaoConteudoScreen
+            <LogisticaScreen
+              orders={orders}
               clients={clients}
+              onUpdateOrderStatus={handleUpdateOrderStatus}
+              onOpenNovoPedido={() => setIsNovoPedidoOpen(true)}
             />
           )}
 
@@ -544,6 +652,18 @@ export default function App() {
       <ModalCatalogoPreview
         isOpen={isCatalogPreviewOpen}
         onClose={() => setIsCatalogPreviewOpen(false)}
+      />
+
+      <ModalDetalhesPedido
+        order={selectedOrderForDetails}
+        isOpen={isOrderDetailsOpen}
+        onClose={() => {
+          setIsOrderDetailsOpen(false);
+          setSelectedOrderForDetails(null);
+        }}
+        onUpdateStatus={handleUpdateOrderStatus}
+        onUpdatePaymentStatus={handleUpdateOrderPaymentStatus}
+        onAddMessage={handleAddOrderMessage}
       />
     </div>
   );

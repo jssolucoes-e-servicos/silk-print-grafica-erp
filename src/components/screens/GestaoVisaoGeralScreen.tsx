@@ -133,7 +133,7 @@ export const GestaoVisaoGeralScreen: React.FC<GestaoVisaoGeralScreenProps> = ({
             onClick={onOpenNovaReceita}
             className="px-3.5 py-2 rounded-lg bg-zinc-900 hover:bg-zinc-800 border border-zinc-700/80 text-xs font-semibold text-zinc-200 transition-colors flex items-center gap-1.5 shadow-sm"
           >
-            <DollarSign className="w-3.5 h-3.5 text-amber-400" />
+            <DollarSign className="w-3.5 h-3.5 text-blue-400" />
             <span>+$ Venda Rápida</span>
           </button>
 
@@ -142,7 +142,7 @@ export const GestaoVisaoGeralScreen: React.FC<GestaoVisaoGeralScreenProps> = ({
             <button
               id="btn-dropdown-novo"
               onClick={() => setIsNovoDropdownOpen(!isNovoDropdownOpen)}
-              className="px-4 py-2 rounded-lg bg-amber-500 hover:bg-amber-400 text-zinc-950 text-xs font-bold transition-all shadow-sm flex items-center gap-1.5"
+              className="px-4 py-2 rounded-lg bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold transition-all shadow-sm flex items-center gap-1.5"
             >
               <Plus className="w-4 h-4 stroke-[3]" />
               <span>Novo</span>
@@ -161,9 +161,9 @@ export const GestaoVisaoGeralScreen: React.FC<GestaoVisaoGeralScreenProps> = ({
                     setIsNovoDropdownOpen(false);
                     onNavigateToNovoOrcamento();
                   }}
-                  className="w-full px-3.5 py-2.5 text-left text-xs font-medium text-zinc-200 hover:bg-zinc-800 hover:text-amber-400 transition-colors flex items-center gap-2.5"
+                  className="w-full px-3.5 py-2.5 text-left text-xs font-medium text-zinc-200 hover:bg-zinc-800 hover:text-blue-400 transition-colors flex items-center gap-2.5"
                 >
-                  <FileSpreadsheet className="w-4 h-4 text-amber-400" />
+                  <FileSpreadsheet className="w-4 h-4 text-blue-400" />
                   <span>Novo Orçamento</span>
                 </button>
 
@@ -173,9 +173,9 @@ export const GestaoVisaoGeralScreen: React.FC<GestaoVisaoGeralScreenProps> = ({
                     setIsNovoDropdownOpen(false);
                     onOpenNovoPedido();
                   }}
-                  className="w-full px-3.5 py-2.5 text-left text-xs font-medium text-zinc-200 hover:bg-zinc-800 hover:text-amber-400 transition-colors flex items-center gap-2.5 border-t border-zinc-800/80"
+                  className="w-full px-3.5 py-2.5 text-left text-xs font-medium text-zinc-200 hover:bg-zinc-800 hover:text-blue-400 transition-colors flex items-center gap-2.5 border-t border-zinc-800/80"
                 >
-                  <Layers className="w-4 h-4 text-amber-400" />
+                  <Layers className="w-4 h-4 text-blue-400" />
                   <span>Novo Pedido</span>
                 </button>
               </div>
@@ -199,7 +199,7 @@ export const GestaoVisaoGeralScreen: React.FC<GestaoVisaoGeralScreenProps> = ({
               {totalClients}
             </div>
           </div>
-          <div className="w-10 h-10 rounded-xl bg-zinc-800/80 border border-zinc-700/60 flex items-center justify-center text-zinc-300 group-hover:text-amber-400 group-hover:border-amber-500/40 transition-colors">
+          <div className="w-10 h-10 rounded-xl bg-zinc-800/80 border border-zinc-700/60 flex items-center justify-center text-zinc-300 group-hover:text-blue-400 group-hover:border-blue-500/40 transition-colors">
             <Users className="w-5 h-5" />
           </div>
         </div>
@@ -217,7 +217,7 @@ export const GestaoVisaoGeralScreen: React.FC<GestaoVisaoGeralScreenProps> = ({
               {totalQuotes}
             </div>
           </div>
-          <div className="w-10 h-10 rounded-xl bg-zinc-800/80 border border-zinc-700/60 flex items-center justify-center text-zinc-300 group-hover:text-amber-400 group-hover:border-amber-500/40 transition-colors">
+          <div className="w-10 h-10 rounded-xl bg-zinc-800/80 border border-zinc-700/60 flex items-center justify-center text-zinc-300 group-hover:text-blue-400 group-hover:border-blue-500/40 transition-colors">
             <FileSpreadsheet className="w-5 h-5" />
           </div>
         </div>
@@ -235,7 +235,7 @@ export const GestaoVisaoGeralScreen: React.FC<GestaoVisaoGeralScreenProps> = ({
               {totalOrders}
             </div>
           </div>
-          <div className="w-10 h-10 rounded-xl bg-zinc-800/80 border border-zinc-700/60 flex items-center justify-center text-zinc-300 group-hover:text-amber-400 group-hover:border-amber-500/40 transition-colors">
+          <div className="w-10 h-10 rounded-xl bg-zinc-800/80 border border-zinc-700/60 flex items-center justify-center text-zinc-300 group-hover:text-blue-400 group-hover:border-blue-500/40 transition-colors">
             <Layers className="w-5 h-5" />
           </div>
         </div>
@@ -269,7 +269,7 @@ export const GestaoVisaoGeralScreen: React.FC<GestaoVisaoGeralScreenProps> = ({
             </h2>
             <button
               onClick={() => alert('Gerenciamento de status e etapas customizadas.')}
-              className="text-xs text-zinc-400 hover:text-amber-400 flex items-center gap-1 transition-colors"
+              className="text-xs text-zinc-400 hover:text-blue-400 flex items-center gap-1 transition-colors"
             >
               <Settings2 className="w-3.5 h-3.5" />
               <span>Gerenciar status</span>
@@ -285,13 +285,13 @@ export const GestaoVisaoGeralScreen: React.FC<GestaoVisaoGeralScreenProps> = ({
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
                 placeholder="Buscar por nome, e-mail ou CPF"
-                className="w-full pl-8 pr-3 py-1.5 text-xs bg-zinc-900 border border-zinc-800 rounded-lg text-zinc-200 placeholder-zinc-500 focus:outline-hidden focus:border-amber-500 focus:ring-1 focus:ring-amber-500"
+                className="w-full pl-8 pr-3 py-1.5 text-xs bg-zinc-900 border border-zinc-800 rounded-lg text-zinc-200 placeholder-zinc-500 focus:outline-hidden focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
               />
             </div>
 
             <button
               onClick={onNavigateToPedidos}
-              className="text-xs font-semibold text-amber-400 hover:text-amber-300 flex items-center gap-1 whitespace-nowrap transition-colors"
+              className="text-xs font-semibold text-blue-400 hover:text-blue-300 flex items-center gap-1 whitespace-nowrap transition-colors"
             >
               <span>Ver todos</span>
               <ArrowRight className="w-3.5 h-3.5" />
@@ -338,12 +338,12 @@ export const GestaoVisaoGeralScreen: React.FC<GestaoVisaoGeralScreenProps> = ({
                       columnOrders.map((order) => (
                         <div
                           key={order.id}
-                          className="p-3 rounded-lg bg-zinc-900 border border-zinc-800 hover:border-amber-500/50 transition-all shadow-xs flex flex-col justify-between group cursor-pointer"
+                          className="p-3 rounded-lg bg-zinc-900 border border-zinc-800 hover:border-blue-500/50 transition-all shadow-xs flex flex-col justify-between group cursor-pointer"
                           onClick={() => setSelectedOrderDetails(order)}
                         >
                           <div>
                             <div className="flex items-center justify-between text-xs mb-1.5">
-                              <span className="font-mono font-bold text-amber-400">
+                              <span className="font-mono font-bold text-blue-400">
                                 {order.code}
                               </span>
                               <span
@@ -351,7 +351,7 @@ export const GestaoVisaoGeralScreen: React.FC<GestaoVisaoGeralScreenProps> = ({
                                   order.paymentStatus === 'pago'
                                     ? 'bg-emerald-500/20 text-emerald-400'
                                     : order.paymentStatus === 'parcial'
-                                    ? 'bg-amber-500/20 text-amber-300'
+                                    ? 'bg-blue-500/20 text-blue-300'
                                     : 'bg-orange-500/20 text-orange-400'
                                 }`}
                               >
@@ -402,7 +402,7 @@ export const GestaoVisaoGeralScreen: React.FC<GestaoVisaoGeralScreenProps> = ({
                                     )
                                   }
                                   title="Avançar status"
-                                  className="p-1 rounded bg-amber-500/20 hover:bg-amber-500 hover:text-zinc-950 text-amber-400"
+                                  className="p-1 rounded bg-blue-500/20 hover:bg-blue-500 hover:text-white text-blue-400"
                                 >
                                   <ChevronRight className="w-3 h-3" />
                                 </button>
@@ -426,7 +426,7 @@ export const GestaoVisaoGeralScreen: React.FC<GestaoVisaoGeralScreenProps> = ({
           <div className="w-full max-w-md bg-zinc-900 border border-zinc-800 rounded-xl shadow-2xl overflow-hidden p-6 space-y-4">
             <div className="flex items-center justify-between border-b border-zinc-800 pb-3">
               <div>
-                <span className="text-xs font-mono text-amber-400 font-bold">
+                <span className="text-xs font-mono text-blue-400 font-bold">
                   {selectedOrderDetails.code}
                 </span>
                 <h3 className="text-base font-bold text-zinc-100">
@@ -461,7 +461,7 @@ export const GestaoVisaoGeralScreen: React.FC<GestaoVisaoGeralScreenProps> = ({
               </p>
               <p>
                 <strong>Total:</strong>{' '}
-                <span className="text-amber-400 font-mono font-bold">
+                <span className="text-blue-400 font-mono font-bold">
                   {formatCurrency(selectedOrderDetails.total)}
                 </span>
               </p>
@@ -489,7 +489,7 @@ export const GestaoVisaoGeralScreen: React.FC<GestaoVisaoGeralScreenProps> = ({
                       status: newStatus,
                     });
                   }}
-                  className="w-full px-3 py-2 text-xs bg-zinc-950 border border-zinc-800 rounded-lg text-zinc-200 focus:outline-hidden focus:border-amber-500"
+                  className="w-full px-3 py-2 text-xs bg-zinc-950 border border-zinc-800 rounded-lg text-zinc-200 focus:outline-hidden focus:border-blue-500"
                 >
                   {kanbanStatuses.map((s) => (
                     <option key={s} value={s}>
@@ -503,7 +503,7 @@ export const GestaoVisaoGeralScreen: React.FC<GestaoVisaoGeralScreenProps> = ({
             <div className="pt-3 border-t border-zinc-800 flex justify-end">
               <button
                 onClick={() => setSelectedOrderDetails(null)}
-                className="px-4 py-2 bg-amber-500 hover:bg-amber-400 text-zinc-950 font-bold text-xs rounded-lg"
+                className="px-4 py-2 bg-blue-600 hover:bg-blue-500 text-white font-bold text-xs rounded-lg"
               >
                 Concluído
               </button>

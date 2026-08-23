@@ -116,7 +116,7 @@ export const DeclaracaoConteudoScreen: React.FC<DeclaracaoConteudoScreenProps> =
           <div className="p-4 rounded-xl bg-zinc-900/90 border border-zinc-800 space-y-3">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2 text-xs font-bold text-zinc-200">
-                <Building2 className="w-4 h-4 text-amber-400" />
+                <Building2 className="w-4 h-4 text-blue-400" />
                 <span>Remetente</span>
               </div>
               <button
@@ -141,7 +141,7 @@ export const DeclaracaoConteudoScreen: React.FC<DeclaracaoConteudoScreenProps> =
                 type="text"
                 value={remetenteNome}
                 onChange={(e) => setRemetenteNome(e.target.value)}
-                className="w-full px-3 py-2 text-xs bg-zinc-950 border border-zinc-800 rounded-lg text-zinc-200 focus:outline-hidden focus:border-amber-500"
+                className="w-full px-3 py-2 text-xs bg-zinc-950 border border-zinc-800 rounded-lg text-zinc-200 focus:outline-hidden focus:border-blue-500"
               />
             </div>
 
@@ -151,7 +151,7 @@ export const DeclaracaoConteudoScreen: React.FC<DeclaracaoConteudoScreenProps> =
                 type="text"
                 value={remetenteDoc}
                 onChange={(e) => setRemetenteDoc(e.target.value)}
-                className="w-full px-3 py-2 text-xs bg-zinc-950 border border-zinc-800 rounded-lg text-zinc-200 font-mono focus:outline-hidden focus:border-amber-500"
+                className="w-full px-3 py-2 text-xs bg-zinc-950 border border-zinc-800 rounded-lg text-zinc-200 font-mono focus:outline-hidden focus:border-blue-500"
               />
             </div>
 
@@ -162,7 +162,7 @@ export const DeclaracaoConteudoScreen: React.FC<DeclaracaoConteudoScreenProps> =
                 value={remetenteEndereco}
                 onChange={(e) => setRemetenteEndereco(e.target.value)}
                 placeholder="Rua, número, bairro"
-                className="w-full px-3 py-2 text-xs bg-zinc-950 border border-zinc-800 rounded-lg text-zinc-200 focus:outline-hidden focus:border-amber-500"
+                className="w-full px-3 py-2 text-xs bg-zinc-950 border border-zinc-800 rounded-lg text-zinc-200 focus:outline-hidden focus:border-blue-500"
               />
             </div>
 
@@ -173,7 +173,7 @@ export const DeclaracaoConteudoScreen: React.FC<DeclaracaoConteudoScreenProps> =
                   type="text"
                   value={remetenteCidade}
                   onChange={(e) => setRemetenteCidade(e.target.value)}
-                  className="w-full px-3 py-2 text-xs bg-zinc-950 border border-zinc-800 rounded-lg text-zinc-200 focus:outline-hidden focus:border-amber-500"
+                  className="w-full px-3 py-2 text-xs bg-zinc-950 border border-zinc-800 rounded-lg text-zinc-200 focus:outline-hidden focus:border-blue-500"
                 />
               </div>
               <div className="col-span-1">
@@ -182,7 +182,7 @@ export const DeclaracaoConteudoScreen: React.FC<DeclaracaoConteudoScreenProps> =
                   type="text"
                   value={remetenteUF}
                   onChange={(e) => setRemetenteUF(e.target.value)}
-                  className="w-full px-2.5 py-2 text-xs bg-zinc-950 border border-zinc-800 rounded-lg text-zinc-200 text-center uppercase focus:outline-hidden focus:border-amber-500"
+                  className="w-full px-2.5 py-2 text-xs bg-zinc-950 border border-zinc-800 rounded-lg text-zinc-200 text-center uppercase focus:outline-hidden focus:border-blue-500"
                 />
               </div>
               <div className="col-span-2">
@@ -191,7 +191,7 @@ export const DeclaracaoConteudoScreen: React.FC<DeclaracaoConteudoScreenProps> =
                   type="text"
                   value={remetenteCEP}
                   onChange={(e) => setRemetenteCEP(e.target.value)}
-                  className="w-full px-3 py-2 text-xs bg-zinc-950 border border-zinc-800 rounded-lg text-zinc-200 font-mono focus:outline-hidden focus:border-amber-500"
+                  className="w-full px-3 py-2 text-xs bg-zinc-950 border border-zinc-800 rounded-lg text-zinc-200 font-mono focus:outline-hidden focus:border-blue-500"
                 />
               </div>
             </div>
@@ -201,7 +201,7 @@ export const DeclaracaoConteudoScreen: React.FC<DeclaracaoConteudoScreenProps> =
           <div className="p-4 rounded-xl bg-zinc-900/90 border border-zinc-800 space-y-3">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2 text-xs font-bold text-zinc-200">
-                <User className="w-4 h-4 text-amber-400" />
+                <User className="w-4 h-4 text-blue-400" />
                 <span>Destinatário</span>
               </div>
               <div className="flex items-center gap-2">
@@ -210,7 +210,7 @@ export const DeclaracaoConteudoScreen: React.FC<DeclaracaoConteudoScreenProps> =
                   onClick={() => setShowClientPicker(!showClientPicker)}
                   className="px-2.5 py-1 rounded-md bg-zinc-950 hover:bg-zinc-800 border border-zinc-800 text-zinc-300 text-[11px] font-semibold flex items-center gap-1 transition-colors"
                 >
-                  <Search className="w-3 h-3 text-amber-400" />
+                  <Search className="w-3 h-3 text-blue-400" />
                   <span>Buscar cliente</span>
                 </button>
                 <button
@@ -232,7 +232,7 @@ export const DeclaracaoConteudoScreen: React.FC<DeclaracaoConteudoScreenProps> =
 
             {/* Client quick picker dropdown */}
             {showClientPicker && (
-              <div className="p-2.5 rounded-lg bg-zinc-950 border border-amber-500/40 space-y-1.5 animate-in fade-in">
+              <div className="p-2.5 rounded-lg bg-zinc-950 border border-blue-500/40 space-y-1.5 animate-in fade-in">
                 <span className="text-[10px] text-zinc-400 font-semibold uppercase">
                   Selecione um cliente cadastrado:
                 </span>
@@ -263,7 +263,7 @@ export const DeclaracaoConteudoScreen: React.FC<DeclaracaoConteudoScreenProps> =
                 value={destinatarioNome}
                 onChange={(e) => setDestinatarioNome(e.target.value)}
                 placeholder="Nome do destinatário"
-                className="w-full px-3 py-2 text-xs bg-zinc-950 border border-zinc-800 rounded-lg text-zinc-200 focus:outline-hidden focus:border-amber-500"
+                className="w-full px-3 py-2 text-xs bg-zinc-950 border border-zinc-800 rounded-lg text-zinc-200 focus:outline-hidden focus:border-blue-500"
               />
             </div>
 
@@ -274,7 +274,7 @@ export const DeclaracaoConteudoScreen: React.FC<DeclaracaoConteudoScreenProps> =
                 value={destinatarioDoc}
                 onChange={(e) => setDestinatarioDoc(e.target.value)}
                 placeholder="000.000.000-00"
-                className="w-full px-3 py-2 text-xs bg-zinc-950 border border-zinc-800 rounded-lg text-zinc-200 font-mono focus:outline-hidden focus:border-amber-500"
+                className="w-full px-3 py-2 text-xs bg-zinc-950 border border-zinc-800 rounded-lg text-zinc-200 font-mono focus:outline-hidden focus:border-blue-500"
               />
             </div>
 
@@ -285,7 +285,7 @@ export const DeclaracaoConteudoScreen: React.FC<DeclaracaoConteudoScreenProps> =
                 value={destinatarioEndereco}
                 onChange={(e) => setDestinatarioEndereco(e.target.value)}
                 placeholder="Rua, número, bairro"
-                className="w-full px-3 py-2 text-xs bg-zinc-950 border border-zinc-800 rounded-lg text-zinc-200 focus:outline-hidden focus:border-amber-500"
+                className="w-full px-3 py-2 text-xs bg-zinc-950 border border-zinc-800 rounded-lg text-zinc-200 focus:outline-hidden focus:border-blue-500"
               />
             </div>
 
@@ -297,7 +297,7 @@ export const DeclaracaoConteudoScreen: React.FC<DeclaracaoConteudoScreenProps> =
                   value={destinatarioCidade}
                   onChange={(e) => setDestinatarioCidade(e.target.value)}
                   placeholder="Cidade"
-                  className="w-full px-3 py-2 text-xs bg-zinc-950 border border-zinc-800 rounded-lg text-zinc-200 focus:outline-hidden focus:border-amber-500"
+                  className="w-full px-3 py-2 text-xs bg-zinc-950 border border-zinc-800 rounded-lg text-zinc-200 focus:outline-hidden focus:border-blue-500"
                 />
               </div>
               <div className="col-span-1">
@@ -306,7 +306,7 @@ export const DeclaracaoConteudoScreen: React.FC<DeclaracaoConteudoScreenProps> =
                   type="text"
                   value={destinatarioUF}
                   onChange={(e) => setDestinatarioUF(e.target.value)}
-                  className="w-full px-2.5 py-2 text-xs bg-zinc-950 border border-zinc-800 rounded-lg text-zinc-200 text-center uppercase focus:outline-hidden focus:border-amber-500"
+                  className="w-full px-2.5 py-2 text-xs bg-zinc-950 border border-zinc-800 rounded-lg text-zinc-200 text-center uppercase focus:outline-hidden focus:border-blue-500"
                 />
               </div>
               <div className="col-span-2">
@@ -316,7 +316,7 @@ export const DeclaracaoConteudoScreen: React.FC<DeclaracaoConteudoScreenProps> =
                   value={destinatarioCEP}
                   onChange={(e) => setDestinatarioCEP(e.target.value)}
                   placeholder="00000-000"
-                  className="w-full px-3 py-2 text-xs bg-zinc-950 border border-zinc-800 rounded-lg text-zinc-200 font-mono focus:outline-hidden focus:border-amber-500"
+                  className="w-full px-3 py-2 text-xs bg-zinc-950 border border-zinc-800 rounded-lg text-zinc-200 font-mono focus:outline-hidden focus:border-blue-500"
                 />
               </div>
             </div>
@@ -326,7 +326,7 @@ export const DeclaracaoConteudoScreen: React.FC<DeclaracaoConteudoScreenProps> =
           <div className="p-4 rounded-xl bg-zinc-900/90 border border-zinc-800 space-y-3">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2 text-xs font-bold text-zinc-200">
-                <Package className="w-4 h-4 text-amber-400" />
+                <Package className="w-4 h-4 text-blue-400" />
                 <span>Itens</span>
               </div>
               <div className="flex items-center gap-2">
@@ -335,7 +335,7 @@ export const DeclaracaoConteudoScreen: React.FC<DeclaracaoConteudoScreenProps> =
                   onClick={handleAddItem}
                   className="px-2.5 py-1 rounded-md bg-zinc-950 hover:bg-zinc-800 border border-zinc-800 text-zinc-300 text-[11px] font-semibold flex items-center gap-1 transition-colors"
                 >
-                  <Plus className="w-3 h-3 text-amber-400" />
+                  <Plus className="w-3 h-3 text-blue-400" />
                   <span>Adicionar</span>
                 </button>
                 <button
@@ -361,7 +361,7 @@ export const DeclaracaoConteudoScreen: React.FC<DeclaracaoConteudoScreenProps> =
                     value={item.descricao}
                     onChange={(e) => handleUpdateItem(item.id, 'descricao', e.target.value)}
                     placeholder={`Item ${idx + 1}`}
-                    className="flex-1 px-3 py-2 text-xs bg-zinc-950 border border-zinc-800 rounded-lg text-zinc-200 focus:outline-hidden focus:border-amber-500"
+                    className="flex-1 px-3 py-2 text-xs bg-zinc-950 border border-zinc-800 rounded-lg text-zinc-200 focus:outline-hidden focus:border-blue-500"
                   />
                   <input
                     type="number"
@@ -370,7 +370,7 @@ export const DeclaracaoConteudoScreen: React.FC<DeclaracaoConteudoScreenProps> =
                     onChange={(e) =>
                       handleUpdateItem(item.id, 'qtd', parseInt(e.target.value) || 1)
                     }
-                    className="w-16 px-2.5 py-2 text-xs bg-zinc-950 border border-zinc-800 rounded-lg text-zinc-200 text-center font-mono focus:outline-hidden focus:border-amber-500"
+                    className="w-16 px-2.5 py-2 text-xs bg-zinc-950 border border-zinc-800 rounded-lg text-zinc-200 text-center font-mono focus:outline-hidden focus:border-blue-500"
                     placeholder="Qtd"
                   />
                   <input
@@ -380,7 +380,7 @@ export const DeclaracaoConteudoScreen: React.FC<DeclaracaoConteudoScreenProps> =
                     onChange={(e) =>
                       handleUpdateItem(item.id, 'valor', parseFloat(e.target.value) || 0)
                     }
-                    className="w-24 px-2.5 py-2 text-xs bg-zinc-950 border border-zinc-800 rounded-lg text-zinc-200 text-right font-mono focus:outline-hidden focus:border-amber-500"
+                    className="w-24 px-2.5 py-2 text-xs bg-zinc-950 border border-zinc-800 rounded-lg text-zinc-200 text-right font-mono focus:outline-hidden focus:border-blue-500"
                     placeholder="R$"
                   />
                   {itens.length > 1 && (
@@ -406,7 +406,7 @@ export const DeclaracaoConteudoScreen: React.FC<DeclaracaoConteudoScreenProps> =
                   className="w-20 px-2 py-1 bg-zinc-950 border border-zinc-800 rounded text-zinc-200 text-center font-mono text-xs focus:outline-hidden"
                 />
               </div>
-              <div className="font-mono font-bold text-amber-400">
+              <div className="font-mono font-bold text-blue-400">
                 Total: {formatCurrency(totalValor)}
               </div>
             </div>
@@ -576,7 +576,7 @@ export const DeclaracaoConteudoScreen: React.FC<DeclaracaoConteudoScreenProps> =
           <div className="flex justify-end">
             <button
               onClick={handlePrint}
-              className="px-5 py-2.5 rounded-xl bg-amber-500 hover:bg-amber-400 text-zinc-950 text-xs font-bold transition-all shadow-md flex items-center gap-2"
+              className="px-5 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold transition-all shadow-md flex items-center gap-2"
             >
               <Printer className="w-4 h-4" />
               <span>Imprimir / PDF</span>

@@ -48,7 +48,7 @@ export const AcabamentosScreen: React.FC<AcabamentosScreenProps> = ({
     <div id="screen-acabamentos" className="p-4 md:p-6 lg:p-8 space-y-6 max-w-5xl">
       {/* Header */}
       <div className="flex items-center gap-3">
-        <div className="w-10 h-10 rounded-xl bg-amber-500/10 border border-amber-500/20 text-amber-400 flex items-center justify-center">
+        <div className="w-10 h-10 rounded-xl bg-blue-500/10 border border-blue-500/20 text-blue-400 flex items-center justify-center">
           <Scissors className="w-5 h-5" />
         </div>
         <div>
@@ -75,7 +75,7 @@ export const AcabamentosScreen: React.FC<AcabamentosScreenProps> = ({
               onClick={() => setIsAdding(true)}
               className="px-3.5 py-1.5 rounded-lg bg-zinc-950 hover:bg-zinc-800 border border-zinc-800 text-zinc-200 text-xs font-semibold flex items-center gap-1.5 transition-colors"
             >
-              <Plus className="w-3.5 h-3.5 text-amber-400" />
+              <Plus className="w-3.5 h-3.5 text-blue-400" />
               <span>Novo</span>
             </button>
           )}
@@ -95,7 +95,7 @@ export const AcabamentosScreen: React.FC<AcabamentosScreenProps> = ({
                 onChange={(e) => setName(e.target.value)}
                 placeholder="Nome (ex: Laminação Brilho)"
                 required
-                className="w-full px-3.5 py-2 text-xs bg-zinc-900 border border-zinc-800 rounded-lg text-zinc-200 placeholder-zinc-500 focus:outline-hidden focus:border-amber-500 focus:ring-1 focus:ring-amber-500"
+                className="w-full px-3.5 py-2 text-xs bg-zinc-900 border border-zinc-800 rounded-lg text-zinc-200 placeholder-zinc-500 focus:outline-hidden focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
               />
             </div>
 
@@ -104,7 +104,7 @@ export const AcabamentosScreen: React.FC<AcabamentosScreenProps> = ({
                 <select
                   value={pricingType}
                   onChange={(e) => setPricingType(e.target.value as any)}
-                  className="w-full px-3 py-2 text-xs bg-zinc-900 border border-zinc-800 rounded-lg text-zinc-200 focus:outline-hidden focus:border-amber-500"
+                  className="w-full px-3 py-2 text-xs bg-zinc-900 border border-zinc-800 rounded-lg text-zinc-200 focus:outline-hidden focus:border-blue-500"
                 >
                   <option value="unidade">Por unidade</option>
                   <option value="m2">Por m²</option>
@@ -117,7 +117,7 @@ export const AcabamentosScreen: React.FC<AcabamentosScreenProps> = ({
                   value={value}
                   onChange={(e) => setValue(e.target.value)}
                   placeholder="Valor (ex: 0,50)"
-                  className="w-full px-3.5 py-2 text-xs bg-zinc-900 border border-zinc-800 rounded-lg text-zinc-200 placeholder-zinc-500 font-mono focus:outline-hidden focus:border-amber-500"
+                  className="w-full px-3.5 py-2 text-xs bg-zinc-900 border border-zinc-800 rounded-lg text-zinc-200 placeholder-zinc-500 font-mono focus:outline-hidden focus:border-blue-500"
                 />
               </div>
             </div>
@@ -140,7 +140,7 @@ export const AcabamentosScreen: React.FC<AcabamentosScreenProps> = ({
               </button>
               <button
                 type="submit"
-                className="px-4 py-1.5 rounded-lg bg-amber-500 hover:bg-amber-400 text-zinc-950 text-xs font-bold transition-colors"
+                className="px-4 py-1.5 rounded-lg bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold transition-colors"
               >
                 Salvar
               </button>
@@ -169,7 +169,7 @@ export const AcabamentosScreen: React.FC<AcabamentosScreenProps> = ({
                   </div>
 
                   <div className="flex items-center gap-3">
-                    <span className="font-mono font-bold text-amber-400">
+                    <span className="font-mono font-bold text-blue-400">
                       {formatCurrency(item.price)}
                     </span>
                     <button

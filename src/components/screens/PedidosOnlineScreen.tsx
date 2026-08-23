@@ -67,7 +67,7 @@ export const PedidosOnlineScreen: React.FC<PedidosOnlineScreenProps> = ({
             onClick={handleRefresh}
             className="px-3.5 py-2 rounded-xl bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 text-zinc-300 text-xs font-semibold flex items-center gap-1.5 transition-colors"
           >
-            <RefreshCw className={`w-3.5 h-3.5 ${isRefreshing ? 'animate-spin text-amber-400' : ''}`} />
+            <RefreshCw className={`w-3.5 h-3.5 ${isRefreshing ? 'animate-spin text-blue-400' : ''}`} />
             <span>Atualizar</span>
           </button>
           <button
@@ -94,7 +94,7 @@ export const PedidosOnlineScreen: React.FC<PedidosOnlineScreenProps> = ({
         {/* Pendentes */}
         <div className="rounded-2xl bg-zinc-900/90 border border-zinc-800/80 p-4 space-y-2">
           <div className="flex items-center gap-1.5 text-xs text-zinc-400">
-            <Clock className="w-3.5 h-3.5 text-amber-400" />
+            <Clock className="w-3.5 h-3.5 text-blue-400" />
             <span>Pendentes</span>
           </div>
           <div className="text-2xl font-bold text-zinc-100 font-mono">{pendentesCount}</div>
@@ -171,7 +171,7 @@ export const PedidosOnlineScreen: React.FC<PedidosOnlineScreenProps> = ({
               <tbody className="divide-y divide-zinc-800/60 font-medium">
                 {onlineOrders.map((ord) => (
                   <tr key={ord.id} className="hover:bg-zinc-800/40 transition-colors">
-                    <td className="py-3 px-4 font-mono font-bold text-amber-400">
+                    <td className="py-3 px-4 font-mono font-bold text-blue-400">
                       #{ord.code}
                     </td>
                     <td className="py-3 px-4 font-semibold text-zinc-100">{ord.clientName}</td>
@@ -179,7 +179,7 @@ export const PedidosOnlineScreen: React.FC<PedidosOnlineScreenProps> = ({
                       {ord.createdAt ? formatDate(ord.createdAt) : '—'}
                     </td>
                     <td className="py-3 px-4">
-                      <span className="px-2 py-0.5 rounded text-[10px] font-bold uppercase bg-amber-500/10 text-amber-400 border border-amber-500/20">
+                      <span className="px-2 py-0.5 rounded text-[10px] font-bold uppercase bg-blue-500/10 text-blue-400 border border-blue-500/20">
                         {ord.status.replace('_', ' ')}
                       </span>
                     </td>

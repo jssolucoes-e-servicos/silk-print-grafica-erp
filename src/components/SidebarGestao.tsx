@@ -2,19 +2,14 @@ import React from 'react';
 import {
   LayoutGrid,
   Users,
-  PackageSearch,
-  Scissors,
+  Package,
   FileSpreadsheet,
   Layers,
   CalendarDays,
   ShoppingBag,
-  FileCheck2,
-  DollarSign,
-  BarChart3,
+  Truck,
   ArrowLeft,
-  SunMoon,
   LogOut,
-  Sparkles,
 } from 'lucide-react';
 import { GestaoRoute, SidebarMode } from '../types';
 
@@ -46,14 +41,9 @@ export const SidebarGestao: React.FC<SidebarGestaoProps> = ({
       count: clientsCount,
     },
     {
-      id: 'produtos-internos',
-      label: 'Produtos Internos',
-      icon: PackageSearch,
-    },
-    {
-      id: 'acabamentos',
-      label: 'Acabamentos',
-      icon: Scissors,
+      id: 'produtos',
+      label: 'Produtos',
+      icon: Package,
     },
     {
       id: 'orcamentos',
@@ -79,19 +69,9 @@ export const SidebarGestao: React.FC<SidebarGestaoProps> = ({
       badge: '0 novos',
     },
     {
-      id: 'declaracao-conteudo',
-      label: 'Declaração de Conteúdo',
-      icon: FileCheck2,
-    },
-    {
-      id: 'financeiro',
-      label: 'Financeiro',
-      icon: DollarSign,
-    },
-    {
-      id: 'relatorios',
-      label: 'Relatórios',
-      icon: BarChart3,
+      id: 'logistica',
+      label: 'Logística & Entregas',
+      icon: Truck,
     },
   ];
 
@@ -103,13 +83,13 @@ export const SidebarGestao: React.FC<SidebarGestaoProps> = ({
       {/* Header */}
       <div className="p-4 border-b border-zinc-800/70">
         <div className="flex items-center gap-2.5">
-          <div className="w-8 h-8 rounded-lg bg-amber-500 flex items-center justify-center font-bold text-zinc-950 text-base shadow-sm shrink-0">
-            <Layers className="w-4 h-4 text-zinc-950" />
+          <div className="w-8 h-8 rounded-lg bg-blue-600 flex items-center justify-center font-bold text-white text-base shadow-sm shrink-0">
+            <Layers className="w-4 h-4 text-white" />
           </div>
           <div className="min-w-0 flex-1">
             <div className="flex items-center gap-1.5">
               <span className="font-bold text-zinc-100 text-sm tracking-tight">Gestão</span>
-              <span className="px-1.5 py-0.2 text-[9px] font-bold bg-amber-500/20 text-amber-300 border border-amber-500/30 rounded uppercase">
+              <span className="px-1.5 py-0.2 text-[9px] font-bold bg-blue-500/20 text-blue-300 border border-blue-500/30 rounded uppercase">
                 Gráfica
               </span>
             </div>
@@ -136,14 +116,14 @@ export const SidebarGestao: React.FC<SidebarGestaoProps> = ({
               onClick={() => onNavigate(item.id, 'gestao')}
               className={`w-full flex items-center justify-between px-3 py-2 rounded-lg text-xs font-medium transition-all ${
                 isActive
-                  ? 'bg-amber-500 text-zinc-950 font-semibold shadow-sm'
+                  ? 'bg-blue-600 text-white font-semibold shadow-sm'
                   : 'text-zinc-300 hover:text-zinc-100 hover:bg-zinc-900/80'
               }`}
             >
               <div className="flex items-center gap-2.5 truncate">
                 <Icon
                   className={`w-4 h-4 shrink-0 ${
-                    isActive ? 'text-zinc-950' : 'text-zinc-400'
+                    isActive ? 'text-white' : 'text-zinc-400'
                   }`}
                 />
                 <span className="truncate">{item.label}</span>
@@ -152,7 +132,7 @@ export const SidebarGestao: React.FC<SidebarGestaoProps> = ({
                 <span
                   className={`text-[10px] px-1.5 py-0.5 rounded-full font-bold ${
                     isActive
-                      ? 'bg-zinc-950/20 text-zinc-950'
+                      ? 'bg-white/20 text-white'
                       : 'bg-zinc-800/90 text-zinc-300 border border-zinc-700/50'
                   }`}
                 >
@@ -170,25 +150,14 @@ export const SidebarGestao: React.FC<SidebarGestaoProps> = ({
       </div>
 
       {/* Footer */}
-      <div className="p-3 border-t border-zinc-800/80 space-y-1 bg-zinc-950/70">
+      <div className="p-3 border-t border-zinc-800/80 space-y-2 bg-zinc-950/70">
         {/* Back to Admin button */}
         <button
           onClick={() => onNavigate('dashboard', 'admin')}
-          className="w-full flex items-center gap-2 px-2.5 py-2 text-xs font-medium text-amber-400 hover:text-amber-300 hover:bg-amber-500/10 rounded-lg border border-amber-500/20 transition-colors"
+          className="w-full flex items-center gap-2 px-2.5 py-2 text-xs font-medium text-blue-400 hover:text-blue-300 hover:bg-blue-500/10 rounded-lg border border-blue-500/20 transition-colors"
         >
           <ArrowLeft className="w-4 h-4" />
           <span>Voltar ao Admin</span>
-        </button>
-
-        <button
-          onClick={() => {}}
-          className="w-full flex items-center justify-between px-2.5 py-1.5 text-xs text-zinc-400 hover:text-zinc-200 hover:bg-zinc-900/60 rounded-md transition-colors"
-        >
-          <div className="flex items-center gap-2">
-            <SunMoon className="w-3.5 h-3.5" />
-            <span>Modo Escuro</span>
-          </div>
-          <span className="text-[10px] text-zinc-500">Ativo</span>
         </button>
 
         <button

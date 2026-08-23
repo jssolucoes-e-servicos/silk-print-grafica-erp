@@ -77,7 +77,7 @@ export const ModalNovoPedido: React.FC<ModalNovoPedidoProps> = ({
         {/* Header */}
         <div className="flex items-center justify-between px-6 py-4 border-b border-zinc-800 bg-zinc-950/60">
           <div className="flex items-center gap-2.5">
-            <div className="w-8 h-8 rounded-lg bg-amber-500/20 border border-amber-500/30 flex items-center justify-center text-amber-400">
+            <div className="w-8 h-8 rounded-lg bg-blue-500/20 border border-blue-500/30 flex items-center justify-center text-blue-400">
               <ShoppingCart className="w-4 h-4" />
             </div>
             <div>
@@ -107,7 +107,7 @@ export const ModalNovoPedido: React.FC<ModalNovoPedidoProps> = ({
             <select
               value={selectedClientId}
               onChange={(e) => handleSelectClient(e.target.value)}
-              className="w-full px-3 py-2 text-xs bg-zinc-950 border border-zinc-800 rounded-lg text-zinc-200 focus:outline-hidden focus:border-amber-500 focus:ring-1 focus:ring-amber-500"
+              className="w-full px-3 py-2 text-xs bg-zinc-950 border border-zinc-800 rounded-lg text-zinc-200 focus:outline-hidden focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
             >
               <option value="">-- Selecionar da lista ou digitar abaixo --</option>
               {clients.map((c) => (
@@ -121,7 +121,7 @@ export const ModalNovoPedido: React.FC<ModalNovoPedidoProps> = ({
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <div>
               <label className="block text-xs font-medium text-zinc-300 mb-1.5">
-                Nome do Cliente <span className="text-amber-400">*</span>
+                Nome do Cliente <span className="text-blue-400">*</span>
               </label>
               <input
                 type="text"
@@ -129,7 +129,7 @@ export const ModalNovoPedido: React.FC<ModalNovoPedidoProps> = ({
                 value={clientName}
                 onChange={(e) => setClientName(e.target.value)}
                 placeholder="Ex: Padaria Pão & Arte"
-                className="w-full px-3 py-2 text-xs bg-zinc-950 border border-zinc-800 rounded-lg text-zinc-200 placeholder-zinc-500 focus:outline-hidden focus:border-amber-500 focus:ring-1 focus:ring-amber-500"
+                className="w-full px-3 py-2 text-xs bg-zinc-950 border border-zinc-800 rounded-lg text-zinc-200 placeholder-zinc-500 focus:outline-hidden focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
               />
             </div>
 
@@ -142,14 +142,14 @@ export const ModalNovoPedido: React.FC<ModalNovoPedidoProps> = ({
                 value={clientWhatsapp}
                 onChange={(e) => setClientWhatsapp(maskPhone(e.target.value))}
                 placeholder="(11) 98765-4321"
-                className="w-full px-3 py-2 text-xs bg-zinc-950 border border-zinc-800 rounded-lg text-zinc-200 placeholder-zinc-500 font-mono focus:outline-hidden focus:border-amber-500 focus:ring-1 focus:ring-amber-500"
+                className="w-full px-3 py-2 text-xs bg-zinc-950 border border-zinc-800 rounded-lg text-zinc-200 placeholder-zinc-500 font-mono focus:outline-hidden focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
               />
             </div>
           </div>
 
           <div>
             <label className="block text-xs font-medium text-zinc-300 mb-1.5">
-              Descrição dos Produtos / Serviços <span className="text-amber-400">*</span>
+              Descrição dos Produtos / Serviços <span className="text-blue-400">*</span>
             </label>
             <textarea
               rows={2}
@@ -157,14 +157,14 @@ export const ModalNovoPedido: React.FC<ModalNovoPedidoProps> = ({
               value={description}
               onChange={(e) => setDescription(e.target.value)}
               placeholder="Ex: 1.000 Cartões de Visita Couché 300g + 500 Adesivos Vinil"
-              className="w-full px-3 py-2 text-xs bg-zinc-950 border border-zinc-800 rounded-lg text-zinc-200 placeholder-zinc-500 focus:outline-hidden focus:border-amber-500 focus:ring-1 focus:ring-amber-500 resize-none"
+              className="w-full px-3 py-2 text-xs bg-zinc-950 border border-zinc-800 rounded-lg text-zinc-200 placeholder-zinc-500 focus:outline-hidden focus:border-blue-500 focus:ring-1 focus:ring-blue-500 resize-none"
             />
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <div>
               <label className="block text-xs font-medium text-zinc-300 mb-1.5">
-                Valor Total (R$) <span className="text-amber-400">*</span>
+                Valor Total (R$) <span className="text-blue-400">*</span>
               </label>
               <div className="relative">
                 <span className="absolute left-3 top-2 text-xs text-zinc-500 font-mono">
@@ -176,7 +176,7 @@ export const ModalNovoPedido: React.FC<ModalNovoPedidoProps> = ({
                   value={total}
                   onChange={(e) => setTotal(e.target.value)}
                   placeholder="0,00"
-                  className="w-full pl-8 pr-3 py-2 text-xs bg-zinc-950 border border-zinc-800 rounded-lg text-zinc-200 font-mono placeholder-zinc-500 focus:outline-hidden focus:border-amber-500 focus:ring-1 focus:ring-amber-500"
+                  className="w-full pl-8 pr-3 py-2 text-xs bg-zinc-950 border border-zinc-800 rounded-lg text-zinc-200 font-mono placeholder-zinc-500 focus:outline-hidden focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
                 />
               </div>
             </div>
@@ -188,7 +188,7 @@ export const ModalNovoPedido: React.FC<ModalNovoPedidoProps> = ({
               <select
                 value={status}
                 onChange={(e) => setStatus(e.target.value as OrderStatus)}
-                className="w-full px-3 py-2 text-xs bg-zinc-950 border border-zinc-800 rounded-lg text-zinc-200 focus:outline-hidden focus:border-amber-500 focus:ring-1 focus:ring-amber-500"
+                className="w-full px-3 py-2 text-xs bg-zinc-950 border border-zinc-800 rounded-lg text-zinc-200 focus:outline-hidden focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
               >
                 <option value="criando_arte">🎨 Criando Arte</option>
                 <option value="em_aberto">🕒 Em Aberto</option>
@@ -211,7 +211,7 @@ export const ModalNovoPedido: React.FC<ModalNovoPedidoProps> = ({
                 onChange={(e) =>
                   setPaymentStatus(e.target.value as 'pago' | 'pendente' | 'parcial')
                 }
-                className="w-full px-3 py-2 text-xs bg-zinc-950 border border-zinc-800 rounded-lg text-zinc-200 focus:outline-hidden focus:border-amber-500 focus:ring-1 focus:ring-amber-500"
+                className="w-full px-3 py-2 text-xs bg-zinc-950 border border-zinc-800 rounded-lg text-zinc-200 focus:outline-hidden focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
               >
                 <option value="pago">Totalmente Pago</option>
                 <option value="parcial">Sinal Pago (50%)</option>
@@ -227,7 +227,7 @@ export const ModalNovoPedido: React.FC<ModalNovoPedidoProps> = ({
                 type="date"
                 value={deliveryDate}
                 onChange={(e) => setDeliveryDate(e.target.value)}
-                className="w-full px-3 py-2 text-xs bg-zinc-950 border border-zinc-800 rounded-lg text-zinc-200 focus:outline-hidden focus:border-amber-500 focus:ring-1 focus:ring-amber-500"
+                className="w-full px-3 py-2 text-xs bg-zinc-950 border border-zinc-800 rounded-lg text-zinc-200 focus:outline-hidden focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
               />
             </div>
           </div>
@@ -241,7 +241,7 @@ export const ModalNovoPedido: React.FC<ModalNovoPedidoProps> = ({
               value={notes}
               onChange={(e) => setNotes(e.target.value)}
               placeholder="Instruções de acabamento, formato de arquivo, etc..."
-              className="w-full px-3 py-2 text-xs bg-zinc-950 border border-zinc-800 rounded-lg text-zinc-200 placeholder-zinc-500 focus:outline-hidden focus:border-amber-500 focus:ring-1 focus:ring-amber-500 resize-none"
+              className="w-full px-3 py-2 text-xs bg-zinc-950 border border-zinc-800 rounded-lg text-zinc-200 placeholder-zinc-500 focus:outline-hidden focus:border-blue-500 focus:ring-1 focus:ring-blue-500 resize-none"
             />
           </div>
 
@@ -256,7 +256,7 @@ export const ModalNovoPedido: React.FC<ModalNovoPedidoProps> = ({
             </button>
             <button
               type="submit"
-              className="px-5 py-2 text-xs font-semibold bg-amber-500 hover:bg-amber-400 text-zinc-950 rounded-lg shadow-sm transition-all"
+              className="px-5 py-2 text-xs font-semibold bg-blue-600 hover:bg-blue-500 text-white rounded-lg shadow-sm transition-all"
             >
               Salvar Pedido
             </button>

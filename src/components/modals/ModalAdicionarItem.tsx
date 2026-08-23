@@ -167,7 +167,7 @@ export const ModalAdicionarItem: React.FC<ModalAdicionarItemProps> = ({
         {/* Header */}
         <div className="flex items-center justify-between px-6 py-4 border-b border-zinc-800 bg-zinc-950/60">
           <div className="flex items-center gap-2.5">
-            <div className="w-8 h-8 rounded-lg bg-amber-500/20 border border-amber-500/30 flex items-center justify-center text-amber-400">
+            <div className="w-8 h-8 rounded-lg bg-blue-500/20 border border-blue-500/30 flex items-center justify-center text-blue-400">
               <Package className="w-4 h-4" />
             </div>
             <div>
@@ -195,7 +195,7 @@ export const ModalAdicionarItem: React.FC<ModalAdicionarItemProps> = ({
               onClick={() => setActiveTab('catalogo')}
               className={`flex items-center gap-2 px-3.5 py-2 text-xs font-semibold rounded-t-lg border-b-2 transition-colors ${
                 activeTab === 'catalogo'
-                  ? 'border-amber-500 text-amber-400 bg-zinc-800/40'
+                  ? 'border-blue-500 text-blue-400 bg-zinc-800/40'
                   : 'border-transparent text-zinc-400 hover:text-zinc-200'
               }`}
             >
@@ -208,7 +208,7 @@ export const ModalAdicionarItem: React.FC<ModalAdicionarItemProps> = ({
               onClick={() => setActiveTab('internos')}
               className={`flex items-center gap-2 px-3.5 py-2 text-xs font-semibold rounded-t-lg border-b-2 transition-colors ${
                 activeTab === 'internos'
-                  ? 'border-amber-500 text-amber-400 bg-zinc-800/40'
+                  ? 'border-blue-500 text-blue-400 bg-zinc-800/40'
                   : 'border-transparent text-zinc-400 hover:text-zinc-200'
               }`}
             >
@@ -221,7 +221,7 @@ export const ModalAdicionarItem: React.FC<ModalAdicionarItemProps> = ({
               onClick={() => setActiveTab('m2')}
               className={`flex items-center gap-2 px-3.5 py-2 text-xs font-semibold rounded-t-lg border-b-2 transition-colors ${
                 activeTab === 'm2'
-                  ? 'border-amber-500 text-amber-400 bg-zinc-800/40'
+                  ? 'border-blue-500 text-blue-400 bg-zinc-800/40'
                   : 'border-transparent text-zinc-400 hover:text-zinc-200'
               }`}
             >
@@ -234,7 +234,7 @@ export const ModalAdicionarItem: React.FC<ModalAdicionarItemProps> = ({
               onClick={() => setActiveTab('personalizado')}
               className={`flex items-center gap-2 px-3.5 py-2 text-xs font-semibold rounded-t-lg border-b-2 transition-colors ${
                 activeTab === 'personalizado'
-                  ? 'border-amber-500 text-amber-400 bg-zinc-800/40'
+                  ? 'border-blue-500 text-blue-400 bg-zinc-800/40'
                   : 'border-transparent text-zinc-400 hover:text-zinc-200'
               }`}
             >
@@ -256,7 +256,7 @@ export const ModalAdicionarItem: React.FC<ModalAdicionarItemProps> = ({
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
                   placeholder="Digite para buscar um produto..."
-                  className="w-full pl-9 pr-3 py-2 text-xs bg-zinc-950 border border-zinc-800 rounded-lg text-zinc-200 placeholder-zinc-500 focus:outline-hidden focus:border-amber-500 focus:ring-1 focus:ring-amber-500"
+                  className="w-full pl-9 pr-3 py-2 text-xs bg-zinc-950 border border-zinc-800 rounded-lg text-zinc-200 placeholder-zinc-500 focus:outline-hidden focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
                 />
               </div>
 
@@ -269,7 +269,7 @@ export const ModalAdicionarItem: React.FC<ModalAdicionarItemProps> = ({
                   {catalogProducts.map((p) => (
                     <div
                       key={p.id}
-                      className="p-3 rounded-lg bg-zinc-950/60 border border-zinc-800/80 hover:border-amber-500/50 flex items-center justify-between gap-3 transition-colors"
+                      className="p-3 rounded-lg bg-zinc-950/60 border border-zinc-800/80 hover:border-blue-500/50 flex items-center justify-between gap-3 transition-colors"
                     >
                       <div className="min-w-0">
                         <div className="text-xs font-semibold text-zinc-200 truncate">
@@ -281,7 +281,7 @@ export const ModalAdicionarItem: React.FC<ModalAdicionarItemProps> = ({
                       </div>
                       <button
                         onClick={() => handleAddDirectProduct(p)}
-                        className="px-2.5 py-1.5 rounded-md bg-amber-500/15 hover:bg-amber-500 text-amber-400 hover:text-zinc-950 font-semibold text-xs transition-colors shrink-0 flex items-center gap-1"
+                        className="px-2.5 py-1.5 rounded-md bg-blue-500/15 hover:bg-blue-500 text-blue-400 hover:text-white font-semibold text-xs transition-colors shrink-0 flex items-center gap-1"
                       >
                         <Plus className="w-3.5 h-3.5" />
                         <span>Adicionar</span>
@@ -307,7 +307,7 @@ export const ModalAdicionarItem: React.FC<ModalAdicionarItemProps> = ({
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
                   placeholder="Buscar insumos e serviços internos..."
-                  className="w-full pl-9 pr-3 py-2 text-xs bg-zinc-950 border border-zinc-800 rounded-lg text-zinc-200 placeholder-zinc-500 focus:outline-hidden focus:border-amber-500 focus:ring-1 focus:ring-amber-500"
+                  className="w-full pl-9 pr-3 py-2 text-xs bg-zinc-950 border border-zinc-800 rounded-lg text-zinc-200 placeholder-zinc-500 focus:outline-hidden focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
                 />
               </div>
 
@@ -315,7 +315,7 @@ export const ModalAdicionarItem: React.FC<ModalAdicionarItemProps> = ({
                 {internalProducts.map((p) => (
                   <div
                     key={p.id}
-                    className="p-3 rounded-lg bg-zinc-950/60 border border-zinc-800/80 hover:border-amber-500/50 flex items-center justify-between gap-3 transition-colors"
+                    className="p-3 rounded-lg bg-zinc-950/60 border border-zinc-800/80 hover:border-blue-500/50 flex items-center justify-between gap-3 transition-colors"
                   >
                     <div className="min-w-0">
                       <div className="text-xs font-semibold text-zinc-200 truncate">
@@ -327,7 +327,7 @@ export const ModalAdicionarItem: React.FC<ModalAdicionarItemProps> = ({
                     </div>
                     <button
                       onClick={() => handleAddDirectProduct(p)}
-                      className="px-2.5 py-1.5 rounded-md bg-amber-500/15 hover:bg-amber-500 text-amber-400 hover:text-zinc-950 font-semibold text-xs transition-colors shrink-0 flex items-center gap-1"
+                      className="px-2.5 py-1.5 rounded-md bg-blue-500/15 hover:bg-blue-500 text-blue-400 hover:text-white font-semibold text-xs transition-colors shrink-0 flex items-center gap-1"
                     >
                       <Plus className="w-3.5 h-3.5" />
                       <span>Adicionar</span>
@@ -356,7 +356,7 @@ export const ModalAdicionarItem: React.FC<ModalAdicionarItemProps> = ({
                     const found = CATALOG_PRODUCTS.find((p) => p.id === e.target.value);
                     if (found) setSelectedM2Product(found);
                   }}
-                  className="w-full px-3 py-2 text-xs bg-zinc-950 border border-zinc-800 rounded-lg text-zinc-200 focus:outline-hidden focus:border-amber-500 focus:ring-1 focus:ring-amber-500"
+                  className="w-full px-3 py-2 text-xs bg-zinc-950 border border-zinc-800 rounded-lg text-zinc-200 focus:outline-hidden focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
                 >
                   {m2Products.map((p) => (
                     <option key={p.id} value={p.id}>
@@ -377,7 +377,7 @@ export const ModalAdicionarItem: React.FC<ModalAdicionarItemProps> = ({
                     min={1}
                     value={m2WidthCm}
                     onChange={(e) => setM2WidthCm(parseFloat(e.target.value) || 0)}
-                    className="w-full px-3 py-2 text-xs bg-zinc-950 border border-zinc-800 rounded-lg text-zinc-200 font-mono focus:outline-hidden focus:border-amber-500 focus:ring-1 focus:ring-amber-500"
+                    className="w-full px-3 py-2 text-xs bg-zinc-950 border border-zinc-800 rounded-lg text-zinc-200 font-mono focus:outline-hidden focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
                   />
                 </div>
 
@@ -390,7 +390,7 @@ export const ModalAdicionarItem: React.FC<ModalAdicionarItemProps> = ({
                     min={1}
                     value={m2HeightCm}
                     onChange={(e) => setM2HeightCm(parseFloat(e.target.value) || 0)}
-                    className="w-full px-3 py-2 text-xs bg-zinc-950 border border-zinc-800 rounded-lg text-zinc-200 font-mono focus:outline-hidden focus:border-amber-500 focus:ring-1 focus:ring-amber-500"
+                    className="w-full px-3 py-2 text-xs bg-zinc-950 border border-zinc-800 rounded-lg text-zinc-200 font-mono focus:outline-hidden focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
                   />
                 </div>
 
@@ -403,7 +403,7 @@ export const ModalAdicionarItem: React.FC<ModalAdicionarItemProps> = ({
                     min={1}
                     value={m2Quantity}
                     onChange={(e) => setM2Quantity(parseInt(e.target.value, 10) || 1)}
-                    className="w-full px-3 py-2 text-xs bg-zinc-950 border border-zinc-800 rounded-lg text-zinc-200 font-mono focus:outline-hidden focus:border-amber-500 focus:ring-1 focus:ring-amber-500"
+                    className="w-full px-3 py-2 text-xs bg-zinc-950 border border-zinc-800 rounded-lg text-zinc-200 font-mono focus:outline-hidden focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
                   />
                 </div>
               </div>
@@ -428,7 +428,7 @@ export const ModalAdicionarItem: React.FC<ModalAdicionarItemProps> = ({
                         key={finishing}
                         className={`flex items-center gap-2 p-2 rounded-md border text-xs cursor-pointer select-none transition-colors ${
                           isChecked
-                            ? 'bg-amber-500/10 border-amber-500/40 text-amber-300'
+                            ? 'bg-blue-500/10 border-blue-500/40 text-blue-300'
                             : 'bg-zinc-950 border-zinc-800 text-zinc-400 hover:text-zinc-200'
                         }`}
                       >
@@ -447,7 +447,7 @@ export const ModalAdicionarItem: React.FC<ModalAdicionarItemProps> = ({
                         <div
                           className={`w-3.5 h-3.5 rounded flex items-center justify-center border ${
                             isChecked
-                              ? 'bg-amber-500 border-amber-500 text-zinc-950'
+                              ? 'bg-blue-600 border-blue-500 text-white'
                               : 'border-zinc-700'
                           }`}
                         >
@@ -473,7 +473,7 @@ export const ModalAdicionarItem: React.FC<ModalAdicionarItemProps> = ({
 
                 <div className="text-right">
                   <div className="text-[11px] text-zinc-400 uppercase tracking-wider">Total Calculado</div>
-                  <div className="text-base font-bold text-amber-400 font-mono">
+                  <div className="text-base font-bold text-blue-400 font-mono">
                     {formatCurrency(m2TotalPreview)}
                   </div>
                 </div>
@@ -482,7 +482,7 @@ export const ModalAdicionarItem: React.FC<ModalAdicionarItemProps> = ({
               <button
                 type="button"
                 onClick={handleAddM2Item}
-                className="w-full py-2.5 bg-amber-500 hover:bg-amber-400 text-zinc-950 font-bold text-xs rounded-lg transition-colors flex items-center justify-center gap-1.5 shadow-sm"
+                className="w-full py-2.5 bg-blue-600 hover:bg-blue-500 text-white font-bold text-xs rounded-lg transition-colors flex items-center justify-center gap-1.5 shadow-sm"
               >
                 <Plus className="w-4 h-4" />
                 <span>+ Adicionar Produto por m²</span>
@@ -495,7 +495,7 @@ export const ModalAdicionarItem: React.FC<ModalAdicionarItemProps> = ({
             <form onSubmit={handleAddCustomItem} className="space-y-4">
               <div>
                 <label className="block text-xs font-medium text-zinc-300 mb-1.5">
-                  Nome do Item <span className="text-amber-400">*</span>
+                  Nome do Item <span className="text-blue-400">*</span>
                 </label>
                 <input
                   type="text"
@@ -503,7 +503,7 @@ export const ModalAdicionarItem: React.FC<ModalAdicionarItemProps> = ({
                   value={customName}
                   onChange={(e) => setCustomName(e.target.value)}
                   placeholder="Ex: Fachada em ACM com Letra Caixa Iluminada"
-                  className="w-full px-3 py-2 text-xs bg-zinc-950 border border-zinc-800 rounded-lg text-zinc-200 placeholder-zinc-500 focus:outline-hidden focus:border-amber-500 focus:ring-1 focus:ring-amber-500"
+                  className="w-full px-3 py-2 text-xs bg-zinc-950 border border-zinc-800 rounded-lg text-zinc-200 placeholder-zinc-500 focus:outline-hidden focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
                 />
               </div>
 
@@ -516,7 +516,7 @@ export const ModalAdicionarItem: React.FC<ModalAdicionarItemProps> = ({
                   value={customDescription}
                   onChange={(e) => setCustomDescription(e.target.value)}
                   placeholder="Detalhes técnicos, acabamentos específicos ou instruções..."
-                  className="w-full px-3 py-2 text-xs bg-zinc-950 border border-zinc-800 rounded-lg text-zinc-200 placeholder-zinc-500 focus:outline-hidden focus:border-amber-500 focus:ring-1 focus:ring-amber-500 resize-none"
+                  className="w-full px-3 py-2 text-xs bg-zinc-950 border border-zinc-800 rounded-lg text-zinc-200 placeholder-zinc-500 focus:outline-hidden focus:border-blue-500 focus:ring-1 focus:ring-blue-500 resize-none"
                 />
               </div>
 
@@ -532,7 +532,7 @@ export const ModalAdicionarItem: React.FC<ModalAdicionarItemProps> = ({
                         e.target.value as 'unidade' | 'milheiro' | 'pacote' | 'hora'
                       )
                     }
-                    className="w-full px-3 py-2 text-xs bg-zinc-950 border border-zinc-800 rounded-lg text-zinc-200 focus:outline-hidden focus:border-amber-500 focus:ring-1 focus:ring-amber-500"
+                    className="w-full px-3 py-2 text-xs bg-zinc-950 border border-zinc-800 rounded-lg text-zinc-200 focus:outline-hidden focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
                   >
                     <option value="unidade">Por Unidade</option>
                     <option value="milheiro">Por Milheiro (1.000 un)</option>
@@ -550,13 +550,13 @@ export const ModalAdicionarItem: React.FC<ModalAdicionarItemProps> = ({
                     min={1}
                     value={customQuantity}
                     onChange={(e) => setCustomQuantity(parseInt(e.target.value, 10) || 1)}
-                    className="w-full px-3 py-2 text-xs bg-zinc-950 border border-zinc-800 rounded-lg text-zinc-200 font-mono focus:outline-hidden focus:border-amber-500 focus:ring-1 focus:ring-amber-500"
+                    className="w-full px-3 py-2 text-xs bg-zinc-950 border border-zinc-800 rounded-lg text-zinc-200 font-mono focus:outline-hidden focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
                   />
                 </div>
 
                 <div>
                   <label className="block text-xs font-medium text-zinc-300 mb-1.5">
-                    Valor Unitário (R$) <span className="text-amber-400">*</span>
+                    Valor Unitário (R$) <span className="text-blue-400">*</span>
                   </label>
                   <input
                     type="text"
@@ -564,7 +564,7 @@ export const ModalAdicionarItem: React.FC<ModalAdicionarItemProps> = ({
                     value={customUnitPrice}
                     onChange={(e) => setCustomUnitPrice(e.target.value)}
                     placeholder="0,00"
-                    className="w-full px-3 py-2 text-xs bg-zinc-950 border border-zinc-800 rounded-lg text-zinc-200 font-mono focus:outline-hidden focus:border-amber-500 focus:ring-1 focus:ring-amber-500"
+                    className="w-full px-3 py-2 text-xs bg-zinc-950 border border-zinc-800 rounded-lg text-zinc-200 font-mono focus:outline-hidden focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
                   />
                 </div>
               </div>
@@ -572,14 +572,14 @@ export const ModalAdicionarItem: React.FC<ModalAdicionarItemProps> = ({
               {/* Box de Total */}
               <div className="p-3.5 rounded-lg bg-zinc-950 border border-zinc-800 flex items-center justify-between">
                 <span className="text-xs text-zinc-400">Total do Item Personalizado</span>
-                <span className="text-base font-bold text-amber-400 font-mono">
+                <span className="text-base font-bold text-blue-400 font-mono">
                   {formatCurrency(customTotalPreview)}
                 </span>
               </div>
 
               <button
                 type="submit"
-                className="w-full py-2.5 bg-amber-500 hover:bg-amber-400 text-zinc-950 font-bold text-xs rounded-lg transition-colors flex items-center justify-center gap-1.5 shadow-sm"
+                className="w-full py-2.5 bg-blue-600 hover:bg-blue-500 text-white font-bold text-xs rounded-lg transition-colors flex items-center justify-center gap-1.5 shadow-sm"
               >
                 <Plus className="w-4 h-4" />
                 <span>+ Adicionar</span>
@@ -594,7 +594,7 @@ export const ModalAdicionarItem: React.FC<ModalAdicionarItemProps> = ({
                 <span>Itens Selecionados ({stagedItems.length})</span>
                 <span>
                   Subtotal:{' '}
-                  <span className="text-amber-400 font-mono">
+                  <span className="text-blue-400 font-mono">
                     {formatCurrency(
                       stagedItems.reduce((acc, item) => acc + item.total, 0)
                     )}
@@ -648,7 +648,7 @@ export const ModalAdicionarItem: React.FC<ModalAdicionarItemProps> = ({
             disabled={stagedItems.length === 0}
             className={`px-5 py-2 text-xs font-semibold rounded-lg shadow-sm transition-all ${
               stagedItems.length > 0
-                ? 'bg-amber-500 hover:bg-amber-400 text-zinc-950 cursor-pointer'
+                ? 'bg-blue-600 hover:bg-blue-500 text-white cursor-pointer'
                 : 'bg-zinc-800 text-zinc-500 cursor-not-allowed'
             }`}
           >

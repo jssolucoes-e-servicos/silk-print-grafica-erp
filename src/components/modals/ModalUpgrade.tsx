@@ -18,7 +18,7 @@ export const ModalUpgrade: React.FC<ModalUpgradeProps> = ({ isOpen, onClose }) =
         {/* Header */}
         <div className="flex items-center justify-between px-6 py-4 border-b border-zinc-800 bg-zinc-950/60">
           <div className="flex items-center gap-2.5">
-            <div className="w-8 h-8 rounded-lg bg-amber-500 flex items-center justify-center text-zinc-950">
+            <div className="w-8 h-8 rounded-lg bg-blue-600 flex items-center justify-center text-white">
               <Sparkles className="w-4 h-4" />
             </div>
             <div>
@@ -41,8 +41,8 @@ export const ModalUpgrade: React.FC<ModalUpgradeProps> = ({ isOpen, onClose }) =
         {/* Body */}
         <div className="p-6 space-y-6">
           {/* Plan card */}
-          <div className="p-5 rounded-xl bg-gradient-to-b from-amber-500/10 to-zinc-950 border border-amber-500/30 relative">
-            <span className="absolute -top-2.5 right-4 px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider bg-amber-500 text-zinc-950 rounded-full">
+          <div className="p-5 rounded-xl bg-gradient-to-b from-blue-500/10 to-zinc-950 border border-blue-500/30 relative">
+            <span className="absolute -top-2.5 right-4 px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider bg-blue-600 text-white rounded-full">
               Mais Popular
             </span>
             <div className="flex items-baseline justify-between mb-3">
@@ -51,7 +51,7 @@ export const ModalUpgrade: React.FC<ModalUpgradeProps> = ({ isOpen, onClose }) =
                 <p className="text-xs text-zinc-400">Catálogo digital + Gestão de produção completa</p>
               </div>
               <div className="text-right">
-                <span className="text-2xl font-black text-amber-400 font-mono">R$ 79,90</span>
+                <span className="text-2xl font-black text-blue-400 font-mono">R$ 79,90</span>
                 <span className="text-xs text-zinc-500">/mês</span>
               </div>
             </div>
@@ -68,7 +68,7 @@ export const ModalUpgrade: React.FC<ModalUpgradeProps> = ({ isOpen, onClose }) =
                 'Exportação em PDF e Planilhas',
               ].map((item, idx) => (
                 <div key={idx} className="flex items-center gap-2">
-                  <Check className="w-3.5 h-3.5 text-amber-400 shrink-0" />
+                  <Check className="w-3.5 h-3.5 text-blue-400 shrink-0" />
                   <span>{item}</span>
                 </div>
               ))}
@@ -79,7 +79,7 @@ export const ModalUpgrade: React.FC<ModalUpgradeProps> = ({ isOpen, onClose }) =
                 alert('Redirecionando para o checkout seguro de assinatura...');
                 onClose();
               }}
-              className="w-full py-3 bg-amber-500 hover:bg-amber-400 text-zinc-950 font-bold text-xs rounded-lg transition-colors flex items-center justify-center gap-2 shadow-lg shadow-amber-500/20"
+              className="w-full py-3 bg-blue-600 hover:bg-blue-500 text-white font-bold text-xs rounded-lg transition-colors flex items-center justify-center gap-2 shadow-lg shadow-blue-500/20"
             >
               <Zap className="w-4 h-4 fill-zinc-950" />
               <span>Assinar Agora com 7 Dias de Garantia</span>

@@ -120,7 +120,7 @@ export const PrecificacaoScreen: React.FC = () => {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         <div>
           <h1 className="text-xl md:text-2xl font-bold text-zinc-100 tracking-tight flex items-center gap-2.5">
-            <Calculator className="w-6 h-6 text-amber-400" />
+            <Calculator className="w-6 h-6 text-blue-400" />
             <span>Precificação, Margens & Custos</span>
           </h1>
           <p className="text-xs md:text-sm text-zinc-400 mt-0.5">
@@ -131,7 +131,7 @@ export const PrecificacaoScreen: React.FC = () => {
         <button
           type="button"
           onClick={handleSave}
-          className="px-5 py-2.5 text-xs font-bold bg-amber-500 hover:bg-amber-400 text-zinc-950 rounded-xl transition-all shadow-md flex items-center justify-center gap-1.5 self-start sm:self-auto cursor-pointer"
+          className="px-5 py-2.5 text-xs font-bold bg-blue-600 hover:bg-blue-500 text-white rounded-xl transition-all shadow-md flex items-center justify-center gap-1.5 self-start sm:self-auto cursor-pointer"
         >
           <Save className="w-4 h-4" />
           <span>Salvar Precificação</span>
@@ -152,7 +152,7 @@ export const PrecificacaoScreen: React.FC = () => {
           onClick={() => setActiveTab('geral')}
           className={`px-4 py-2 text-xs font-bold rounded-xl transition-all flex items-center gap-2 shrink-0 ${
             activeTab === 'geral'
-              ? 'bg-amber-500/15 text-amber-400 border border-amber-500/30'
+              ? 'bg-blue-500/15 text-blue-400 border border-blue-500/30'
               : 'text-zinc-400 hover:text-zinc-200 hover:bg-zinc-900/60'
           }`}
         >
@@ -165,7 +165,7 @@ export const PrecificacaoScreen: React.FC = () => {
           onClick={() => setActiveTab('categorias')}
           className={`px-4 py-2 text-xs font-bold rounded-xl transition-all flex items-center gap-2 shrink-0 ${
             activeTab === 'categorias'
-              ? 'bg-amber-500/15 text-amber-400 border border-amber-500/30'
+              ? 'bg-blue-500/15 text-blue-400 border border-blue-500/30'
               : 'text-zinc-400 hover:text-zinc-200 hover:bg-zinc-900/60'
           }`}
         >
@@ -178,7 +178,7 @@ export const PrecificacaoScreen: React.FC = () => {
           onClick={() => setActiveTab('escalas')}
           className={`px-4 py-2 text-xs font-bold rounded-xl transition-all flex items-center gap-2 shrink-0 ${
             activeTab === 'escalas'
-              ? 'bg-amber-500/15 text-amber-400 border border-amber-500/30'
+              ? 'bg-blue-500/15 text-blue-400 border border-blue-500/30'
               : 'text-zinc-400 hover:text-zinc-200 hover:bg-zinc-900/60'
           }`}
         >
@@ -191,7 +191,7 @@ export const PrecificacaoScreen: React.FC = () => {
           onClick={() => setActiveTab('custos')}
           className={`px-4 py-2 text-xs font-bold rounded-xl transition-all flex items-center gap-2 shrink-0 ${
             activeTab === 'custos'
-              ? 'bg-amber-500/15 text-amber-400 border border-amber-500/30'
+              ? 'bg-blue-500/15 text-blue-400 border border-blue-500/30'
               : 'text-zinc-400 hover:text-zinc-200 hover:bg-zinc-900/60'
           }`}
         >
@@ -204,11 +204,11 @@ export const PrecificacaoScreen: React.FC = () => {
           onClick={() => setActiveTab('simulador')}
           className={`px-4 py-2 text-xs font-bold rounded-xl transition-all flex items-center gap-2 shrink-0 ${
             activeTab === 'simulador'
-              ? 'bg-amber-500/15 text-amber-400 border border-amber-500/30'
+              ? 'bg-blue-500/15 text-blue-400 border border-blue-500/30'
               : 'text-zinc-400 hover:text-zinc-200 hover:bg-zinc-900/60'
           }`}
         >
-          <Sparkles className="w-4 h-4 text-amber-400" />
+          <Sparkles className="w-4 h-4 text-blue-400" />
           <span>Simulador em Tempo Real</span>
         </button>
       </div>
@@ -219,7 +219,7 @@ export const PrecificacaoScreen: React.FC = () => {
           {/* Card Multiplicadores */}
           <div className="p-5 md:p-6 rounded-2xl bg-zinc-900/90 border border-zinc-800/90 space-y-4 shadow-md">
             <div className="flex items-center gap-2.5">
-              <div className="w-8 h-8 rounded-lg bg-amber-500/10 border border-amber-500/20 flex items-center justify-center text-amber-400">
+              <div className="w-8 h-8 rounded-lg bg-blue-500/10 border border-blue-500/20 flex items-center justify-center text-blue-400">
                 <Calculator className="w-4 h-4" />
               </div>
               <div>
@@ -238,7 +238,7 @@ export const PrecificacaoScreen: React.FC = () => {
                     type="text"
                     value={markupGeral}
                     onChange={(e) => setMarkupGeral(e.target.value)}
-                    className="w-full px-3.5 py-2.5 text-xs bg-zinc-950 border border-zinc-800 rounded-xl text-zinc-200 font-mono focus:outline-hidden focus:border-amber-500"
+                    className="w-full px-3.5 py-2.5 text-xs bg-zinc-950 border border-zinc-800 rounded-xl text-zinc-200 font-mono focus:outline-hidden focus:border-blue-500"
                   />
                   <span className="absolute right-3.5 top-2.5 text-xs text-zinc-500 font-mono">x</span>
                 </div>
@@ -256,7 +256,7 @@ export const PrecificacaoScreen: React.FC = () => {
                     type="text"
                     value={margemLucroMinima}
                     onChange={(e) => setMargemLucroMinima(e.target.value)}
-                    className="w-full px-3.5 py-2.5 text-xs bg-zinc-950 border border-zinc-800 rounded-xl text-zinc-200 font-mono focus:outline-hidden focus:border-amber-500"
+                    className="w-full px-3.5 py-2.5 text-xs bg-zinc-950 border border-zinc-800 rounded-xl text-zinc-200 font-mono focus:outline-hidden focus:border-blue-500"
                   />
                   <span className="absolute right-3.5 top-2.5 text-xs text-zinc-500 font-mono">%</span>
                 </div>
@@ -274,7 +274,7 @@ export const PrecificacaoScreen: React.FC = () => {
                     type="text"
                     value={margemLucroAlvo}
                     onChange={(e) => setMargemLucroAlvo(e.target.value)}
-                    className="w-full px-3.5 py-2.5 text-xs bg-zinc-950 border border-zinc-800 rounded-xl text-zinc-200 font-mono focus:outline-hidden focus:border-amber-500"
+                    className="w-full px-3.5 py-2.5 text-xs bg-zinc-950 border border-zinc-800 rounded-xl text-zinc-200 font-mono focus:outline-hidden focus:border-blue-500"
                   />
                   <span className="absolute right-3.5 top-2.5 text-xs text-zinc-500 font-mono">%</span>
                 </div>
@@ -288,7 +288,7 @@ export const PrecificacaoScreen: React.FC = () => {
           {/* Card Condições Comerciais */}
           <div className="p-5 md:p-6 rounded-2xl bg-zinc-900/90 border border-zinc-800/90 space-y-4 shadow-md">
             <div className="flex items-center gap-2.5">
-              <div className="w-8 h-8 rounded-lg bg-amber-500/10 border border-amber-500/20 flex items-center justify-center text-amber-400">
+              <div className="w-8 h-8 rounded-lg bg-blue-500/10 border border-blue-500/20 flex items-center justify-center text-blue-400">
                 <Percent className="w-4 h-4" />
               </div>
               <div>
@@ -307,7 +307,7 @@ export const PrecificacaoScreen: React.FC = () => {
                     type="text"
                     value={descontoPix}
                     onChange={(e) => setDescontoPix(e.target.value)}
-                    className="w-full px-3.5 py-2.5 text-xs bg-zinc-950 border border-zinc-800 rounded-xl text-zinc-200 font-mono focus:outline-hidden focus:border-amber-500"
+                    className="w-full px-3.5 py-2.5 text-xs bg-zinc-950 border border-zinc-800 rounded-xl text-zinc-200 font-mono focus:outline-hidden focus:border-blue-500"
                   />
                   <span className="absolute right-3.5 top-2.5 text-xs text-zinc-500 font-mono">%</span>
                 </div>
@@ -325,7 +325,7 @@ export const PrecificacaoScreen: React.FC = () => {
                     type="text"
                     value={taxaCartao}
                     onChange={(e) => setTaxaCartao(e.target.value)}
-                    className="w-full px-3.5 py-2.5 text-xs bg-zinc-950 border border-zinc-800 rounded-xl text-zinc-200 font-mono focus:outline-hidden focus:border-amber-500"
+                    className="w-full px-3.5 py-2.5 text-xs bg-zinc-950 border border-zinc-800 rounded-xl text-zinc-200 font-mono focus:outline-hidden focus:border-blue-500"
                   />
                   <span className="absolute right-3.5 top-2.5 text-xs text-zinc-500 font-mono">%</span>
                 </div>
@@ -341,7 +341,7 @@ export const PrecificacaoScreen: React.FC = () => {
                 <select
                   value={roundingRule}
                   onChange={(e) => setRoundingRule(e.target.value as any)}
-                  className="w-full px-3.5 py-2.5 text-xs bg-zinc-950 border border-zinc-800 rounded-xl text-zinc-200 focus:outline-hidden focus:border-amber-500"
+                  className="w-full px-3.5 py-2.5 text-xs bg-zinc-950 border border-zinc-800 rounded-xl text-zinc-200 focus:outline-hidden focus:border-blue-500"
                 >
                   <option value="90">Arredondar para .90 (ex: R$ 29,90)</option>
                   <option value="99">Arredondar para .99 (ex: R$ 29,99)</option>
@@ -395,7 +395,7 @@ export const PrecificacaoScreen: React.FC = () => {
                             step="0.1"
                             value={cat.markup}
                             onChange={(e) => updateCategoryMarkup(cat.id, 'markup', e.target.value)}
-                            className="w-16 px-2 py-1 text-xs text-center bg-zinc-950 border border-zinc-800 rounded-lg text-amber-400 font-bold focus:outline-hidden focus:border-amber-500"
+                            className="w-16 px-2 py-1 text-xs text-center bg-zinc-950 border border-zinc-800 rounded-lg text-blue-400 font-bold focus:outline-hidden focus:border-blue-500"
                           />
                           <span className="text-zinc-500">x</span>
                         </div>
@@ -406,7 +406,7 @@ export const PrecificacaoScreen: React.FC = () => {
                             type="number"
                             value={cat.minMargin}
                             onChange={(e) => updateCategoryMarkup(cat.id, 'minMargin', e.target.value)}
-                            className="w-14 px-2 py-1 text-xs text-center bg-zinc-950 border border-zinc-800 rounded-lg text-zinc-300 focus:outline-hidden focus:border-amber-500"
+                            className="w-14 px-2 py-1 text-xs text-center bg-zinc-950 border border-zinc-800 rounded-lg text-zinc-300 focus:outline-hidden focus:border-blue-500"
                           />
                           <span className="text-zinc-500">%</span>
                         </div>
@@ -417,7 +417,7 @@ export const PrecificacaoScreen: React.FC = () => {
                             type="number"
                             value={cat.targetMargin}
                             onChange={(e) => updateCategoryMarkup(cat.id, 'targetMargin', e.target.value)}
-                            className="w-14 px-2 py-1 text-xs text-center bg-zinc-950 border border-zinc-800 rounded-lg text-emerald-400 font-bold focus:outline-hidden focus:border-amber-500"
+                            className="w-14 px-2 py-1 text-xs text-center bg-zinc-950 border border-zinc-800 rounded-lg text-emerald-400 font-bold focus:outline-hidden focus:border-blue-500"
                           />
                           <span className="text-zinc-500">%</span>
                         </div>
@@ -467,7 +467,7 @@ export const PrecificacaoScreen: React.FC = () => {
                           type="number"
                           value={tier.discountPercent}
                           onChange={(e) => updateTierDiscount(tier.id, e.target.value)}
-                          className="w-16 px-2 py-1 text-xs text-center bg-zinc-950 border border-zinc-800 rounded-lg text-amber-400 font-bold focus:outline-hidden focus:border-amber-500"
+                          className="w-16 px-2 py-1 text-xs text-center bg-zinc-950 border border-zinc-800 rounded-lg text-blue-400 font-bold focus:outline-hidden focus:border-blue-500"
                         />
                         <span className="text-zinc-500">% OFF</span>
                       </div>
@@ -493,7 +493,7 @@ export const PrecificacaoScreen: React.FC = () => {
       {activeTab === 'custos' && (
         <div className="p-5 md:p-6 rounded-2xl bg-zinc-900/90 border border-zinc-800/90 space-y-4 shadow-md">
           <div className="flex items-center gap-2.5">
-            <div className="w-8 h-8 rounded-lg bg-amber-500/10 border border-amber-500/20 flex items-center justify-center text-amber-400">
+            <div className="w-8 h-8 rounded-lg bg-blue-500/10 border border-blue-500/20 flex items-center justify-center text-blue-400">
               <DollarSign className="w-4 h-4" />
             </div>
             <div>
@@ -513,7 +513,7 @@ export const PrecificacaoScreen: React.FC = () => {
                   type="text"
                   value={custoHoraMaquina}
                   onChange={(e) => setCustoHoraMaquina(e.target.value)}
-                  className="w-full pl-9 pr-3.5 py-2.5 text-xs bg-zinc-950 border border-zinc-800 rounded-xl text-zinc-200 font-mono focus:outline-hidden focus:border-amber-500"
+                  className="w-full pl-9 pr-3.5 py-2.5 text-xs bg-zinc-950 border border-zinc-800 rounded-xl text-zinc-200 font-mono focus:outline-hidden focus:border-blue-500"
                 />
               </div>
               <span className="text-[10px] text-zinc-500 mt-1 block">Depreciação, energia e manutenção</span>
@@ -529,7 +529,7 @@ export const PrecificacaoScreen: React.FC = () => {
                   type="text"
                   value={custoHoraMaoDeObra}
                   onChange={(e) => setCustoHoraMaoDeObra(e.target.value)}
-                  className="w-full pl-9 pr-3.5 py-2.5 text-xs bg-zinc-950 border border-zinc-800 rounded-xl text-zinc-200 font-mono focus:outline-hidden focus:border-amber-500"
+                  className="w-full pl-9 pr-3.5 py-2.5 text-xs bg-zinc-950 border border-zinc-800 rounded-xl text-zinc-200 font-mono focus:outline-hidden focus:border-blue-500"
                 />
               </div>
               <span className="text-[10px] text-zinc-500 mt-1 block">Salários e encargos por operador</span>
@@ -545,7 +545,7 @@ export const PrecificacaoScreen: React.FC = () => {
                   type="text"
                   value={custoM2Lona}
                   onChange={(e) => setCustoM2Lona(e.target.value)}
-                  className="w-full pl-9 pr-3.5 py-2.5 text-xs bg-zinc-950 border border-zinc-800 rounded-xl text-zinc-200 font-mono focus:outline-hidden focus:border-amber-500"
+                  className="w-full pl-9 pr-3.5 py-2.5 text-xs bg-zinc-950 border border-zinc-800 rounded-xl text-zinc-200 font-mono focus:outline-hidden focus:border-blue-500"
                 />
               </div>
               <span className="text-[10px] text-zinc-500 mt-1 block">Mídia + Tinta solvente/eco</span>
@@ -561,7 +561,7 @@ export const PrecificacaoScreen: React.FC = () => {
                   type="text"
                   value={custoM2Adesivo}
                   onChange={(e) => setCustoM2Adesivo(e.target.value)}
-                  className="w-full pl-9 pr-3.5 py-2.5 text-xs bg-zinc-950 border border-zinc-800 rounded-xl text-zinc-200 font-mono focus:outline-hidden focus:border-amber-500"
+                  className="w-full pl-9 pr-3.5 py-2.5 text-xs bg-zinc-950 border border-zinc-800 rounded-xl text-zinc-200 font-mono focus:outline-hidden focus:border-blue-500"
                 />
               </div>
             </div>
@@ -576,7 +576,7 @@ export const PrecificacaoScreen: React.FC = () => {
                   type="text"
                   value={custoTelaSilk}
                   onChange={(e) => setCustoTelaSilk(e.target.value)}
-                  className="w-full pl-9 pr-3.5 py-2.5 text-xs bg-zinc-950 border border-zinc-800 rounded-xl text-zinc-200 font-mono focus:outline-hidden focus:border-amber-500"
+                  className="w-full pl-9 pr-3.5 py-2.5 text-xs bg-zinc-950 border border-zinc-800 rounded-xl text-zinc-200 font-mono focus:outline-hidden focus:border-blue-500"
                 />
               </div>
             </div>
@@ -591,7 +591,7 @@ export const PrecificacaoScreen: React.FC = () => {
                   type="text"
                   value={custoMilheiroOffset}
                   onChange={(e) => setCustoMilheiroOffset(e.target.value)}
-                  className="w-full pl-9 pr-3.5 py-2.5 text-xs bg-zinc-950 border border-zinc-800 rounded-xl text-zinc-200 font-mono focus:outline-hidden focus:border-amber-500"
+                  className="w-full pl-9 pr-3.5 py-2.5 text-xs bg-zinc-950 border border-zinc-800 rounded-xl text-zinc-200 font-mono focus:outline-hidden focus:border-blue-500"
                 />
               </div>
             </div>
@@ -605,7 +605,7 @@ export const PrecificacaoScreen: React.FC = () => {
           {/* Inputs do Simulador */}
           <div className="p-5 md:p-6 rounded-2xl bg-zinc-900/90 border border-zinc-800/90 space-y-4 shadow-md">
             <div className="flex items-center gap-2">
-              <Sparkles className="w-5 h-5 text-amber-400" />
+              <Sparkles className="w-5 h-5 text-blue-400" />
               <h3 className="text-sm font-bold text-zinc-100">Parâmetros do Produto para Teste</h3>
             </div>
 
@@ -618,7 +618,7 @@ export const PrecificacaoScreen: React.FC = () => {
                   type="number"
                   value={simCustoInsumos}
                   onChange={(e) => setSimCustoInsumos(e.target.value)}
-                  className="w-full px-3.5 py-2.5 text-xs bg-zinc-950 border border-zinc-800 rounded-xl text-zinc-200 font-mono focus:outline-hidden focus:border-amber-500"
+                  className="w-full px-3.5 py-2.5 text-xs bg-zinc-950 border border-zinc-800 rounded-xl text-zinc-200 font-mono focus:outline-hidden focus:border-blue-500"
                 />
               </div>
 
@@ -630,7 +630,7 @@ export const PrecificacaoScreen: React.FC = () => {
                   type="number"
                   value={simCustoAcabamento}
                   onChange={(e) => setSimCustoAcabamento(e.target.value)}
-                  className="w-full px-3.5 py-2.5 text-xs bg-zinc-950 border border-zinc-800 rounded-xl text-zinc-200 font-mono focus:outline-hidden focus:border-amber-500"
+                  className="w-full px-3.5 py-2.5 text-xs bg-zinc-950 border border-zinc-800 rounded-xl text-zinc-200 font-mono focus:outline-hidden focus:border-blue-500"
                 />
               </div>
 
@@ -644,7 +644,7 @@ export const PrecificacaoScreen: React.FC = () => {
                     step="0.1"
                     value={simTempoProducaoHoras}
                     onChange={(e) => setSimTempoProducaoHoras(e.target.value)}
-                    className="w-full px-3.5 py-2.5 text-xs bg-zinc-950 border border-zinc-800 rounded-xl text-zinc-200 font-mono focus:outline-hidden focus:border-amber-500"
+                    className="w-full px-3.5 py-2.5 text-xs bg-zinc-950 border border-zinc-800 rounded-xl text-zinc-200 font-mono focus:outline-hidden focus:border-blue-500"
                   />
                 </div>
 
@@ -656,7 +656,7 @@ export const PrecificacaoScreen: React.FC = () => {
                     type="number"
                     value={simQuantidade}
                     onChange={(e) => setSimQuantidade(e.target.value)}
-                    className="w-full px-3.5 py-2.5 text-xs bg-zinc-950 border border-zinc-800 rounded-xl text-zinc-200 font-mono focus:outline-hidden focus:border-amber-500"
+                    className="w-full px-3.5 py-2.5 text-xs bg-zinc-950 border border-zinc-800 rounded-xl text-zinc-200 font-mono focus:outline-hidden focus:border-blue-500"
                   />
                 </div>
               </div>
@@ -673,9 +673,9 @@ export const PrecificacaoScreen: React.FC = () => {
                     step="0.1"
                     value={simMarkup}
                     onChange={(e) => setSimMarkup(e.target.value)}
-                    className="w-full accent-amber-500"
+                    className="w-full accent-blue-500"
                   />
-                  <span className="text-sm font-mono font-bold text-amber-400 min-w-[50px]">
+                  <span className="text-sm font-mono font-bold text-blue-400 min-w-[50px]">
                     {simMarkup}x
                   </span>
                 </div>
@@ -693,7 +693,7 @@ export const PrecificacaoScreen: React.FC = () => {
                     margemLucroReal >= 45
                       ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20'
                       : margemLucroReal >= 30
-                      ? 'bg-amber-500/10 text-amber-400 border border-amber-500/20'
+                      ? 'bg-blue-500/10 text-blue-400 border border-blue-500/20'
                       : 'bg-rose-500/10 text-rose-400 border border-rose-500/20'
                   }`}
                 >
@@ -712,9 +712,9 @@ export const PrecificacaoScreen: React.FC = () => {
                   </span>
                 </div>
 
-                <div className="p-3.5 rounded-xl bg-zinc-950 border border-amber-500/30 space-y-1">
-                  <span className="text-[11px] text-amber-400 font-semibold">Valor Total ({qtdNum} un)</span>
-                  <div className="text-2xl font-bold font-mono text-amber-400">
+                <div className="p-3.5 rounded-xl bg-zinc-950 border border-blue-500/30 space-y-1">
+                  <span className="text-[11px] text-blue-400 font-semibold">Valor Total ({qtdNum} un)</span>
+                  <div className="text-2xl font-bold font-mono text-blue-400">
                     {formatCurrency(precoTotalSugerido)}
                   </div>
                   <span className="text-[10px] text-emerald-400 font-mono">
@@ -734,13 +734,13 @@ export const PrecificacaoScreen: React.FC = () => {
                 </div>
                 <div className="flex justify-between">
                   <span className="text-zinc-400">Margem de Lucro Real:</span>
-                  <span className="font-mono font-bold text-amber-400">{margemLucroReal.toFixed(1)}%</span>
+                  <span className="font-mono font-bold text-blue-400">{margemLucroReal.toFixed(1)}%</span>
                 </div>
               </div>
             </div>
 
             <div className="p-3 bg-zinc-950 rounded-xl border border-zinc-800 text-[11px] text-zinc-400 flex items-start gap-2">
-              <Info className="w-4 h-4 text-amber-400 shrink-0 mt-0.5" />
+              <Info className="w-4 h-4 text-blue-400 shrink-0 mt-0.5" />
               <span>
                 Este cálculo inclui automaticamente o custo da máquina ({tempoHorasNum}h * {formatCurrency(custoHoraNum)}) e insumos declarados.
               </span>

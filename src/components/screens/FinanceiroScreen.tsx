@@ -119,8 +119,8 @@ export const FinanceiroScreen: React.FC<FinanceiroScreenProps> = ({
         </div>
 
         {/* A Receber */}
-        <div className="rounded-2xl bg-zinc-900/90 border-l-4 border-l-amber-500 border border-zinc-800/80 p-4 flex items-center gap-3">
-          <div className="w-10 h-10 rounded-xl bg-amber-500/10 text-amber-400 flex items-center justify-center">
+        <div className="rounded-2xl bg-zinc-900/90 border-l-4 border-l-blue-500 border border-zinc-800/80 p-4 flex items-center gap-3">
+          <div className="w-10 h-10 rounded-xl bg-blue-500/10 text-blue-400 flex items-center justify-center">
             <Clock className="w-5 h-5" />
           </div>
           <div>
@@ -145,8 +145,8 @@ export const FinanceiroScreen: React.FC<FinanceiroScreenProps> = ({
         </div>
 
         {/* Saldo */}
-        <div className="rounded-2xl bg-zinc-900/90 border-l-4 border-l-amber-400 border border-zinc-800/80 p-4 flex items-center gap-3">
-          <div className="w-10 h-10 rounded-xl bg-amber-500/10 text-amber-400 flex items-center justify-center">
+        <div className="rounded-2xl bg-zinc-900/90 border-l-4 border-l-blue-400 border border-zinc-800/80 p-4 flex items-center gap-3">
+          <div className="w-10 h-10 rounded-xl bg-blue-500/10 text-blue-400 flex items-center justify-center">
             <Wallet className="w-5 h-5" />
           </div>
           <div>
@@ -167,7 +167,7 @@ export const FinanceiroScreen: React.FC<FinanceiroScreenProps> = ({
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             placeholder="Buscar por nome, CPF, pedido, status..."
-            className="w-full pl-9 pr-3.5 py-2 text-xs bg-zinc-900 border border-zinc-800 rounded-xl text-zinc-200 placeholder-zinc-500 focus:outline-hidden focus:border-amber-500"
+            className="w-full pl-9 pr-3.5 py-2 text-xs bg-zinc-900 border border-zinc-800 rounded-xl text-zinc-200 placeholder-zinc-500 focus:outline-hidden focus:border-blue-500"
           />
         </div>
 
@@ -276,7 +276,7 @@ export const FinanceiroScreen: React.FC<FinanceiroScreenProps> = ({
                         className={`px-2 py-0.5 rounded text-[10px] font-bold uppercase ${
                           tx.status === 'pago'
                             ? 'bg-emerald-500/15 text-emerald-400 border border-emerald-500/30'
-                            : 'bg-amber-500/15 text-amber-400 border border-amber-500/30'
+                            : 'bg-blue-500/15 text-blue-400 border border-blue-500/30'
                         }`}
                       >
                         {tx.status}

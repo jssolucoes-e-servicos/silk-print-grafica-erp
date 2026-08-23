@@ -95,13 +95,13 @@ export const ProdutosScreen: React.FC<ProdutosScreenProps> = ({
             onClick={onOpenCatalogPreview}
             className="px-3.5 py-2 rounded-xl bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 text-xs font-semibold text-zinc-300 transition-colors flex items-center gap-1.5"
           >
-            <ExternalLink className="w-3.5 h-3.5 text-amber-400" />
+            <ExternalLink className="w-3.5 h-3.5 text-blue-400" />
             <span>Ver Catálogo Online</span>
           </button>
 
           <button
             onClick={() => setIsModalOpen(true)}
-            className="px-4 py-2 rounded-xl bg-amber-500 hover:bg-amber-400 text-zinc-950 text-xs font-bold transition-all shadow-sm flex items-center gap-1.5"
+            className="px-4 py-2 rounded-xl bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold transition-all shadow-sm flex items-center gap-1.5"
           >
             <Plus className="w-3.5 h-3.5 stroke-[3]" />
             <span>+ Novo Produto</span>
@@ -136,7 +136,7 @@ export const ProdutosScreen: React.FC<ProdutosScreenProps> = ({
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             placeholder="Buscar produto interno..."
-            className="w-full pl-9 pr-3.5 py-2 text-xs bg-zinc-900 border border-zinc-800 rounded-xl text-zinc-200 placeholder-zinc-500 focus:outline-hidden focus:border-amber-500"
+            className="w-full pl-9 pr-3.5 py-2 text-xs bg-zinc-900 border border-zinc-800 rounded-xl text-zinc-200 placeholder-zinc-500 focus:outline-hidden focus:border-blue-500"
           />
         </div>
 
@@ -179,7 +179,7 @@ export const ProdutosScreen: React.FC<ProdutosScreenProps> = ({
           <p className="text-xs text-zinc-400 font-medium">Nenhum produto interno cadastrado</p>
           <button
             onClick={() => setIsModalOpen(true)}
-            className="px-4 py-2 rounded-xl bg-amber-500 hover:bg-amber-400 text-zinc-950 text-xs font-bold transition-all shadow-sm flex items-center gap-1.5"
+            className="px-4 py-2 rounded-xl bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold transition-all shadow-sm flex items-center gap-1.5"
           >
             <Plus className="w-3.5 h-3.5 stroke-[3]" />
             <span>+ Cadastrar Primeiro Produto</span>
@@ -194,7 +194,7 @@ export const ProdutosScreen: React.FC<ProdutosScreenProps> = ({
             >
               <div>
                 <div className="flex items-center justify-between gap-2 mb-2">
-                  <span className="text-[10px] font-bold uppercase tracking-wider text-amber-400 bg-amber-500/10 px-2 py-0.5 rounded border border-amber-500/20">
+                  <span className="text-[10px] font-bold uppercase tracking-wider text-blue-400 bg-blue-500/10 px-2 py-0.5 rounded border border-blue-500/20">
                     {prod.category}
                   </span>
                   <span className="text-[10px] text-zinc-400 px-2 py-0.5 bg-zinc-950 rounded border border-zinc-800 font-mono">
@@ -211,7 +211,7 @@ export const ProdutosScreen: React.FC<ProdutosScreenProps> = ({
               <div className="mt-4 pt-3 border-t border-zinc-800/80 flex items-center justify-between">
                 <div>
                   <span className="text-[10px] text-zinc-500 block">Preço Base</span>
-                  <span className="text-sm font-mono font-bold text-amber-400">
+                  <span className="text-sm font-mono font-bold text-blue-400">
                     {formatCurrency(prod.price)}
                     <span className="text-xs text-zinc-400 font-normal"> / {prod.unit}</span>
                   </span>
@@ -244,7 +244,7 @@ export const ProdutosScreen: React.FC<ProdutosScreenProps> = ({
             <form onSubmit={handleSaveNovoProduto} className="p-6 space-y-4">
               <div>
                 <label className="block text-xs font-semibold text-zinc-300 mb-1.5">
-                  Nome do Produto <span className="text-amber-400">*</span>
+                  Nome do Produto <span className="text-blue-400">*</span>
                 </label>
                 <input
                   type="text"
@@ -252,7 +252,7 @@ export const ProdutosScreen: React.FC<ProdutosScreenProps> = ({
                   value={novoNome}
                   onChange={(e) => setNovoNome(e.target.value)}
                   placeholder="Ex: Lona Frontlight 440g"
-                  className="w-full px-3.5 py-2.5 text-xs bg-zinc-950 border border-zinc-800 rounded-lg text-zinc-200 placeholder-zinc-600 focus:outline-hidden focus:border-amber-500"
+                  className="w-full px-3.5 py-2.5 text-xs bg-zinc-950 border border-zinc-800 rounded-lg text-zinc-200 placeholder-zinc-600 focus:outline-hidden focus:border-blue-500"
                 />
               </div>
 
@@ -264,7 +264,7 @@ export const ProdutosScreen: React.FC<ProdutosScreenProps> = ({
                   <select
                     value={novaCategoria}
                     onChange={(e) => setNovaCategoria(e.target.value)}
-                    className="w-full px-3 py-2.5 text-xs bg-zinc-950 border border-zinc-800 rounded-lg text-zinc-200 focus:outline-hidden focus:border-amber-500"
+                    className="w-full px-3 py-2.5 text-xs bg-zinc-950 border border-zinc-800 rounded-lg text-zinc-200 focus:outline-hidden focus:border-blue-500"
                   >
                     <option value="Papelaria">Papelaria</option>
                     <option value="Comunicação Visual">Comunicação Visual</option>
@@ -281,7 +281,7 @@ export const ProdutosScreen: React.FC<ProdutosScreenProps> = ({
                   <select
                     value={novoTipoCalculo}
                     onChange={(e) => setNovoTipoCalculo(e.target.value as 'unit' | 'm2')}
-                    className="w-full px-3 py-2.5 text-xs bg-zinc-950 border border-zinc-800 rounded-lg text-zinc-200 focus:outline-hidden focus:border-amber-500"
+                    className="w-full px-3 py-2.5 text-xs bg-zinc-950 border border-zinc-800 rounded-lg text-zinc-200 focus:outline-hidden focus:border-blue-500"
                   >
                     <option value="unit">Por Unidade</option>
                     <option value="m2">Por Metro Quadrado (m²)</option>
@@ -291,7 +291,7 @@ export const ProdutosScreen: React.FC<ProdutosScreenProps> = ({
 
               <div>
                 <label className="block text-xs font-semibold text-zinc-300 mb-1.5">
-                  Preço Base (R$) <span className="text-amber-400">*</span>
+                  Preço Base (R$) <span className="text-blue-400">*</span>
                 </label>
                 <input
                   type="text"
@@ -299,7 +299,7 @@ export const ProdutosScreen: React.FC<ProdutosScreenProps> = ({
                   value={novoPreco}
                   onChange={(e) => setNovoPreco(e.target.value)}
                   placeholder="0,00"
-                  className="w-full px-3.5 py-2.5 text-xs bg-zinc-950 border border-zinc-800 rounded-lg text-zinc-200 placeholder-zinc-600 font-mono focus:outline-hidden focus:border-amber-500"
+                  className="w-full px-3.5 py-2.5 text-xs bg-zinc-950 border border-zinc-800 rounded-lg text-zinc-200 placeholder-zinc-600 font-mono focus:outline-hidden focus:border-blue-500"
                 />
               </div>
 
@@ -312,7 +312,7 @@ export const ProdutosScreen: React.FC<ProdutosScreenProps> = ({
                   value={novaDescricao}
                   onChange={(e) => setNovaDescricao(e.target.value)}
                   placeholder="Especificações do material..."
-                  className="w-full px-3.5 py-2 text-xs bg-zinc-950 border border-zinc-800 rounded-lg text-zinc-200 placeholder-zinc-600 focus:outline-hidden focus:border-amber-500 resize-none"
+                  className="w-full px-3.5 py-2 text-xs bg-zinc-950 border border-zinc-800 rounded-lg text-zinc-200 placeholder-zinc-600 focus:outline-hidden focus:border-blue-500 resize-none"
                 />
               </div>
 
@@ -326,7 +326,7 @@ export const ProdutosScreen: React.FC<ProdutosScreenProps> = ({
                 </button>
                 <button
                   type="submit"
-                  className="px-5 py-2 text-xs font-bold bg-amber-500 hover:bg-amber-400 text-zinc-950 rounded-lg transition-all"
+                  className="px-5 py-2 text-xs font-bold bg-blue-600 hover:bg-blue-500 text-white rounded-lg transition-all"
                 >
                   Cadastrar Produto
                 </button>

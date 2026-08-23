@@ -16,30 +16,67 @@ import {
   ExternalLink,
   Shield,
   FileCode,
+  CreditCard,
+  Calculator,
+  Palette,
+  Zap,
+  DownloadCloud,
+  Settings,
+  Sliders,
+  Building,
+  Phone,
+  Mail,
+  MapPin,
+  Clock,
 } from 'lucide-react';
+import { PagamentosScreen } from './PagamentosScreen';
+import { PrecificacaoScreen } from './PrecificacaoScreen';
+import { AparenciaScreen } from './AparenciaScreen';
+import { IntegracoesScreen } from './IntegracoesScreen';
+import { ExportarScreen } from './ExportarScreen';
+import { Client, Order, CatalogProduct, Transaction } from '../../types';
 
 interface ConfiguracoesScreenProps {
+  initialTab?: 'geral' | 'pagamentos' | 'precificacao' | 'aparencia' | 'integracoes' | 'exportar';
   onOpenCatalogPreview: () => void;
-  onOpenUpgradeModal: () => void;
+  onOpenUpgradeModal?: () => void;
+  clients?: Client[];
+  orders?: Order[];
+  products?: CatalogProduct[];
+  transactions?: Transaction[];
 }
 
 export const ConfiguracoesScreen: React.FC<ConfiguracoesScreenProps> = ({
+  initialTab = 'geral',
   onOpenCatalogPreview,
-  onOpenUpgradeModal,
+  onOpenUpgradeModal = () => {},
+  clients = [],
+  orders = [],
+  products = [],
+  transactions = [],
 }) => {
+  const [activeTab, setActiveTab] = useState<
+    'geral' | 'pagamentos' | 'precificacao' | 'aparencia' | 'integracoes' | 'exportar'
+  >(initialTab);
+
   const [openSection, setOpenSection] = useState<string | null>('loja');
 
   // Dados da Loja
-  const [nomeLoja, setNomeLoja] = useState('Silk Print Grafica');
+  const [nomeLoja, setNomeLoja] = useState('Silk Print Gráfica');
+  const [razaoSocial, setRazaoSocial] = useState('Silk Print Comunicação Visual Ltda');
+  const [cnpj, setCnpj] = useState('51.936.187/0001-20');
+  const [emailContato, setEmailContato] = useState('contato@silkprint.com.br');
+  const [endereco, setEndereco] = useState('Av. Industrial, 1420 - Sala 4 - Porto Alegre/RS');
+  const [horarioFuncionamento, setHorarioFuncionamento] = useState('Segunda a Sexta: 08:30 às 18:00');
   const [subtituloCatalogo, setSubtituloCatalogo] = useState(
-    'Kits e Cartelas Personalizadas para Semijoias'
+    'Kits, Comunicação Visual, Adesivos e Papelaria Personalizada'
   );
-  const [linkCatalogo] = useState('cataloglab.com.br/silkprint');
-  const [linkCurto] = useState('ctlg.com.br/silkprint');
+  const [linkCatalogo] = useState('cataloglab.app/@silkprint');
+  const [linkCurto] = useState('ctlg.to/silkprint');
 
   // Contato
-  const [whatsapp, setWhatsapp] = useState('51936187210');
-  const [instagram, setInstagram] = useState('silkprint');
+  const [whatsapp, setWhatsapp] = useState('51993618721');
+  const [instagram, setInstagram] = useState('silkprintgrafica');
 
   // Backup checkboxes
   const [backupOptions, setBackupOptions] = useState({
@@ -52,9 +89,7 @@ export const ConfiguracoesScreen: React.FC<ConfiguracoesScreenProps> = ({
     configuracoes: true,
   });
 
-  // Import Mode
   const [importMode, setImportMode] = useState<'aditiva' | 'restaurar'>('aditiva');
-
   const [toastMessage, setToastMessage] = useState<string | null>(null);
   const [copiedField, setCopiedField] = useState<string | null>(null);
 
@@ -99,6 +134,7 @@ export const ConfiguracoesScreen: React.FC<ConfiguracoesScreenProps> = ({
   const handleDownloadBackup = () => {
     const backupData = {
       store: nomeLoja,
+      cnpj,
       exportedAt: new Date().toISOString(),
       modules: backupOptions,
     };
@@ -113,16 +149,25 @@ export const ConfiguracoesScreen: React.FC<ConfiguracoesScreenProps> = ({
     showToast('Download do backup JSON iniciado com sucesso!');
   };
 
+  const tabs = [
+    { id: 'geral', label: 'Geral & Loja', icon: Settings },
+    { id: 'pagamentos', label: 'Pagamentos & Frete', icon: CreditCard },
+    { id: 'precificacao', label: 'Precificação & Custos', icon: Calculator },
+    { id: 'aparencia', label: 'Aparência & Tema', icon: Palette },
+    { id: 'integracoes', label: 'Integrações', icon: Zap },
+    { id: 'exportar', label: 'Exportar Dados', icon: DownloadCloud },
+  ] as const;
+
   return (
-    <div id="screen-configuracoes" className="p-4 md:p-6 lg:p-8 space-y-6 max-w-5xl mx-auto">
+    <div id="screen-configuracoes" className="p-4 md:p-6 lg:p-8 space-y-6 max-w-7xl mx-auto">
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <h1 className="text-xl md:text-2xl font-bold text-zinc-100 tracking-tight">
-            Configurações
+            Configurações do Sistema
           </h1>
           <p className="text-xs md:text-sm text-zinc-400 mt-0.5">
-            Informações gerais da sua loja
+            Gerencie dados cadastrais, pagamentos, markups, identidade visual e integrações
           </p>
         </div>
 
@@ -130,9 +175,33 @@ export const ConfiguracoesScreen: React.FC<ConfiguracoesScreenProps> = ({
           onClick={onOpenCatalogPreview}
           className="px-3.5 py-2 rounded-xl bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 text-xs font-semibold text-zinc-300 transition-colors flex items-center gap-1.5 self-start sm:self-auto"
         >
-          <ExternalLink className="w-3.5 h-3.5 text-amber-400" />
+          <ExternalLink className="w-3.5 h-3.5 text-blue-400" />
           <span>Ver Catálogo</span>
         </button>
+      </div>
+
+      {/* Top Tabs Bar */}
+      <div className="border-b border-zinc-800/80 -mx-4 px-4 sm:mx-0 sm:px-0 overflow-x-auto custom-scrollbar">
+        <div className="flex items-center gap-1 sm:gap-2 min-w-max pb-1">
+          {tabs.map((tab) => {
+            const Icon = tab.icon;
+            const isActive = activeTab === tab.id;
+            return (
+              <button
+                key={tab.id}
+                onClick={() => setActiveTab(tab.id)}
+                className={`flex items-center gap-2 px-3.5 py-2.5 rounded-xl text-xs font-semibold transition-all whitespace-nowrap cursor-pointer ${
+                  isActive
+                    ? 'bg-blue-600/15 text-blue-400 border border-blue-500/30 shadow-xs'
+                    : 'text-zinc-400 hover:text-zinc-200 hover:bg-zinc-900/60'
+                }`}
+              >
+                <Icon className="w-3.5 h-3.5" />
+                <span>{tab.label}</span>
+              </button>
+            );
+          })}
+        </div>
       </div>
 
       {/* Toast */}
@@ -143,502 +212,317 @@ export const ConfiguracoesScreen: React.FC<ConfiguracoesScreenProps> = ({
         </div>
       )}
 
-      {/* Accordions */}
-      <div className="space-y-4">
-        {/* 1. Dados da Loja */}
-        <div className="rounded-2xl bg-zinc-900/90 border border-zinc-800/90 overflow-hidden shadow-md">
-          <button
-            onClick={() => setOpenSection(openSection === 'loja' ? null : 'loja')}
-            className="w-full px-5 py-4 flex items-center justify-between text-left hover:bg-zinc-800/40 transition-colors"
-          >
-            <div className="flex items-center gap-3">
-              <div className="w-8 h-8 rounded-lg bg-zinc-800 border border-zinc-700/60 flex items-center justify-center text-amber-400">
-                <Store className="w-4 h-4" />
-              </div>
-              <span className="text-sm font-bold text-zinc-100">Dados da Loja</span>
-            </div>
-
-            <div className="flex items-center gap-2.5">
-              <span className="text-[11px] font-medium text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 px-2.5 py-0.5 rounded-full">
-                Preenchido
-              </span>
-              {openSection === 'loja' ? (
-                <ChevronUp className="w-4 h-4 text-zinc-400" />
-              ) : (
-                <ChevronDown className="w-4 h-4 text-zinc-400" />
-              )}
-            </div>
-          </button>
-
-          {openSection === 'loja' && (
-            <div className="p-5 md:p-6 border-t border-zinc-800/80 bg-zinc-950/40 space-y-4">
-              <div>
-                <label className="block text-xs font-semibold text-zinc-300 mb-1.5">
-                  Nome da Loja <span className="text-amber-400">*</span>
-                </label>
-                <input
-                  type="text"
-                  value={nomeLoja}
-                  onChange={(e) => setNomeLoja(e.target.value)}
-                  className="w-full px-3.5 py-2.5 text-xs bg-zinc-900 border border-zinc-800 rounded-xl text-zinc-200 focus:outline-hidden focus:border-amber-500"
-                />
+      {/* Tab 1: Geral & Loja */}
+      {activeTab === 'geral' && (
+        <div className="space-y-4 max-w-5xl">
+          {/* Accordion 1: Dados da Loja */}
+          <div className="rounded-2xl bg-zinc-900/90 border border-zinc-800/90 overflow-hidden shadow-md">
+            <button
+              onClick={() => setOpenSection(openSection === 'loja' ? null : 'loja')}
+              className="w-full px-5 py-4 flex items-center justify-between text-left hover:bg-zinc-800/40 transition-colors"
+            >
+              <div className="flex items-center gap-3">
+                <div className="w-8 h-8 rounded-lg bg-zinc-800 border border-zinc-700/60 flex items-center justify-center text-blue-400">
+                  <Store className="w-4 h-4" />
+                </div>
+                <div>
+                  <span className="text-sm font-bold text-zinc-100 block">Identificação & Dados da Gráfica</span>
+                  <span className="text-[11px] text-zinc-400">Nome fantasia, razão social, CNPJ e links</span>
+                </div>
               </div>
 
-              <div>
-                <label className="block text-xs font-semibold text-zinc-300 mb-1.5">
-                  Subtítulo do Catálogo
-                </label>
-                <textarea
-                  rows={2}
-                  value={subtituloCatalogo}
-                  onChange={(e) => setSubtituloCatalogo(e.target.value)}
-                  className="w-full px-3.5 py-2 text-xs bg-zinc-900 border border-zinc-800 rounded-xl text-zinc-200 focus:outline-hidden focus:border-amber-500 resize-none"
-                />
-                <span className="text-[10px] text-zinc-500 mt-1 block">
-                  Aparece abaixo do logo no catálogo
+              <div className="flex items-center gap-2.5">
+                <span className="text-[11px] font-medium text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 px-2.5 py-0.5 rounded-full">
+                  Ativo
                 </span>
+                {openSection === 'loja' ? (
+                  <ChevronUp className="w-4 h-4 text-zinc-400" />
+                ) : (
+                  <ChevronDown className="w-4 h-4 text-zinc-400" />
+                )}
               </div>
+            </button>
 
-              {/* Link do catálogo */}
-              <div>
-                <label className="block text-xs font-semibold text-zinc-300 mb-1.5">
-                  Link do seu catálogo
-                </label>
-                <div className="flex items-center gap-2">
+            {openSection === 'loja' && (
+              <div className="p-5 md:p-6 border-t border-zinc-800/80 bg-zinc-950/40 space-y-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-xs font-semibold text-zinc-300 mb-1.5">
+                      Nome Fantasia da Gráfica <span className="text-blue-400">*</span>
+                    </label>
+                    <input
+                      type="text"
+                      value={nomeLoja}
+                      onChange={(e) => setNomeLoja(e.target.value)}
+                      className="w-full px-3.5 py-2.5 text-xs bg-zinc-900 border border-zinc-800 rounded-xl text-zinc-200 focus:outline-hidden focus:border-blue-500"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-xs font-semibold text-zinc-300 mb-1.5">
+                      Razão Social
+                    </label>
+                    <input
+                      type="text"
+                      value={razaoSocial}
+                      onChange={(e) => setRazaoSocial(e.target.value)}
+                      className="w-full px-3.5 py-2.5 text-xs bg-zinc-900 border border-zinc-800 rounded-xl text-zinc-200 focus:outline-hidden focus:border-blue-500"
+                    />
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-xs font-semibold text-zinc-300 mb-1.5">
+                      CNPJ
+                    </label>
+                    <input
+                      type="text"
+                      value={cnpj}
+                      onChange={(e) => setCnpj(e.target.value)}
+                      className="w-full px-3.5 py-2.5 text-xs bg-zinc-900 border border-zinc-800 rounded-xl text-zinc-200 font-mono focus:outline-hidden focus:border-blue-500"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-xs font-semibold text-zinc-300 mb-1.5">
+                      E-mail de Contato
+                    </label>
+                    <input
+                      type="email"
+                      value={emailContato}
+                      onChange={(e) => setEmailContato(e.target.value)}
+                      className="w-full px-3.5 py-2.5 text-xs bg-zinc-900 border border-zinc-800 rounded-xl text-zinc-200 focus:outline-hidden focus:border-blue-500"
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block text-xs font-semibold text-zinc-300 mb-1.5">
+                    Endereço Completo / Balcão de Retirada
+                  </label>
                   <input
                     type="text"
-                    readOnly
-                    value={linkCatalogo}
-                    className="flex-1 px-3.5 py-2.5 text-xs bg-zinc-950 border border-zinc-800 rounded-xl text-zinc-300 font-mono select-all focus:outline-hidden"
+                    value={endereco}
+                    onChange={(e) => setEndereco(e.target.value)}
+                    className="w-full px-3.5 py-2.5 text-xs bg-zinc-900 border border-zinc-800 rounded-xl text-zinc-200 focus:outline-hidden focus:border-blue-500"
                   />
+                </div>
+
+                <div>
+                  <label className="block text-xs font-semibold text-zinc-300 mb-1.5">
+                    Horário de Atendimento
+                  </label>
+                  <input
+                    type="text"
+                    value={horarioFuncionamento}
+                    onChange={(e) => setHorarioFuncionamento(e.target.value)}
+                    className="w-full px-3.5 py-2.5 text-xs bg-zinc-900 border border-zinc-800 rounded-xl text-zinc-200 focus:outline-hidden focus:border-blue-500"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-xs font-semibold text-zinc-300 mb-1.5">
+                    Subtítulo do Catálogo
+                  </label>
+                  <textarea
+                    rows={2}
+                    value={subtituloCatalogo}
+                    onChange={(e) => setSubtituloCatalogo(e.target.value)}
+                    className="w-full px-3.5 py-2 text-xs bg-zinc-900 border border-zinc-800 rounded-xl text-zinc-200 focus:outline-hidden focus:border-blue-500 resize-none"
+                  />
+                  <span className="text-[10px] text-zinc-500 mt-1 block">
+                    Exibido no cabeçalho do catálogo para os clientes
+                  </span>
+                </div>
+
+                {/* Link do catálogo */}
+                <div>
+                  <label className="block text-xs font-semibold text-zinc-300 mb-1.5">
+                    Link do seu catálogo online
+                  </label>
+                  <div className="flex items-center gap-2">
+                    <input
+                      type="text"
+                      readOnly
+                      value={linkCatalogo}
+                      className="flex-1 px-3.5 py-2.5 text-xs bg-zinc-950 border border-zinc-800 rounded-xl text-zinc-300 font-mono select-all focus:outline-hidden"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => handleCopy(`https://${linkCatalogo}`, 'link1')}
+                      className="px-4 py-2.5 text-xs font-semibold bg-zinc-800 hover:bg-zinc-700 text-zinc-200 rounded-xl transition-colors flex items-center gap-1.5 shrink-0"
+                    >
+                      {copiedField === 'link1' ? (
+                        <Check className="w-3.5 h-3.5 text-emerald-400" />
+                      ) : (
+                        <Copy className="w-3.5 h-3.5" />
+                      )}
+                      <span>Copiar Link</span>
+                    </button>
+                  </div>
+                </div>
+
+                <div className="pt-2">
                   <button
                     type="button"
-                    onClick={() => handleCopy(`https://${linkCatalogo}`, 'link1')}
-                    className="px-4 py-2.5 text-xs font-semibold bg-zinc-800 hover:bg-zinc-700 text-zinc-200 rounded-xl transition-colors flex items-center gap-1.5 shrink-0"
+                    onClick={() => showToast('Configurações da loja salvas com sucesso!')}
+                    className="px-4 py-2 text-xs font-bold bg-blue-600 hover:bg-blue-500 text-white rounded-xl transition-all shadow-sm"
                   >
-                    {copiedField === 'link1' ? (
-                      <Check className="w-3.5 h-3.5 text-emerald-400" />
-                    ) : (
-                      <Copy className="w-3.5 h-3.5" />
-                    )}
-                    <span>Copiar</span>
+                    Salvar Dados da Loja
                   </button>
                 </div>
-                <span className="text-[10px] text-zinc-500 mt-1 block">
-                  Compartilhe este link com seus clientes: {linkCatalogo}
-                </span>
+              </div>
+            )}
+          </div>
+
+          {/* Accordion 2: Contato & Redes Sociais */}
+          <div className="rounded-2xl bg-zinc-900/90 border border-zinc-800/90 overflow-hidden shadow-md">
+            <button
+              onClick={() => setOpenSection(openSection === 'contato' ? null : 'contato')}
+              className="w-full px-5 py-4 flex items-center justify-between text-left hover:bg-zinc-800/40 transition-colors"
+            >
+              <div className="flex items-center gap-3">
+                <div className="w-8 h-8 rounded-lg bg-zinc-800 border border-zinc-700/60 flex items-center justify-center text-emerald-400">
+                  <MessageCircle className="w-4 h-4" />
+                </div>
+                <div>
+                  <span className="text-sm font-bold text-zinc-100 block">WhatsApp & Redes Sociais</span>
+                  <span className="text-[11px] text-zinc-400">Canais de atendimento direto aos clientes</span>
+                </div>
               </div>
 
-              {/* Link curto */}
-              <div>
-                <label className="block text-xs font-semibold text-zinc-300 mb-1.5">
-                  Link curto
-                </label>
-                <div className="flex items-center gap-2">
-                  <input
-                    type="text"
-                    readOnly
-                    value={linkCurto}
-                    className="flex-1 px-3.5 py-2.5 text-xs bg-zinc-950 border border-zinc-800 rounded-xl text-zinc-300 font-mono select-all focus:outline-hidden"
-                  />
+              <div className="flex items-center gap-2.5">
+                {openSection === 'contato' ? (
+                  <ChevronUp className="w-4 h-4 text-zinc-400" />
+                ) : (
+                  <ChevronDown className="w-4 h-4 text-zinc-400" />
+                )}
+              </div>
+            </button>
+
+            {openSection === 'contato' && (
+              <div className="p-5 md:p-6 border-t border-zinc-800/80 bg-zinc-950/40 space-y-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-xs font-semibold text-zinc-300 mb-1.5">
+                      Número do WhatsApp (com DDD)
+                    </label>
+                    <input
+                      type="text"
+                      value={whatsapp}
+                      onChange={(e) => setWhatsapp(e.target.value)}
+                      placeholder="Ex: 51993618721"
+                      className="w-full px-3.5 py-2.5 text-xs bg-zinc-900 border border-zinc-800 rounded-xl text-zinc-200 font-mono focus:outline-hidden focus:border-blue-500"
+                    />
+                    <span className="text-[10px] text-zinc-500 mt-1 block">
+                      Recebe os pedidos finalizados pelo catálogo
+                    </span>
+                  </div>
+
+                  <div>
+                    <label className="block text-xs font-semibold text-zinc-300 mb-1.5">
+                      Instagram da Gráfica
+                    </label>
+                    <div className="relative">
+                      <span className="absolute left-3 top-1/2 -translate-y-1/2 text-zinc-500 text-xs font-mono">
+                        @
+                      </span>
+                      <input
+                        type="text"
+                        value={instagram}
+                        onChange={(e) => setInstagram(e.target.value)}
+                        className="w-full pl-8 pr-3.5 py-2.5 text-xs bg-zinc-900 border border-zinc-800 rounded-xl text-zinc-200 focus:outline-hidden focus:border-blue-500"
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                <div className="pt-2">
                   <button
                     type="button"
-                    onClick={() => handleCopy(`https://${linkCurto}`, 'link2')}
-                    className="px-4 py-2.5 text-xs font-semibold bg-zinc-800 hover:bg-zinc-700 text-zinc-200 rounded-xl transition-colors flex items-center gap-1.5 shrink-0"
+                    onClick={() => showToast('Contatos atualizados com sucesso!')}
+                    className="px-4 py-2 text-xs font-bold bg-blue-600 hover:bg-blue-500 text-white rounded-xl transition-all shadow-sm"
                   >
-                    {copiedField === 'link2' ? (
-                      <Check className="w-3.5 h-3.5 text-emerald-400" />
-                    ) : (
-                      <Copy className="w-3.5 h-3.5" />
-                    )}
-                    <span>Copiar</span>
+                    Salvar Contatos
                   </button>
                 </div>
-                <span className="text-[10px] text-zinc-500 mt-1 block">
-                  Versão curta para compartilhar: {linkCurto}
-                </span>
               </div>
-            </div>
-          )}
-        </div>
+            )}
+          </div>
 
-        {/* 2. Contato */}
-        <div className="rounded-2xl bg-zinc-900/90 border border-zinc-800/90 overflow-hidden shadow-md">
-          <button
-            onClick={() => setOpenSection(openSection === 'contato' ? null : 'contato')}
-            className="w-full px-5 py-4 flex items-center justify-between text-left hover:bg-zinc-800/40 transition-colors"
-          >
-            <div className="flex items-center gap-3">
-              <div className="w-8 h-8 rounded-lg bg-zinc-800 border border-zinc-700/60 flex items-center justify-center text-amber-400">
-                <MessageCircle className="w-4 h-4" />
-              </div>
-              <span className="text-sm font-bold text-zinc-100">Contato</span>
-            </div>
-
-            <div className="flex items-center gap-2.5">
-              <span className="text-[11px] font-medium text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 px-2.5 py-0.5 rounded-full">
-                WhatsApp e Insta
-              </span>
-              {openSection === 'contato' ? (
-                <ChevronUp className="w-4 h-4 text-zinc-400" />
-              ) : (
-                <ChevronDown className="w-4 h-4 text-zinc-400" />
-              )}
-            </div>
-          </button>
-
-          {openSection === 'contato' && (
-            <div className="p-5 md:p-6 border-t border-zinc-800/80 bg-zinc-950/40 space-y-4">
-              <div>
-                <label className="block text-xs font-semibold text-zinc-300 mb-1.5">
-                  WhatsApp
-                </label>
-                <div className="flex items-center">
-                  <span className="px-3 py-2.5 bg-zinc-950 border border-r-0 border-zinc-800 rounded-l-xl text-xs font-semibold text-zinc-400">
-                    +55
-                  </span>
-                  <input
-                    type="text"
-                    value={whatsapp}
-                    onChange={(e) => setWhatsapp(e.target.value)}
-                    placeholder="71999513994"
-                    className="flex-1 px-3.5 py-2.5 text-xs bg-zinc-900 border border-zinc-800 rounded-r-xl text-zinc-200 focus:outline-hidden focus:border-amber-500 font-mono"
-                  />
+          {/* Accordion 3: Backup & Restauração */}
+          <div className="rounded-2xl bg-zinc-900/90 border border-zinc-800/90 overflow-hidden shadow-md">
+            <button
+              onClick={() => setOpenSection(openSection === 'backup' ? null : 'backup')}
+              className="w-full px-5 py-4 flex items-center justify-between text-left hover:bg-zinc-800/40 transition-colors"
+            >
+              <div className="flex items-center gap-3">
+                <div className="w-8 h-8 rounded-lg bg-zinc-800 border border-zinc-700/60 flex items-center justify-center text-blue-400">
+                  <Database className="w-4 h-4" />
                 </div>
-                <span className="text-[10px] text-zinc-500 mt-1 block">
-                  Digite apenas DDD + número (ex: 71999513994)
-                </span>
-              </div>
-
-              <div>
-                <label className="block text-xs font-semibold text-zinc-300 mb-1.5">
-                  Instagram
-                </label>
-                <div className="flex items-center">
-                  <span className="px-3.5 py-2.5 bg-zinc-950 border border-r-0 border-zinc-800 rounded-l-xl text-xs font-semibold text-zinc-400">
-                    @
-                  </span>
-                  <input
-                    type="text"
-                    value={instagram}
-                    onChange={(e) => setInstagram(e.target.value)}
-                    placeholder="sualoja"
-                    className="flex-1 px-3.5 py-2.5 text-xs bg-zinc-900 border border-zinc-800 rounded-r-xl text-zinc-200 focus:outline-hidden focus:border-amber-500 font-mono"
-                  />
-                </div>
-              </div>
-            </div>
-          )}
-        </div>
-
-        {/* 3. Domínio Personalizado */}
-        <div className="rounded-2xl bg-zinc-900/90 border border-zinc-800/90 overflow-hidden shadow-md">
-          <button
-            onClick={() => setOpenSection(openSection === 'dominio' ? null : 'dominio')}
-            className="w-full px-5 py-4 flex items-center justify-between text-left hover:bg-zinc-800/40 transition-colors"
-          >
-            <div className="flex items-center gap-3">
-              <div className="w-8 h-8 rounded-lg bg-zinc-800 border border-zinc-700/60 flex items-center justify-center text-amber-400">
-                <Globe className="w-4 h-4" />
-              </div>
-              <span className="text-sm font-bold text-zinc-100">Domínio Personalizado</span>
-            </div>
-
-            <div className="flex items-center gap-2.5">
-              <span className="text-[10px] font-bold uppercase tracking-wider text-amber-400 bg-amber-500/10 border border-amber-500/20 px-2 py-0.5 rounded">
-                Em breve
-              </span>
-              {openSection === 'dominio' ? (
-                <ChevronUp className="w-4 h-4 text-zinc-400" />
-              ) : (
-                <ChevronDown className="w-4 h-4 text-zinc-400" />
-              )}
-            </div>
-          </button>
-
-          {openSection === 'dominio' && (
-            <div className="p-5 md:p-6 border-t border-zinc-800/80 bg-zinc-950/40 space-y-3">
-              <p className="text-xs text-zinc-400 leading-relaxed">
-                Conecte seu próprio domínio (ex: <span className="font-mono text-zinc-300">loja.silkprint.com.br</span>)
-                diretamente ao seu catálogo sem custos adicionais de hospedagem.
-              </p>
-              <div className="p-4 rounded-xl bg-zinc-900 border border-zinc-800 flex items-center justify-between">
-                <span className="text-xs text-zinc-300 font-medium">Recurso em fase final de homologação SSL.</span>
-                <span className="text-[11px] font-semibold text-amber-400">Notificar lançamento</span>
-              </div>
-            </div>
-          )}
-        </div>
-
-        {/* 4. Backup dos meus dados */}
-        <div className="rounded-2xl bg-zinc-900/90 border border-zinc-800/90 overflow-hidden shadow-md">
-          <button
-            onClick={() => setOpenSection(openSection === 'backup' ? null : 'backup')}
-            className="w-full px-5 py-4 flex items-center justify-between text-left hover:bg-zinc-800/40 transition-colors"
-          >
-            <div className="flex items-center gap-3">
-              <div className="w-8 h-8 rounded-lg bg-zinc-800 border border-zinc-700/60 flex items-center justify-center text-amber-400">
-                <Database className="w-4 h-4" />
-              </div>
-              <span className="text-sm font-bold text-zinc-100">Backup dos meus dados</span>
-            </div>
-
-            <div className="flex items-center gap-2.5">
-              <span className="text-[11px] font-medium text-zinc-400 bg-zinc-800/80 px-2.5 py-0.5 rounded-full">
-                JSON Export
-              </span>
-              {openSection === 'backup' ? (
-                <ChevronUp className="w-4 h-4 text-zinc-400" />
-              ) : (
-                <ChevronDown className="w-4 h-4 text-zinc-400" />
-              )}
-            </div>
-          </button>
-
-          {openSection === 'backup' && (
-            <div className="p-5 md:p-6 border-t border-zinc-800/80 bg-zinc-950/40 space-y-4">
-              <p className="text-xs text-zinc-400 leading-relaxed">
-                Exporte um backup completo da sua loja em formato JSON. Selecione as categorias desejadas:
-              </p>
-
-              {/* Checkboxes List */}
-              <div className="space-y-2 pt-1">
-                {/* Selecionar tudo */}
-                <label className="flex items-center gap-3 p-3 rounded-xl bg-zinc-900/80 border border-zinc-800 cursor-pointer hover:bg-zinc-900 transition-colors">
-                  <input
-                    type="checkbox"
-                    checked={backupOptions.all}
-                    onChange={(e) => toggleAllBackup(e.target.checked)}
-                    className="w-4 h-4 rounded text-amber-500 accent-amber-500 cursor-pointer"
-                  />
-                  <span className="text-xs font-bold text-zinc-200">Selecionar tudo</span>
-                </label>
-
-                {/* Catálogo */}
-                <label className="flex items-center gap-3 p-3 rounded-xl bg-zinc-950/80 border border-zinc-800/80 cursor-pointer hover:bg-zinc-900 transition-colors">
-                  <input
-                    type="checkbox"
-                    checked={backupOptions.catalogo}
-                    onChange={() => toggleBackupOption('catalogo')}
-                    className="w-4 h-4 rounded text-amber-500 accent-amber-500 cursor-pointer"
-                  />
-                  <div>
-                    <span className="text-xs font-semibold text-zinc-200 block">Catálogo</span>
-                    <span className="text-[11px] text-zinc-500">
-                      Produtos, categorias, preços e variações
-                    </span>
-                  </div>
-                </label>
-
-                {/* Clientes */}
-                <label className="flex items-center gap-3 p-3 rounded-xl bg-zinc-950/80 border border-zinc-800/80 cursor-pointer hover:bg-zinc-900 transition-colors">
-                  <input
-                    type="checkbox"
-                    checked={backupOptions.clientes}
-                    onChange={() => toggleBackupOption('clientes')}
-                    className="w-4 h-4 rounded text-amber-500 accent-amber-500 cursor-pointer"
-                  />
-                  <div>
-                    <span className="text-xs font-semibold text-zinc-200 block">Clientes</span>
-                    <span className="text-[11px] text-zinc-500">
-                      Dados de clientes cadastrados
-                    </span>
-                  </div>
-                </label>
-
-                {/* Pedidos */}
-                <label className="flex items-center gap-3 p-3 rounded-xl bg-zinc-950/80 border border-zinc-800/80 cursor-pointer hover:bg-zinc-900 transition-colors">
-                  <input
-                    type="checkbox"
-                    checked={backupOptions.pedidos}
-                    onChange={() => toggleBackupOption('pedidos')}
-                    className="w-4 h-4 rounded text-amber-500 accent-amber-500 cursor-pointer"
-                  />
-                  <div>
-                    <span className="text-xs font-semibold text-zinc-200 block">Pedidos</span>
-                    <span className="text-[11px] text-zinc-500">
-                      Pedidos com itens, status e vínculo com clientes
-                    </span>
-                  </div>
-                </label>
-
-                {/* Financeiro */}
-                <label className="flex items-center gap-3 p-3 rounded-xl bg-zinc-950/80 border border-zinc-800/80 cursor-pointer hover:bg-zinc-900 transition-colors">
-                  <input
-                    type="checkbox"
-                    checked={backupOptions.financeiro}
-                    onChange={() => toggleBackupOption('financeiro')}
-                    className="w-4 h-4 rounded text-amber-500 accent-amber-500 cursor-pointer"
-                  />
-                  <div>
-                    <span className="text-xs font-semibold text-zinc-200 block">Financeiro</span>
-                    <span className="text-[11px] text-zinc-500">
-                      Entradas, saídas e formas de pagamento
-                    </span>
-                  </div>
-                </label>
-
-                {/* Identidade visual */}
-                <label className="flex items-center gap-3 p-3 rounded-xl bg-zinc-950/80 border border-zinc-800/80 cursor-pointer hover:bg-zinc-900 transition-colors">
-                  <input
-                    type="checkbox"
-                    checked={backupOptions.identidade}
-                    onChange={() => toggleBackupOption('identidade')}
-                    className="w-4 h-4 rounded text-amber-500 accent-amber-500 cursor-pointer"
-                  />
-                  <div>
-                    <span className="text-xs font-semibold text-zinc-200 block">Identidade visual</span>
-                    <span className="text-[11px] text-zinc-500">
-                      Logo, cores e configurações visuais
-                    </span>
-                  </div>
-                </label>
-
-                {/* Configurações */}
-                <label className="flex items-center gap-3 p-3 rounded-xl bg-zinc-950/80 border border-zinc-800/80 cursor-pointer hover:bg-zinc-900 transition-colors">
-                  <input
-                    type="checkbox"
-                    checked={backupOptions.configuracoes}
-                    onChange={() => toggleBackupOption('configuracoes')}
-                    className="w-4 h-4 rounded text-amber-500 accent-amber-500 cursor-pointer"
-                  />
-                  <div>
-                    <span className="text-xs font-semibold text-zinc-200 block">Configurações</span>
-                    <span className="text-[11px] text-zinc-500">
-                      Status personalizados, preferências da loja
-                    </span>
-                  </div>
-                </label>
-              </div>
-
-              {/* Botão Baixar backup */}
-              <div className="pt-2">
-                <button
-                  type="button"
-                  onClick={handleDownloadBackup}
-                  className="w-full py-3 text-xs font-bold bg-amber-500 hover:bg-amber-400 text-zinc-950 rounded-xl transition-all shadow-md flex items-center justify-center gap-2"
-                >
-                  <Download className="w-4 h-4 stroke-[2.5]" />
-                  <span>Baixar backup</span>
-                </button>
-              </div>
-            </div>
-          )}
-        </div>
-
-        {/* 5. Importar Catálogo */}
-        <div className="rounded-2xl bg-zinc-900/90 border border-zinc-800/90 overflow-hidden shadow-md">
-          <button
-            onClick={() => setOpenSection(openSection === 'importar' ? null : 'importar')}
-            className="w-full px-5 py-4 flex items-center justify-between text-left hover:bg-zinc-800/40 transition-colors"
-          >
-            <div className="flex items-center gap-3">
-              <div className="w-8 h-8 rounded-lg bg-zinc-800 border border-zinc-700/60 flex items-center justify-center text-amber-400">
-                <UploadCloud className="w-4 h-4" />
-              </div>
-              <span className="text-sm font-bold text-zinc-100">Importar Catálogo</span>
-            </div>
-
-            <div className="flex items-center gap-2.5">
-              <span className="text-[11px] font-medium text-amber-400 bg-amber-500/10 border border-amber-500/20 px-2.5 py-0.5 rounded-full">
-                JSON
-              </span>
-              {openSection === 'importar' ? (
-                <ChevronUp className="w-4 h-4 text-zinc-400" />
-              ) : (
-                <ChevronDown className="w-4 h-4 text-zinc-400" />
-              )}
-            </div>
-          </button>
-
-          {openSection === 'importar' && (
-            <div className="p-5 md:p-6 border-t border-zinc-800/80 bg-zinc-950/40 space-y-4">
-              {/* 2 Cards */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                {/* Card 1: Importação Aditiva */}
-                <div
-                  onClick={() => setImportMode('aditiva')}
-                  className={`p-4 rounded-xl border transition-all cursor-pointer space-y-2 ${
-                    importMode === 'aditiva'
-                      ? 'bg-zinc-900 border-amber-500 ring-1 ring-amber-500/30 shadow-md'
-                      : 'bg-zinc-950/80 border-zinc-800 hover:border-zinc-700'
-                  }`}
-                >
-                  <div className="flex items-center gap-2 text-amber-400">
-                    <PlusCircle className="w-5 h-5" />
-                    <h4 className="text-xs font-bold text-zinc-100">Importação Aditiva</h4>
-                  </div>
-                  <p className="text-[11px] text-zinc-400 leading-relaxed">
-                    Os produtos importados serão adicionados ao seu catálogo. Nenhum dado existente será alterado ou removido.
-                  </p>
-                </div>
-
-                {/* Card 2: Restaurar Backup Completo */}
-                <div
-                  onClick={() => setImportMode('restaurar')}
-                  className={`p-4 rounded-xl border transition-all cursor-pointer space-y-2 opacity-75 ${
-                    importMode === 'restaurar'
-                      ? 'bg-zinc-900 border-amber-500 ring-1 ring-amber-500/30'
-                      : 'bg-zinc-950/80 border-zinc-800 hover:border-zinc-700'
-                  }`}
-                >
-                  <div className="flex items-center gap-2 text-zinc-400">
-                    <RotateCcw className="w-5 h-5" />
-                    <h4 className="text-xs font-bold text-zinc-200">Restaurar Backup Completo</h4>
-                  </div>
-                  <p className="text-[11px] text-zinc-500 leading-relaxed">
-                    Todos os seus dados atuais serão substituídos pelo backup. Use apenas para restaurar uma conta do zero.{' '}
-                    <em className="text-amber-400/80 not-italic block mt-1">Em manutenção — disponível em breve.</em>
-                  </p>
+                <div>
+                  <span className="text-sm font-bold text-zinc-100 block">Backup & Restauração JSON</span>
+                  <span className="text-[11px] text-zinc-400">Exportação completa de segurança de todos os dados</span>
                 </div>
               </div>
 
-              {/* Info text */}
-              <div className="p-3 rounded-xl bg-zinc-900/80 border border-zinc-800 text-[11px] text-zinc-400 flex items-start gap-2">
-                <span className="text-amber-400 font-bold">ℹ️</span>
-                <span>
-                  <strong>Importação aditiva:</strong> Os produtos importados serão adicionados ao seu catálogo. Nenhum produto existente será alterado ou removido.
-                </span>
+              <div className="flex items-center gap-2.5">
+                {openSection === 'backup' ? (
+                  <ChevronUp className="w-4 h-4 text-zinc-400" />
+                ) : (
+                  <ChevronDown className="w-4 h-4 text-zinc-400" />
+                )}
               </div>
+            </button>
 
-              {/* Dropzone */}
-              <div className="border-2 border-dashed border-zinc-800 hover:border-amber-500/50 rounded-xl p-8 text-center bg-zinc-950/80 flex flex-col items-center justify-center space-y-3 transition-colors">
-                <div className="w-12 h-12 rounded-full bg-zinc-900 flex items-center justify-center text-zinc-500">
-                  <FileCode className="w-6 h-6" />
+            {openSection === 'backup' && (
+              <div className="p-5 md:p-6 border-t border-zinc-800/80 bg-zinc-950/40 space-y-4">
+                <p className="text-xs text-zinc-400 leading-relaxed">
+                  Faça download do arquivo JSON contendo todas as configurações, catálogo, clientes e pedidos da sua loja.
+                </p>
+
+                <div className="flex items-center gap-3">
+                  <button
+                    onClick={handleDownloadBackup}
+                    className="px-4 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold flex items-center gap-2 shadow-sm transition-all"
+                  >
+                    <Download className="w-3.5 h-3.5" />
+                    <span>Baixar Backup Completo (.json)</span>
+                  </button>
                 </div>
-                <label className="cursor-pointer">
-                  <span className="px-4 py-2 text-xs font-bold bg-amber-500 hover:bg-amber-400 text-zinc-950 rounded-xl transition-all shadow-sm inline-flex items-center gap-1.5">
-                    <UploadCloud className="w-3.5 h-3.5 stroke-[2.5]" />
-                    <span>Selecionar arquivo JSON</span>
-                  </span>
-                  <input
-                    type="file"
-                    accept=".json"
-                    className="hidden"
-                    onChange={(e) => {
-                      if (e.target.files?.[0]) {
-                        showToast(`Arquivo selecionado: ${e.target.files[0].name}. Dados prontos para sincronizar!`);
-                      }
-                    }}
-                  />
-                </label>
               </div>
-            </div>
-          )}
+            )}
+          </div>
         </div>
-      </div>
+      )}
 
-      {/* Floating / Bottom Save Bar */}
-      <div className="pt-4 flex justify-end">
-        <button
-          type="button"
-          onClick={() => showToast('Configurações da loja salvas com sucesso!')}
-          className="px-6 py-3 text-xs font-bold bg-amber-500 hover:bg-amber-400 text-zinc-950 rounded-xl transition-all shadow-lg shadow-amber-500/10 flex items-center gap-2"
-        >
-          <Check className="w-4 h-4 stroke-[3]" />
-          <span>Salvar Configurações</span>
-        </button>
-      </div>
+      {/* Tab 2: Pagamentos & Frete */}
+      {activeTab === 'pagamentos' && <PagamentosScreen />}
+
+      {/* Tab 3: Precificação & Custos */}
+      {activeTab === 'precificacao' && <PrecificacaoScreen />}
+
+      {/* Tab 4: Aparência & Tema */}
+      {activeTab === 'aparencia' && (
+        <AparenciaScreen
+          onOpenCatalogPreview={onOpenCatalogPreview}
+          onOpenUpgradeModal={onOpenUpgradeModal}
+        />
+      )}
+
+      {/* Tab 5: Integrações */}
+      {activeTab === 'integracoes' && <IntegracoesScreen />}
+
+      {/* Tab 6: Exportar Dados */}
+      {activeTab === 'exportar' && (
+        <ExportarScreen
+          clients={clients}
+          orders={orders}
+          products={products}
+          transactions={transactions}
+        />
+      )}
     </div>
   );
 };

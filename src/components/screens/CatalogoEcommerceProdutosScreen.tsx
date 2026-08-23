@@ -1,17 +1,30 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import {
   Package,
   Plus,
   Trash2,
   Upload,
-  Sparkles,
-  Layers,
-  Image as ImageIcon,
+  Search,
+  Filter,
   Check,
   X,
   ExternalLink,
+  ChevronDown,
   ChevronRight,
-  HelpCircle,
+  Sparkles,
+  Layers,
+  Tag,
+  Clock,
+  Eye,
+  SlidersHorizontal,
+  ArrowUpDown,
+  Image as ImageIcon,
+  Globe,
+  Lock,
+  Ruler,
+  RefreshCw,
+  Info,
+  CheckCircle2,
 } from 'lucide-react';
 import { CatalogProduct, KitSubItem } from '../../types';
 import { formatCurrency } from '../../lib/utils';
@@ -21,12 +34,15 @@ interface CatalogoEcommerceProdutosScreenProps {
   onOpenCatalogPreview: () => void;
   onAddProduct: (prod: CatalogProduct) => void;
   onDeleteProduct?: (id: string) => void;
+  onToggleProductInternal?: (id: string) => void;
+  initialTypeFilter?: 'todos' | 'ecommerce' | 'internos';
 }
 
-const CATEGORIES = [
-  'Produtos por m²',
+const CATEGORIES_LIST = [
+  'Todas as Categorias',
   'Kit Variável',
   'Kit Fixo',
+  'Kits',
   'Tags',
   'Cartões',
   'Adesivos',
@@ -37,8 +53,12 @@ const CATEGORIES = [
   'Presentes',
   'Cardápios',
   'Impressão',
-  'Outros',
   'Sacolas',
+  'Comunicação Visual',
+  'Papelaria',
+  'Acabamentos',
+  'Produtos por m²',
+  'Outros',
 ];
 
 export const CatalogoEcommerceProdutosScreen: React.FC<CatalogoEcommerceProdutosScreenProps> = ({
@@ -46,15 +66,29 @@ export const CatalogoEcommerceProdutosScreen: React.FC<CatalogoEcommerceProdutos
   onOpenCatalogPreview,
   onAddProduct,
   onDeleteProduct,
+  onToggleProductInternal,
+  initialTypeFilter = 'todos',
 }) => {
-  const [selectedCategory, setSelectedCategory] = useState<string>('Kit Variável');
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  // Product scope filter (All vs Ecommerce/Site vs Internal)
+  const [typeFilter, setTypeFilter] = useState<'todos' | 'ecommerce' | 'internos'>(initialTypeFilter);
+  const [selectedCategory, setSelectedCategory] = useState<string>('Todas as Categorias');
+  const [searchQuery, setSearchQuery] = useState('');
+  const [statusFilter, setStatusFilter] = useState<'todos' | 'ativos' | 'inativos'>('todos');
+  const [sortBy, setSortBy] = useState<'recente' | 'menor-preco' | 'maior-preco' | 'nome'>('recente');
+  const [expandedKitId, setExpandedKitId] = useState<string | null>(null);
 
-  // Form state for new kit / product
-  const [kitName, setKitName] = useState('');
-  const [kitPrice, setKitPrice] = useState('');
-  const [kitProductionTime, setKitProductionTime] = useState('');
-  const [kitDescription, setKitDescription] = useState('');
+  // Modal State
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isInternalProduct, setIsInternalProduct] = useState(false);
+  const [prodName, setProdName] = useState('');
+  const [prodPrice, setProdPrice] = useState('');
+  const [prodCost, setProdCost] = useState('');
+  const [prodCategory, setProdCategory] = useState('Cartões');
+  const [prodUnit, setProdUnit] = useState('unidade');
+  const [isM2Calculation, setIsM2Calculation] = useState(false);
+  const [prodProductionTime, setProdProductionTime] = useState('3 a 5 dias úteis');
+  const [prodDescription, setProdDescription] = useState('');
+  const [prodImage, setProdImage] = useState('');
   const [kitItems, setKitItems] = useState<KitSubItem[]>([
     {
       id: 'sub-1',
@@ -67,18 +101,53 @@ export const CatalogoEcommerceProdutosScreen: React.FC<CatalogoEcommerceProdutos
     },
   ]);
 
-  // Filter products for active category
-  const activeProducts = products.filter((p) => {
-    if (selectedCategory === 'Produtos por m²') {
-      return p.isM2;
-    }
-    return p.category.toLowerCase() === selectedCategory.toLowerCase();
-  });
+  // Counts for KPIs & Tabs
+  const totalCount = products.length;
+  const ecommerceCount = products.filter((p) => !p.isInternal).length;
+  const internalCount = products.filter((p) => p.isInternal).length;
+  const m2Count = products.filter((p) => p.isM2).length;
 
-  const totalCatalogCount = products.length;
+  // Filtered & Sorted products
+  const filteredProducts = useMemo(() => {
+    return products
+      .filter((p) => {
+        // Scope filter (Site vs Internos)
+        if (typeFilter === 'ecommerce' && p.isInternal) return false;
+        if (typeFilter === 'internos' && !p.isInternal) return false;
+
+        // Category filter
+        if (selectedCategory !== 'Todas as Categorias') {
+          if (selectedCategory === 'Produtos por m²') {
+            if (!p.isM2) return false;
+          } else if (p.category.toLowerCase() !== selectedCategory.toLowerCase()) {
+            return false;
+          }
+        }
+        // Search query
+        if (searchQuery.trim()) {
+          const q = searchQuery.toLowerCase();
+          const matchName = p.name.toLowerCase().includes(q);
+          const matchCat = p.category.toLowerCase().includes(q);
+          const matchDesc = p.description?.toLowerCase().includes(q);
+          const matchItems = p.kitItems?.some((i) => i.title.toLowerCase().includes(q));
+          if (!matchName && !matchCat && !matchDesc && !matchItems) return false;
+        }
+        // Status filter
+        if (statusFilter === 'ativos' && p.isActive === false) return false;
+        if (statusFilter === 'inativos' && p.isActive !== false) return false;
+
+        return true;
+      })
+      .sort((a, b) => {
+        if (sortBy === 'menor-preco') return a.price - b.price;
+        if (sortBy === 'maior-preco') return b.price - a.price;
+        if (sortBy === 'nome') return a.name.localeCompare(b.name);
+        return 0;
+      });
+  }, [products, typeFilter, selectedCategory, searchQuery, statusFilter, sortBy]);
 
   const handleAddItemSlot = () => {
-    if (kitItems.length >= 4) return;
+    if (kitItems.length >= 6) return;
     setKitItems((prev) => [
       ...prev,
       {
@@ -104,33 +173,17 @@ export const CatalogoEcommerceProdutosScreen: React.FC<CatalogoEcommerceProdutos
     );
   };
 
-  const handleCreateKit = (e: React.FormEvent) => {
-    e.preventDefault();
-    const priceNum = parseFloat(kitPrice.replace(',', '.'));
-    if (!kitName.trim() || isNaN(priceNum)) return;
-
-    const newProduct: CatalogProduct = {
-      id: `prod-cat-${Date.now()}`,
-      name: kitName.trim(),
-      category: selectedCategory,
-      price: priceNum,
-      unit: selectedCategory.includes('Kit') ? 'kit' : 'unidade',
-      productionTime: kitProductionTime.trim() || undefined,
-      description: kitDescription.trim() || undefined,
-      kitItems: kitItems.filter((i) => i.title.trim() !== ''),
-      isActive: true,
-      image:
-        kitItems[0]?.image ||
-        'https://images.unsplash.com/photo-1544816155-12df9643f363?w=400&auto=format&fit=crop&q=60',
-    };
-
-    onAddProduct(newProduct);
-    setIsModalOpen(false);
-    // Reset
-    setKitName('');
-    setKitPrice('');
-    setKitProductionTime('');
-    setKitDescription('');
+  const handleOpenAddModal = (forInternal = false) => {
+    setIsInternalProduct(forInternal);
+    setProdName('');
+    setProdPrice('');
+    setProdCost('');
+    setProdCategory(forInternal ? 'Papelaria' : 'Cartões');
+    setProdUnit(forInternal ? 'unidade' : 'unidade');
+    setIsM2Calculation(false);
+    setProdProductionTime(forInternal ? '2 a 4 dias úteis' : '3 a 5 dias úteis');
+    setProdDescription('');
+    setProdImage('');
     setKitItems([
       {
         id: 'sub-1',
@@ -142,15 +195,48 @@ export const CatalogoEcommerceProdutosScreen: React.FC<CatalogoEcommerceProdutos
         image: '',
       },
     ]);
+    setIsModalOpen(true);
+  };
+
+  const handleCreateProduct = (e: React.FormEvent) => {
+    e.preventDefault();
+    const priceNum = parseFloat(prodPrice.replace(',', '.'));
+    if (!prodName.trim() || isNaN(priceNum)) return;
+
+    const validKitItems = kitItems.filter((i) => i.title.trim() !== '');
+
+    const newProduct: CatalogProduct = {
+      id: `prod-${Date.now()}`,
+      name: prodName.trim(),
+      category: prodCategory,
+      price: priceNum,
+      baseM2Price: isM2Calculation ? priceNum : undefined,
+      isM2: isM2Calculation,
+      isInternal: isInternalProduct,
+      unit: isM2Calculation ? 'm²' : prodUnit,
+      productionTime: prodProductionTime.trim() || undefined,
+      description: prodDescription.trim() || undefined,
+      kitItems: validKitItems.length > 0 ? validKitItems : undefined,
+      isActive: true,
+      image:
+        prodImage.trim() ||
+        (isInternalProduct
+          ? undefined
+          : 'https://images.unsplash.com/photo-1544816155-12df9643f363?w=400&auto=format&fit=crop&q=60'),
+    };
+
+    onAddProduct(newProduct);
+    setIsModalOpen(false);
   };
 
   const handleImportMock = () => {
     const sampleKit: CatalogProduct = {
       id: `prod-sample-${Date.now()}`,
-      name: 'Kit Empreendedor Semijoias',
-      category: selectedCategory,
+      name: 'Kit Empreendedor Semijoias & Bijuterias',
+      category: 'Kits',
       price: 299.9,
       unit: 'kit',
+      isInternal: false,
       productionTime: '5 a 7 dias úteis',
       description: 'Kit completo com tags personalizadas, cartelas de brinco e adesivos lacre.',
       kitItems: [
@@ -187,198 +273,471 @@ export const CatalogoEcommerceProdutosScreen: React.FC<CatalogoEcommerceProdutos
   };
 
   return (
-    <div id="screen-ecommerce-produtos" className="p-4 md:p-6 lg:p-8 space-y-6 max-w-7xl mx-auto">
-      {/* Top Categories Scrollable Nav Bar */}
-      <div className="w-full overflow-x-auto pb-2 custom-scrollbar">
-        <div className="inline-flex items-center gap-1.5 p-1 bg-zinc-900/90 border border-zinc-800 rounded-xl">
-          {CATEGORIES.map((cat) => {
-            const isSelected = selectedCategory === cat;
-            return (
-              <button
-                key={cat}
-                onClick={() => setSelectedCategory(cat)}
-                className={`px-3 py-1.5 text-xs font-semibold rounded-lg whitespace-nowrap transition-all ${
-                  isSelected
-                    ? 'bg-zinc-800 text-amber-400 shadow-xs border border-zinc-700/60'
-                    : 'text-zinc-400 hover:text-zinc-200 hover:bg-zinc-800/40'
-                }`}
-              >
-                {cat}
-              </button>
-            );
-          })}
-        </div>
-      </div>
-
+    <div id="screen-ecommerce-produtos" className="p-4 md:p-6 lg:p-8 space-y-5 max-w-7xl mx-auto">
       {/* Screen Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-xl md:text-2xl font-bold text-zinc-100 tracking-tight">
-            {selectedCategory}
+          <h1 className="text-xl md:text-2xl font-bold text-zinc-100 tracking-tight flex items-center gap-2">
+            <span>Produtos & Insumos</span>
+            <span className="text-xs font-mono font-normal px-2.5 py-0.5 rounded-full bg-blue-500/15 text-blue-400 border border-blue-500/30">
+              {totalCount} cadastrados
+            </span>
           </h1>
-          <p className="text-xs text-zinc-400 mt-0.5">
-            {selectedCategory.includes('Kit')
-              ? 'Gerencie seus kits promocionais (até 4 produtos por kit)'
-              : `Gerencie produtos da categoria ${selectedCategory} exibidos no catálogo do e-commerce`}
-          </p>
-          <p className="text-xs text-zinc-500 mt-1 font-medium">
-            Produtos cadastrados:{' '}
-            <strong className="text-amber-400 font-mono font-bold">
-              {activeProducts.length}
-            </strong>{' '}
-            / 40
+          <p className="text-xs md:text-sm text-zinc-400 mt-0.5">
+            Gerencie itens do catálogo online e insumos internos para calculadora de orçamentos
           </p>
         </div>
 
-        <div className="flex items-center gap-2.5">
+        <div className="flex items-center gap-2.5 self-start sm:self-auto">
           <button
             onClick={onOpenCatalogPreview}
             className="px-3.5 py-2 rounded-xl bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 text-xs font-semibold text-zinc-300 transition-colors flex items-center gap-1.5"
           >
-            <ExternalLink className="w-3.5 h-3.5 text-amber-400" />
+            <ExternalLink className="w-3.5 h-3.5 text-blue-400" />
             <span>Ver Catálogo</span>
           </button>
 
           <button
-            onClick={() => setIsModalOpen(true)}
-            className="px-4 py-2 rounded-xl bg-amber-500 hover:bg-amber-400 text-zinc-950 text-xs font-bold transition-all shadow-sm flex items-center gap-1.5"
+            onClick={() => handleOpenAddModal(false)}
+            className="px-4 py-2 rounded-xl bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold transition-all shadow-sm flex items-center gap-1.5 cursor-pointer"
           >
             <Plus className="w-3.5 h-3.5 stroke-[3]" />
-            <span>{selectedCategory.includes('Kit') ? '+ Novo Kit' : '+ Novo Produto'}</span>
+            <span>Novo Produto</span>
           </button>
         </div>
       </div>
 
-      {/* Main Content: Empty State (matches kit-1.png) or Product Grid */}
-      {activeProducts.length === 0 ? (
-        <div className="rounded-2xl bg-zinc-900/40 border border-zinc-800/80 p-16 text-center flex flex-col items-center justify-center min-h-[360px] space-y-4">
-          <p className="text-sm text-zinc-400 font-medium">
-            {selectedCategory.includes('Kit')
-              ? 'Nenhum kit cadastrado'
-              : 'Nenhum produto cadastrado nesta categoria'}
-          </p>
+      {/* Scope Segmented Tabs: [ Todos | Comercializados no Site | Insumos & Produtos Internos ] */}
+      <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 p-1.5 bg-zinc-900/90 border border-zinc-800/90 rounded-2xl shadow-sm">
+        <div className="grid grid-cols-3 sm:flex items-center gap-1">
           <button
-            onClick={handleImportMock}
-            className="px-4 py-2.5 rounded-xl bg-zinc-950 hover:bg-zinc-800 border border-zinc-800 text-xs font-semibold text-zinc-200 transition-all flex items-center gap-2 shadow-xs group"
+            onClick={() => setTypeFilter('todos')}
+            className={`px-3.5 py-2 rounded-xl text-xs font-semibold transition-all flex items-center justify-center sm:justify-start gap-2 cursor-pointer ${
+              typeFilter === 'todos'
+                ? 'bg-zinc-800 text-zinc-100 shadow-xs border border-zinc-700'
+                : 'text-zinc-400 hover:text-zinc-200 hover:bg-zinc-800/40'
+            }`}
           >
-            <Upload className="w-4 h-4 text-amber-400 group-hover:-translate-y-0.5 transition-transform" />
-            <span>Importar dados do catálogo</span>
+            <Layers className="w-3.5 h-3.5 text-zinc-400" />
+            <span>Todos</span>
+            <span className="text-[10px] font-mono px-1.5 py-0.2 rounded bg-zinc-900 text-zinc-400 border border-zinc-700/60 hidden sm:inline">
+              {totalCount}
+            </span>
+          </button>
+
+          <button
+            onClick={() => setTypeFilter('ecommerce')}
+            className={`px-3.5 py-2 rounded-xl text-xs font-semibold transition-all flex items-center justify-center sm:justify-start gap-2 cursor-pointer ${
+              typeFilter === 'ecommerce'
+                ? 'bg-blue-600/20 text-blue-400 shadow-xs border border-blue-500/30 font-bold'
+                : 'text-zinc-400 hover:text-zinc-200 hover:bg-zinc-800/40'
+            }`}
+          >
+            <Globe className="w-3.5 h-3.5 text-blue-400" />
+            <span>No Catálogo / Site</span>
+            <span className="text-[10px] font-mono px-1.5 py-0.2 rounded bg-blue-500/20 text-blue-300 border border-blue-500/30">
+              {ecommerceCount}
+            </span>
+          </button>
+
+          <button
+            onClick={() => setTypeFilter('internos')}
+            className={`px-3.5 py-2 rounded-xl text-xs font-semibold transition-all flex items-center justify-center sm:justify-start gap-2 cursor-pointer ${
+              typeFilter === 'internos'
+                ? 'bg-amber-500/20 text-amber-400 shadow-xs border border-amber-500/30 font-bold'
+                : 'text-zinc-400 hover:text-zinc-200 hover:bg-zinc-800/40'
+            }`}
+          >
+            <Lock className="w-3.5 h-3.5 text-amber-400" />
+            <span>Uso Interno</span>
+            <span className="text-[10px] font-mono px-1.5 py-0.2 rounded bg-amber-500/20 text-amber-300 border border-amber-500/30">
+              {internalCount}
+            </span>
           </button>
         </div>
-      ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-          {activeProducts.map((prod) => (
-            <div
-              key={prod.id}
-              className="rounded-2xl bg-zinc-900/90 border border-zinc-800/90 hover:border-zinc-700/80 transition-all overflow-hidden flex flex-col justify-between shadow-md group"
-            >
-              {/* Product Top Header / Image */}
-              <div>
-                <div className="relative h-40 bg-zinc-950 overflow-hidden flex items-center justify-center">
-                  {prod.image ? (
-                    <img
-                      src={prod.image}
-                      alt={prod.name}
-                      referrerPolicy="no-referrer"
-                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                    />
-                  ) : (
-                    <Package className="w-12 h-12 text-zinc-700" />
-                  )}
-                  <div className="absolute top-3 right-3 flex items-center gap-1.5">
-                    <span className="px-2.5 py-1 text-[11px] font-bold rounded-lg bg-zinc-950/80 backdrop-blur-xs text-amber-400 border border-amber-500/30">
-                      {formatCurrency(prod.price)}
-                    </span>
-                  </div>
-                  {prod.productionTime && (
-                    <div className="absolute bottom-3 left-3">
-                      <span className="px-2 py-0.5 text-[10px] font-medium rounded-md bg-black/70 backdrop-blur-xs text-zinc-300 border border-zinc-800">
-                        ⏱️ {prod.productionTime}
-                      </span>
-                    </div>
-                  )}
-                </div>
 
-                {/* Details */}
-                <div className="p-4 space-y-3">
-                  <div>
-                    <div className="flex items-center justify-between gap-2 mb-1">
-                      <span className="text-[10px] uppercase font-bold tracking-wider text-zinc-500">
-                        {prod.category}
-                      </span>
-                      <span className="text-[10px] font-semibold text-emerald-400 flex items-center gap-1">
-                        <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
-                        Ativo no Catálogo
-                      </span>
+        {/* Quick helper note */}
+        <div className="text-[11px] text-zinc-400 px-3 flex items-center gap-1.5">
+          <Info className="w-3.5 h-3.5 text-zinc-500 shrink-0" />
+          <span className="hidden md:inline">
+            A flag <b className="text-zinc-300">Uso Interno</b> oculta o item do catálogo público e o mantém ativo em orçamentos.
+          </span>
+        </div>
+      </div>
+
+      {/* Modern Filter & Search Toolbar */}
+      <div className="p-3 md:p-4 rounded-2xl bg-zinc-900/90 border border-zinc-800/90 shadow-sm space-y-3">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2.5">
+          {/* Search Input */}
+          <div className="relative sm:col-span-2">
+            <Search className="w-4 h-4 text-zinc-500 absolute left-3.5 top-1/2 -translate-y-1/2" />
+            <input
+              type="text"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              placeholder="Buscar por nome, categoria, m² ou insumo..."
+              className="w-full pl-9 pr-8 py-2 text-xs bg-zinc-950 border border-zinc-800 rounded-xl text-zinc-200 placeholder-zinc-500 focus:outline-hidden focus:border-blue-500"
+            />
+            {searchQuery && (
+              <button
+                onClick={() => setSearchQuery('')}
+                className="absolute right-2.5 top-1/2 -translate-y-1/2 text-zinc-500 hover:text-zinc-300 p-1"
+              >
+                <X className="w-3.5 h-3.5" />
+              </button>
+            )}
+          </div>
+
+          {/* Category Dropdown Filter */}
+          <div className="relative">
+            <div className="flex items-center">
+              <Filter className="w-3.5 h-3.5 text-blue-400 absolute left-3 pointer-events-none" />
+              <select
+                value={selectedCategory}
+                onChange={(e) => setSelectedCategory(e.target.value)}
+                className="w-full pl-8 pr-8 py-2 text-xs bg-zinc-950 border border-zinc-800 rounded-xl text-zinc-200 focus:outline-hidden focus:border-blue-500 appearance-none font-medium cursor-pointer"
+              >
+                {CATEGORIES_LIST.map((cat) => (
+                  <option key={cat} value={cat}>
+                    {cat}
+                  </option>
+                ))}
+              </select>
+              <ChevronDown className="w-3.5 h-3.5 text-zinc-500 absolute right-3 pointer-events-none" />
+            </div>
+          </div>
+
+          {/* Sort & Order Dropdown */}
+          <div className="relative">
+            <div className="flex items-center">
+              <ArrowUpDown className="w-3.5 h-3.5 text-zinc-400 absolute left-3 pointer-events-none" />
+              <select
+                value={sortBy}
+                onChange={(e) => setSortBy(e.target.value as any)}
+                className="w-full pl-8 pr-8 py-2 text-xs bg-zinc-950 border border-zinc-800 rounded-xl text-zinc-200 focus:outline-hidden focus:border-blue-500 appearance-none font-medium cursor-pointer"
+              >
+                <option value="recente">Mais Recentes</option>
+                <option value="menor-preco">Menor Preço</option>
+                <option value="maior-preco">Maior Preço</option>
+                <option value="nome">Nome (A - Z)</option>
+              </select>
+              <ChevronDown className="w-3.5 h-3.5 text-zinc-500 absolute right-3 pointer-events-none" />
+            </div>
+          </div>
+        </div>
+
+        {/* Status Counter & Quick Badges */}
+        <div className="flex flex-wrap items-center justify-between gap-2 pt-2 border-t border-zinc-800/60 text-xs">
+          <div className="flex items-center gap-1.5">
+            <span className="text-zinc-500 font-medium">Exibindo:</span>
+            <span className="font-bold text-zinc-200 font-mono">
+              {filteredProducts.length}
+            </span>
+            <span className="text-zinc-500">de</span>
+            <span className="font-bold text-zinc-400 font-mono">
+              {products.length} produtos
+            </span>
+          </div>
+
+          <div className="flex items-center gap-1">
+            <button
+              onClick={() => setStatusFilter('todos')}
+              className={`px-2.5 py-1 rounded-lg text-[11px] font-semibold transition-colors cursor-pointer ${
+                statusFilter === 'todos'
+                  ? 'bg-zinc-800 text-blue-400 border border-zinc-700'
+                  : 'text-zinc-400 hover:text-zinc-200'
+              }`}
+            >
+              Todos
+            </button>
+            <button
+              onClick={() => setStatusFilter('ativos')}
+              className={`px-2.5 py-1 rounded-lg text-[11px] font-semibold transition-colors cursor-pointer ${
+                statusFilter === 'ativos'
+                  ? 'bg-emerald-500/15 text-emerald-400 border border-emerald-500/30'
+                  : 'text-zinc-400 hover:text-zinc-200'
+              }`}
+            >
+              Ativos
+            </button>
+            <button
+              onClick={() => setStatusFilter('inativos')}
+              className={`px-2.5 py-1 rounded-lg text-[11px] font-semibold transition-colors cursor-pointer ${
+                statusFilter === 'inativos'
+                  ? 'bg-rose-500/15 text-rose-400 border border-rose-500/30'
+                  : 'text-zinc-400 hover:text-zinc-200'
+              }`}
+            >
+              Pausados
+            </button>
+          </div>
+        </div>
+      </div>
+
+      {/* Card-Table Content List */}
+      {filteredProducts.length === 0 ? (
+        <div className="rounded-2xl bg-zinc-900/40 border border-zinc-800/80 p-12 text-center flex flex-col items-center justify-center min-h-[280px] space-y-4">
+          <div className="w-12 h-12 rounded-2xl bg-zinc-900 border border-zinc-800 flex items-center justify-center text-zinc-500">
+            <Package className="w-6 h-6 text-zinc-600" />
+          </div>
+          <div>
+            <p className="text-sm font-bold text-zinc-200">Nenhum produto encontrado</p>
+            <p className="text-xs text-zinc-500 mt-1 max-w-sm">
+              Nenhum item corresponde aos filtros selecionados. Tente ajustar a busca ou adicione um novo produto.
+            </p>
+          </div>
+          <div className="flex items-center gap-2 pt-2">
+            <button
+              onClick={() => {
+                setTypeFilter('todos');
+                setSelectedCategory('Todas as Categorias');
+                setSearchQuery('');
+                setStatusFilter('todos');
+              }}
+              className="px-3.5 py-2 rounded-xl bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 text-xs font-semibold text-zinc-300 transition-all cursor-pointer"
+            >
+              Limpar Filtros
+            </button>
+            <button
+              onClick={handleImportMock}
+              className="px-4 py-2 rounded-xl bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold transition-all flex items-center gap-1.5 shadow-sm cursor-pointer"
+            >
+              <Upload className="w-3.5 h-3.5" />
+              <span>Importar Kit Modelo</span>
+            </button>
+          </div>
+        </div>
+      ) : (
+        <div className="space-y-2.5">
+          {/* Desktop Table Header */}
+          <div className="hidden lg:grid grid-cols-12 gap-4 px-5 py-2.5 text-[11px] font-bold uppercase tracking-wider text-zinc-400 bg-zinc-950/60 rounded-xl border border-zinc-800/60">
+            <div className="col-span-5">Produto / Detalhes</div>
+            <div className="col-span-2">Categoria & Tipo</div>
+            <div className="col-span-2">Preço Unitário</div>
+            <div className="col-span-2">Visibilidade & Prazo</div>
+            <div className="col-span-1 text-right">Ações</div>
+          </div>
+
+          {/* Product Items rendered as responsive Card-Rows */}
+          {filteredProducts.map((prod) => {
+            const isKit = prod.kitItems && prod.kitItems.length > 0;
+            const isExpanded = expandedKitId === prod.id;
+            const isInternal = !!prod.isInternal;
+
+            return (
+              <div
+                key={prod.id}
+                className="rounded-2xl bg-zinc-900/80 border border-zinc-800/80 hover:border-zinc-700/90 transition-all shadow-sm overflow-hidden group"
+              >
+                {/* Main Card Row */}
+                <div className="p-3.5 sm:p-4 lg:grid lg:grid-cols-12 lg:gap-4 lg:items-center">
+                  {/* Col 1: Photo & Product Info (Col-Span 5 on Desktop) */}
+                  <div className="lg:col-span-5 flex items-start sm:items-center gap-3">
+                    <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-xl bg-zinc-950 border border-zinc-800/80 overflow-hidden shrink-0 relative flex items-center justify-center">
+                      {prod.image ? (
+                        <img
+                          src={prod.image}
+                          alt={prod.name}
+                          referrerPolicy="no-referrer"
+                          className="w-full h-full object-cover group-hover:scale-105 transition-transform"
+                        />
+                      ) : (
+                        <Package className="w-6 h-6 text-zinc-600" />
+                      )}
+
+                      {/* Overlaid Badges on Image */}
+                      {isKit && (
+                        <span className="absolute bottom-1 right-1 px-1 py-0.2 rounded bg-black/80 text-[9px] font-bold text-blue-400 border border-blue-500/30">
+                          KIT
+                        </span>
+                      )}
+                      {prod.isM2 && !isKit && (
+                        <span className="absolute bottom-1 right-1 px-1 py-0.2 rounded bg-black/80 text-[9px] font-bold text-purple-400 border border-purple-500/30">
+                          m²
+                        </span>
+                      )}
                     </div>
-                    <h3 className="text-sm font-bold text-zinc-100">{prod.name}</h3>
-                    {prod.description && (
-                      <p className="text-xs text-zinc-400 mt-1 line-clamp-2 leading-relaxed">
-                        {prod.description}
-                      </p>
+
+                    <div className="min-w-0 flex-1">
+                      <div className="flex items-center gap-2">
+                        <h3 className="text-xs sm:text-sm font-bold text-zinc-100 truncate group-hover:text-blue-400 transition-colors">
+                          {prod.name}
+                        </h3>
+                      </div>
+                      {prod.description && (
+                        <p className="text-[11px] text-zinc-400 line-clamp-1 mt-0.5">
+                          {prod.description}
+                        </p>
+                      )}
+                      {isKit && (
+                        <button
+                          onClick={() => setExpandedKitId(isExpanded ? null : prod.id)}
+                          className="mt-1 text-[11px] font-semibold text-blue-400 hover:text-blue-300 flex items-center gap-1 cursor-pointer"
+                        >
+                          <span>{prod.kitItems?.length} itens inclusos no kit</span>
+                          <ChevronRight
+                            className={`w-3 h-3 transition-transform ${
+                              isExpanded ? 'rotate-90' : ''
+                            }`}
+                          />
+                        </button>
+                      )}
+                    </div>
+                  </div>
+
+                  {/* Col 2: Category & Scope Tag (Col-Span 2 on Desktop) */}
+                  <div className="mt-3 lg:mt-0 lg:col-span-2 flex items-center justify-between lg:justify-start gap-1.5 flex-wrap">
+                    <span className="lg:hidden text-[11px] text-zinc-500 font-medium">Categoria:</span>
+                    <span className="text-[11px] font-semibold px-2.5 py-1 rounded-lg bg-zinc-950 border border-zinc-800 text-zinc-300 inline-flex items-center gap-1.5">
+                      <Tag className="w-3 h-3 text-blue-400" />
+                      {prod.category}
+                    </span>
+                    {prod.isM2 && (
+                      <span className="text-[10px] font-medium px-2 py-0.5 rounded-md bg-purple-500/10 text-purple-400 border border-purple-500/20">
+                        m²
+                      </span>
                     )}
                   </div>
 
-                  {/* If it has kit items */}
-                  {prod.kitItems && prod.kitItems.length > 0 && (
-                    <div className="space-y-1.5 pt-2 border-t border-zinc-800/60">
-                      <span className="text-[11px] font-semibold text-zinc-400 block">
-                        Itens inclusos ({prod.kitItems.length}):
-                      </span>
-                      <div className="space-y-1">
-                        {prod.kitItems.map((item, idx) => (
-                          <div
-                            key={item.id || idx}
-                            className="text-[11px] text-zinc-300 bg-zinc-950/60 border border-zinc-800/60 px-2.5 py-1.5 rounded-lg flex items-center justify-between"
-                          >
-                            <span className="font-medium truncate">{item.title}</span>
-                            {item.size && (
-                              <span className="text-[10px] text-zinc-500 font-mono shrink-0 ml-2">
-                                {item.size}
+                  {/* Col 3: Price (Col-Span 2 on Desktop) */}
+                  <div className="mt-2 lg:mt-0 lg:col-span-2 flex items-center justify-between lg:justify-start">
+                    <span className="lg:hidden text-[11px] text-zinc-500 font-medium">Preço:</span>
+                    <div>
+                      <div className="text-sm font-bold text-blue-400 font-mono">
+                        {formatCurrency(prod.price)}
+                      </div>
+                      <div className="text-[10px] text-zinc-500">
+                        por {prod.unit || (prod.isM2 ? 'm²' : 'un')}
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Col 4: Visibility Flag & Prazo (Col-Span 2 on Desktop) */}
+                  <div className="mt-2 lg:mt-0 lg:col-span-2 flex items-center justify-between lg:justify-start gap-2">
+                    <span className="lg:hidden text-[11px] text-zinc-500 font-medium">Disponibilidade:</span>
+                    <div className="space-y-1">
+                      {isInternal ? (
+                        <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[10px] font-bold bg-amber-500/15 text-amber-300 border border-amber-500/30">
+                          <Lock className="w-2.5 h-2.5 text-amber-400" />
+                          Uso Interno
+                        </span>
+                      ) : (
+                        <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[10px] font-bold bg-emerald-500/15 text-emerald-300 border border-emerald-500/30">
+                          <Globe className="w-2.5 h-2.5 text-emerald-400" />
+                          No Catálogo / Site
+                        </span>
+                      )}
+
+                      {prod.productionTime && (
+                        <div className="text-[10px] text-zinc-400 flex items-center gap-1">
+                          <Clock className="w-3 h-3 text-zinc-500" />
+                          <span>{prod.productionTime}</span>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+
+                  {/* Col 5: Actions (Col-Span 1 on Desktop) */}
+                  <div className="mt-3 lg:mt-0 lg:col-span-1 pt-2 lg:pt-0 border-t lg:border-t-0 border-zinc-800/60 flex items-center justify-end gap-1.5">
+                    {/* Toggle Internal / Ecommerce */}
+                    {onToggleProductInternal && (
+                      <button
+                        onClick={() => onToggleProductInternal(prod.id)}
+                        className="p-2 text-zinc-400 hover:text-amber-400 hover:bg-amber-500/10 rounded-lg transition-colors cursor-pointer"
+                        title={
+                          isInternal
+                            ? 'Tornar visível no catálogo / site'
+                            : 'Mover para uso exclusivo interno'
+                        }
+                      >
+                        <RefreshCw className="w-3.5 h-3.5" />
+                      </button>
+                    )}
+
+                    {!isInternal && (
+                      <button
+                        onClick={onOpenCatalogPreview}
+                        className="p-2 text-zinc-400 hover:text-blue-400 hover:bg-blue-500/10 rounded-lg transition-colors cursor-pointer"
+                        title="Visualizar no catálogo"
+                      >
+                        <Eye className="w-4 h-4" />
+                      </button>
+                    )}
+
+                    {onDeleteProduct && (
+                      <button
+                        onClick={() => onDeleteProduct(prod.id)}
+                        className="p-2 text-zinc-400 hover:text-rose-400 hover:bg-rose-500/10 rounded-lg transition-colors cursor-pointer"
+                        title="Excluir produto"
+                      >
+                        <Trash2 className="w-4 h-4" />
+                      </button>
+                    )}
+                  </div>
+                </div>
+
+                {/* Expandable Kit Subitems Drawer */}
+                {isKit && isExpanded && (
+                  <div className="px-4 py-3 bg-zinc-950/90 border-t border-zinc-800/80 animate-in fade-in duration-150">
+                    <div className="text-[11px] font-bold text-zinc-400 uppercase tracking-wider mb-2">
+                      Composição do Kit:
+                    </div>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2.5">
+                      {prod.kitItems?.map((sub, sIdx) => (
+                        <div
+                          key={sub.id || sIdx}
+                          className="p-2.5 rounded-xl bg-zinc-900/90 border border-zinc-800 text-xs space-y-1"
+                        >
+                          <div className="font-semibold text-zinc-200 truncate">
+                            {sub.title}
+                          </div>
+                          <div className="flex flex-wrap gap-1 text-[10px] text-zinc-400">
+                            {sub.size && (
+                              <span className="px-1.5 py-0.5 rounded bg-zinc-800 text-zinc-300">
+                                {sub.size}
+                              </span>
+                            )}
+                            {sub.paper && (
+                              <span className="px-1.5 py-0.5 rounded bg-zinc-800 text-zinc-300">
+                                {sub.paper}
+                              </span>
+                            )}
+                            {sub.printType && (
+                              <span className="px-1.5 py-0.5 rounded bg-zinc-800 text-zinc-300">
+                                {sub.printType}
                               </span>
                             )}
                           </div>
-                        ))}
-                      </div>
+                          {sub.finishing && (
+                            <div className="text-[10px] text-blue-400">
+                              Acabamento: {sub.finishing}
+                            </div>
+                          )}
+                        </div>
+                      ))}
                     </div>
-                  )}
-                </div>
-              </div>
-
-              {/* Bottom Actions */}
-              <div className="p-4 pt-2 border-t border-zinc-800/80 flex items-center justify-between gap-2">
-                <button
-                  onClick={onOpenCatalogPreview}
-                  className="text-xs text-amber-400 hover:text-amber-300 font-semibold flex items-center gap-1 transition-colors"
-                >
-                  <span>Visualizar no catálogo</span>
-                  <ChevronRight className="w-3.5 h-3.5" />
-                </button>
-
-                {onDeleteProduct && (
-                  <button
-                    onClick={() => onDeleteProduct(prod.id)}
-                    className="p-1.5 text-zinc-500 hover:text-rose-400 hover:bg-rose-500/10 rounded-lg transition-colors"
-                    title="Excluir produto"
-                  >
-                    <Trash2 className="w-3.5 h-3.5" />
-                  </button>
+                  </div>
                 )}
               </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
       )}
 
-      {/* Modal: Novo Kit Variável / Novo Produto (matches cadastro-kit.png) */}
+      {/* Modal: Novo Produto / Kit */}
       {isModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/80 backdrop-blur-xs animate-in fade-in duration-150">
           <div className="w-full max-w-xl bg-zinc-950 border border-zinc-800 rounded-2xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
             {/* Modal Header */}
             <div className="flex items-center justify-between px-6 py-4 border-b border-zinc-800/90 bg-zinc-950">
-              <h3 className="text-base font-bold text-zinc-100">
-                {selectedCategory.includes('Kit') ? `Novo ${selectedCategory}` : `Novo Produto em ${selectedCategory}`}
-              </h3>
+              <div>
+                <h3 className="text-base font-bold text-zinc-100">
+                  {isInternalProduct ? 'Cadastrar Produto / Insumo Interno' : 'Cadastrar Produto para Catálogo'}
+                </h3>
+                <p className="text-xs text-zinc-400 mt-0.5">
+                  Configure disponibilidade, precificação e detalhes do item
+                </p>
+              </div>
               <button
                 onClick={() => setIsModalOpen(false)}
                 className="p-1 rounded-lg text-zinc-400 hover:text-zinc-100 hover:bg-zinc-800 transition-colors"
@@ -388,225 +747,291 @@ export const CatalogoEcommerceProdutosScreen: React.FC<CatalogoEcommerceProdutos
             </div>
 
             {/* Modal Scrollable Form */}
-            <form onSubmit={handleCreateKit} className="p-6 space-y-4 overflow-y-auto custom-scrollbar flex-1">
-              {/* Row 1: Nome e Preço */}
+            <form onSubmit={handleCreateProduct} className="p-6 space-y-4 overflow-y-auto custom-scrollbar flex-1">
+              {/* Flag Selector: Comercializado no Site vs Uso Interno */}
+              <div>
+                <label className="block text-xs font-semibold text-zinc-300 mb-1.5">
+                  Disponibilidade & Visibilidade <span className="text-blue-400">*</span>
+                </label>
+                <div className="grid grid-cols-2 gap-2 p-1 bg-zinc-900 rounded-xl border border-zinc-800">
+                  <button
+                    type="button"
+                    onClick={() => setIsInternalProduct(false)}
+                    className={`py-2.5 px-3 text-xs font-semibold rounded-lg transition-all flex items-center justify-center gap-2 cursor-pointer ${
+                      !isInternalProduct
+                        ? 'bg-blue-600 text-white shadow-xs'
+                        : 'text-zinc-400 hover:text-zinc-200'
+                    }`}
+                  >
+                    <Globe className="w-3.5 h-3.5" />
+                    <span>No Catálogo / Site</span>
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => setIsInternalProduct(true)}
+                    className={`py-2.5 px-3 text-xs font-semibold rounded-lg transition-all flex items-center justify-center gap-2 cursor-pointer ${
+                      isInternalProduct
+                        ? 'bg-amber-600 text-white shadow-xs'
+                        : 'text-zinc-400 hover:text-zinc-200'
+                    }`}
+                  >
+                    <Lock className="w-3.5 h-3.5" />
+                    <span>Uso Interno</span>
+                  </button>
+                </div>
+                <span className="text-[10px] text-zinc-500 mt-1 block">
+                  {isInternalProduct
+                    ? '🔒 Visível apenas internamente em Orçamentos, Pedidos Manuais e Cálculos.'
+                    : '🌐 Exibido na vitrine online para clientes visualizarem e solicitarem.'}
+                </span>
+              </div>
+
+              {/* Row 1: Nome e Categoria */}
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                 <div className="sm:col-span-2">
                   <label className="block text-xs font-semibold text-zinc-300 mb-1.5">
-                    Nome do Kit <span className="text-amber-400">*</span>
+                    Nome do Produto <span className="text-blue-400">*</span>
                   </label>
                   <input
                     type="text"
                     required
-                    value={kitName}
-                    onChange={(e) => setKitName(e.target.value)}
-                    placeholder="Kit Iniciante"
-                    className="w-full px-3.5 py-2.5 text-xs bg-zinc-900 border border-zinc-800 rounded-xl text-zinc-200 placeholder-zinc-600 focus:outline-hidden focus:border-amber-500"
+                    value={prodName}
+                    onChange={(e) => setProdName(e.target.value)}
+                    placeholder={
+                      isInternalProduct
+                        ? 'Ex: Chapa PVC 2mm / Lona 440g'
+                        : 'Ex: Kit Empreendedor Completo'
+                    }
+                    className="w-full px-3.5 py-2 text-xs bg-zinc-900 border border-zinc-800 rounded-xl text-zinc-200 focus:outline-hidden focus:border-blue-500"
                   />
                 </div>
 
                 <div>
                   <label className="block text-xs font-semibold text-zinc-300 mb-1.5">
-                    Preço (R$) <span className="text-amber-400">*</span>
+                    Categoria
+                  </label>
+                  <select
+                    value={prodCategory}
+                    onChange={(e) => setProdCategory(e.target.value)}
+                    className="w-full px-3 py-2 text-xs bg-zinc-900 border border-zinc-800 rounded-xl text-zinc-200 focus:outline-hidden focus:border-blue-500 cursor-pointer"
+                  >
+                    {CATEGORIES_LIST.filter((c) => c !== 'Todas as Categorias').map((cat) => (
+                      <option key={cat} value={cat}>
+                        {cat}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              </div>
+
+              {/* Row 2: Preço, Unidade e Tipo de Cálculo */}
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                <div>
+                  <label className="block text-xs font-semibold text-zinc-300 mb-1.5">
+                    Preço de Venda (R$) <span className="text-blue-400">*</span>
                   </label>
                   <input
                     type="text"
                     required
-                    value={kitPrice}
-                    onChange={(e) => setKitPrice(e.target.value)}
-                    placeholder="299.99"
-                    className="w-full px-3.5 py-2.5 text-xs bg-zinc-900 border border-zinc-800 rounded-xl text-zinc-200 placeholder-zinc-600 font-mono focus:outline-hidden focus:border-amber-500"
+                    value={prodPrice}
+                    onChange={(e) => setProdPrice(e.target.value)}
+                    placeholder="0,00"
+                    className="w-full px-3.5 py-2 text-xs bg-zinc-900 border border-zinc-800 rounded-xl text-zinc-200 font-mono focus:outline-hidden focus:border-blue-500"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-xs font-semibold text-zinc-300 mb-1.5">
+                    Unidade de Venda
+                  </label>
+                  <select
+                    value={prodUnit}
+                    onChange={(e) => setProdUnit(e.target.value)}
+                    disabled={isM2Calculation}
+                    className="w-full px-3 py-2 text-xs bg-zinc-900 border border-zinc-800 rounded-xl text-zinc-200 focus:outline-hidden focus:border-blue-500 cursor-pointer disabled:opacity-50"
+                  >
+                    <option value="unidade">Unidade (un)</option>
+                    <option value="kit">Kit (conjunto)</option>
+                    <option value="milheiro">Milheiro (1.000 un)</option>
+                    <option value="500 un">500 unidades</option>
+                    <option value="cento">Cento (100 un)</option>
+                    <option value="m²">Metro Quadrado (m²)</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label className="block text-xs font-semibold text-zinc-300 mb-1.5">
+                    Prazo Médio
+                  </label>
+                  <input
+                    type="text"
+                    value={prodProductionTime}
+                    onChange={(e) => setProdProductionTime(e.target.value)}
+                    placeholder="Ex: 3 a 5 dias úteis"
+                    className="w-full px-3.5 py-2 text-xs bg-zinc-900 border border-zinc-800 rounded-xl text-zinc-200 focus:outline-hidden focus:border-blue-500"
                   />
                 </div>
               </div>
 
-              {/* Row 2: Prazo de Produção */}
-              <div>
-                <label className="block text-xs font-semibold text-zinc-300 mb-1.5">
-                  Prazo de Produção (opcional)
-                </label>
+              {/* M2 Calculation Checkbox */}
+              <div className="p-3 bg-zinc-900/60 border border-zinc-800/80 rounded-xl flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <Ruler className="w-4 h-4 text-purple-400" />
+                  <div>
+                    <div className="text-xs font-semibold text-zinc-200">
+                      Calcular preço por Metro Quadrado (m²)
+                    </div>
+                    <div className="text-[10px] text-zinc-400">
+                      Calcula automaticamente largura × altura ao criar orçamentos
+                    </div>
+                  </div>
+                </div>
                 <input
-                  type="text"
-                  value={kitProductionTime}
-                  onChange={(e) => setKitProductionTime(e.target.value)}
-                  placeholder="Ex: 5 a 7 dias úteis"
-                  className="w-full px-3.5 py-2.5 text-xs bg-zinc-900 border border-zinc-800 rounded-xl text-zinc-200 placeholder-zinc-600 focus:outline-hidden focus:border-amber-500"
+                  type="checkbox"
+                  checked={isM2Calculation}
+                  onChange={(e) => {
+                    setIsM2Calculation(e.target.checked);
+                    if (e.target.checked) setProdUnit('m²');
+                  }}
+                  className="w-4 h-4 text-blue-600 rounded bg-zinc-900 border-zinc-700 cursor-pointer"
                 />
               </div>
 
-              {/* Row 3: Descrição do Kit */}
+              {/* Descrição */}
               <div>
                 <label className="block text-xs font-semibold text-zinc-300 mb-1.5">
-                  Descrição do Kit
+                  Descrição / Especificações Técnicas
                 </label>
                 <textarea
                   rows={2}
-                  value={kitDescription}
-                  onChange={(e) => setKitDescription(e.target.value)}
-                  placeholder="Descreva os detalhes do kit que serão exibidos no catálogo..."
-                  className="w-full px-3.5 py-2 text-xs bg-zinc-900 border border-zinc-800 rounded-xl text-zinc-200 placeholder-zinc-600 focus:outline-hidden focus:border-amber-500 resize-none"
+                  value={prodDescription}
+                  onChange={(e) => setProdDescription(e.target.value)}
+                  placeholder="Detalhes sobre papel, laminação, durabilidade..."
+                  className="w-full px-3.5 py-2 text-xs bg-zinc-900 border border-zinc-800 rounded-xl text-zinc-200 focus:outline-hidden focus:border-blue-500 resize-none"
                 />
               </div>
 
-              {/* Sub-Items of Kit (máx. 4) */}
-              <div className="space-y-3 pt-2">
-                <div className="flex items-center justify-between">
-                  <label className="text-xs font-bold text-zinc-200">
-                    Itens do Kit (máx. 4)
+              {/* Imagem URL (para catálogo) */}
+              {!isInternalProduct && (
+                <div>
+                  <label className="block text-xs font-semibold text-zinc-300 mb-1.5">
+                    URL da Foto do Produto
                   </label>
-                  {kitItems.length < 4 && (
-                    <button
-                      type="button"
-                      onClick={handleAddItemSlot}
-                      className="px-2.5 py-1 text-xs font-semibold text-amber-400 hover:text-amber-300 hover:bg-amber-500/10 rounded-lg transition-colors flex items-center gap-1"
-                    >
-                      <Plus className="w-3.5 h-3.5" />
-                      <span>Adicionar</span>
-                    </button>
-                  )}
+                  <div className="relative">
+                    <ImageIcon className="w-3.5 h-3.5 text-zinc-500 absolute left-3 top-1/2 -translate-y-1/2" />
+                    <input
+                      type="url"
+                      value={prodImage}
+                      onChange={(e) => setProdImage(e.target.value)}
+                      placeholder="https://images.unsplash.com/..."
+                      className="w-full pl-8 pr-3.5 py-2 text-xs bg-zinc-900 border border-zinc-800 rounded-xl text-zinc-200 focus:outline-hidden focus:border-blue-500"
+                    />
+                  </div>
+                </div>
+              )}
+
+              {/* Sub-itens para Kit (Opcional) */}
+              <div className="pt-2 border-t border-zinc-800/80">
+                <div className="flex items-center justify-between mb-3">
+                  <div>
+                    <h4 className="text-xs font-bold text-zinc-200">
+                      Itens Inclusos / Composição do Kit (Opcional)
+                    </h4>
+                    <p className="text-[10px] text-zinc-500">
+                      Adicione itens que compõem este combo ou kit gráfico
+                    </p>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={handleAddItemSlot}
+                    className="px-2.5 py-1 text-xs font-semibold text-blue-400 bg-blue-500/10 border border-blue-500/20 rounded-lg hover:bg-blue-500/20 transition-all flex items-center gap-1 cursor-pointer"
+                  >
+                    <Plus className="w-3 h-3" />
+                    <span>Adicionar Item</span>
+                  </button>
                 </div>
 
-                <div className="space-y-4">
-                  {kitItems.map((item, idx) => (
+                <div className="space-y-3">
+                  {kitItems.map((slot, index) => (
                     <div
-                      key={item.id}
-                      className="p-4 rounded-xl bg-zinc-900/80 border border-zinc-800/90 space-y-3 relative"
+                      key={slot.id}
+                      className="p-3 bg-zinc-900/70 border border-zinc-800/80 rounded-xl space-y-2 relative"
                     >
                       <div className="flex items-center justify-between">
-                        <span className="text-xs font-bold text-zinc-300">
-                          Item {idx + 1}
+                        <span className="text-[11px] font-bold text-zinc-400">
+                          Item #{index + 1}
                         </span>
                         {kitItems.length > 1 && (
                           <button
                             type="button"
-                            onClick={() => handleRemoveItemSlot(item.id)}
+                            onClick={() => handleRemoveItemSlot(slot.id)}
                             className="text-zinc-500 hover:text-rose-400 p-1"
                           >
-                            <Trash2 className="w-3.5 h-3.5" />
+                            <X className="w-3.5 h-3.5" />
                           </button>
                         )}
                       </div>
 
-                      {/* Título do Item */}
-                      <div>
-                        <label className="block text-[11px] font-medium text-zinc-400 mb-1">
-                          Título do Item
-                        </label>
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                         <input
                           type="text"
-                          value={item.title}
-                          onChange={(e) =>
-                            handleUpdateItemSlot(item.id, 'title', e.target.value)
-                          }
-                          placeholder="Ex: 200 Tag Brinco + 1 par de Corte"
-                          className="w-full px-3 py-2 text-xs bg-zinc-950 border border-zinc-800 rounded-lg text-zinc-200 placeholder-zinc-600 focus:outline-hidden focus:border-amber-500"
+                          value={slot.title}
+                          onChange={(e) => handleUpdateItemSlot(slot.id, 'title', e.target.value)}
+                          placeholder="Ex: 500 Cartões de Visita"
+                          className="w-full px-3 py-1.5 text-xs bg-zinc-950 border border-zinc-800 rounded-lg text-zinc-200 focus:outline-hidden focus:border-blue-500"
+                        />
+                        <input
+                          type="text"
+                          value={slot.size || ''}
+                          onChange={(e) => handleUpdateItemSlot(slot.id, 'size', e.target.value)}
+                          placeholder="Tamanho (Ex: 9x5cm)"
+                          className="w-full px-3 py-1.5 text-xs bg-zinc-950 border border-zinc-800 rounded-lg text-zinc-200 focus:outline-hidden focus:border-blue-500"
                         />
                       </div>
 
-                      {/* Tamanho & Impressão */}
-                      <div className="grid grid-cols-2 gap-2.5">
-                        <div>
-                          <label className="block text-[11px] font-medium text-zinc-400 mb-1">
-                            Tamanho
-                          </label>
-                          <input
-                            type="text"
-                            value={item.size}
-                            onChange={(e) =>
-                              handleUpdateItemSlot(item.id, 'size', e.target.value)
-                            }
-                            placeholder="Ex: 4cm x 4cm"
-                            className="w-full px-3 py-2 text-xs bg-zinc-950 border border-zinc-800 rounded-lg text-zinc-200 placeholder-zinc-600 focus:outline-hidden focus:border-amber-500"
-                          />
-                        </div>
-
-                        <div>
-                          <label className="block text-[11px] font-medium text-zinc-400 mb-1">
-                            Impressão
-                          </label>
-                          <select
-                            value={item.printType}
-                            onChange={(e) =>
-                              handleUpdateItemSlot(item.id, 'printType', e.target.value)
-                            }
-                            className="w-full px-3 py-2 text-xs bg-zinc-950 border border-zinc-800 rounded-lg text-zinc-200 focus:outline-hidden focus:border-amber-500"
-                          >
-                            <option value="">Selecione...</option>
-                            <option value="4x0">4x0 (Frente Colorida)</option>
-                            <option value="4x4">4x4 (Frente e Verso Colorido)</option>
-                            <option value="4x1">4x1 (Frente Colorida / Verso P&B)</option>
-                            <option value="1x0">1x0 (Preto e Branco)</option>
-                          </select>
-                        </div>
-                      </div>
-
-                      {/* Papel & Acabamento */}
-                      <div className="grid grid-cols-2 gap-2.5">
-                        <div>
-                          <label className="block text-[11px] font-medium text-zinc-400 mb-1">
-                            Papel
-                          </label>
-                          <select
-                            value={item.paper}
-                            onChange={(e) =>
-                              handleUpdateItemSlot(item.id, 'paper', e.target.value)
-                            }
-                            className="w-full px-3 py-2 text-xs bg-zinc-950 border border-zinc-800 rounded-lg text-zinc-200 focus:outline-hidden focus:border-amber-500"
-                          >
-                            <option value="">Selecione...</option>
-                            <option value="Couché 300g">Couché 300g</option>
-                            <option value="Kraft 240g">Kraft 240g</option>
-                            <option value="Offset 240g">Offset 240g</option>
-                            <option value="Supremo 300g">Supremo 300g</option>
-                            <option value="Duplex 250g">Duplex 250g</option>
-                            <option value="Vinil Adesivo">Vinil Adesivo</option>
-                          </select>
-                        </div>
-
-                        <div>
-                          <label className="block text-[11px] font-medium text-zinc-400 mb-1">
-                            Acabamento
-                          </label>
-                          <select
-                            value={item.finishing}
-                            onChange={(e) =>
-                              handleUpdateItemSlot(item.id, 'finishing', e.target.value)
-                            }
-                            className="w-full px-3 py-2 text-xs bg-zinc-950 border border-zinc-800 rounded-lg text-zinc-200 focus:outline-hidden focus:border-amber-500"
-                          >
-                            <option value="">Selecione...</option>
-                            <option value="Laminação Fosca Bopp">Laminação Fosca Bopp</option>
-                            <option value="Verniz Localizado UV">Verniz Localizado UV</option>
-                            <option value="Corte Especial">Corte Especial / Vinco</option>
-                            <option value="Refile Reto">Refile Reto</option>
-                            <option value="Furo Central">Furo Central</option>
-                            <option value="Meio Corte">Meio Corte</option>
-                          </select>
-                        </div>
-                      </div>
-
-                      {/* Imagem do Modelo Dropzone */}
-                      <div>
-                        <label className="block text-[11px] font-medium text-zinc-400 mb-1">
-                          Imagem do Modelo
-                        </label>
-                        <div className="border border-dashed border-zinc-700/80 hover:border-amber-500/60 rounded-lg p-3 text-center bg-zinc-950 flex flex-col items-center justify-center cursor-pointer transition-colors">
-                          <Upload className="w-4 h-4 text-zinc-400 mb-1" />
-                          <span className="text-[10px] text-zinc-400">.png, .jpg...</span>
-                        </div>
+                      <div className="grid grid-cols-3 gap-2">
+                        <input
+                          type="text"
+                          value={slot.paper || ''}
+                          onChange={(e) => handleUpdateItemSlot(slot.id, 'paper', e.target.value)}
+                          placeholder="Papel (Couché 300g)"
+                          className="w-full px-2.5 py-1.5 text-[11px] bg-zinc-950 border border-zinc-800 rounded-lg text-zinc-200 focus:outline-hidden focus:border-blue-500"
+                        />
+                        <input
+                          type="text"
+                          value={slot.printType || ''}
+                          onChange={(e) => handleUpdateItemSlot(slot.id, 'printType', e.target.value)}
+                          placeholder="Impressão (4x4)"
+                          className="w-full px-2.5 py-1.5 text-[11px] bg-zinc-950 border border-zinc-800 rounded-lg text-zinc-200 focus:outline-hidden focus:border-blue-500"
+                        />
+                        <input
+                          type="text"
+                          value={slot.finishing || ''}
+                          onChange={(e) => handleUpdateItemSlot(slot.id, 'finishing', e.target.value)}
+                          placeholder="Acabamento"
+                          className="w-full px-2.5 py-1.5 text-[11px] bg-zinc-950 border border-zinc-800 rounded-lg text-zinc-200 focus:outline-hidden focus:border-blue-500"
+                        />
                       </div>
                     </div>
                   ))}
                 </div>
               </div>
 
-              {/* Botão de Criação */}
-              <div className="pt-4">
+              {/* Submit Buttons */}
+              <div className="pt-3 border-t border-zinc-800/80 flex items-center justify-end gap-2">
+                <button
+                  type="button"
+                  onClick={() => setIsModalOpen(false)}
+                  className="px-4 py-2 text-xs font-semibold text-zinc-400 hover:text-zinc-200 bg-zinc-900 border border-zinc-800 rounded-xl transition-colors cursor-pointer"
+                >
+                  Cancelar
+                </button>
                 <button
                   type="submit"
-                  className="w-full py-3 text-xs font-bold bg-amber-500 hover:bg-amber-400 text-zinc-950 rounded-xl transition-all shadow-md shadow-amber-500/10"
+                  className="px-5 py-2 text-xs font-bold text-white bg-blue-600 hover:bg-blue-500 rounded-xl transition-all shadow-md shadow-blue-500/10 cursor-pointer"
                 >
-                  Criar
+                  Salvar Produto
                 </button>
               </div>
             </form>

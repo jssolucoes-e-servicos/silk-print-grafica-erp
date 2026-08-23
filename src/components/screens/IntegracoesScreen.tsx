@@ -61,7 +61,7 @@ export const IntegracoesScreen: React.FC = () => {
             <div>
               <div className="flex items-center gap-2">
                 <h3 className="text-sm font-bold text-zinc-100">Melhor Envio / Frenet</h3>
-                <span className="text-[10px] font-bold text-amber-400 bg-amber-500/10 border border-amber-500/20 px-2 py-0.5 rounded">
+                <span className="text-[10px] font-bold text-blue-400 bg-blue-500/10 border border-blue-500/20 px-2 py-0.5 rounded">
                   Pronto para ativar
                 </span>
               </div>

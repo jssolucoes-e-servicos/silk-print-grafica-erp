@@ -170,7 +170,7 @@ export const PagamentosScreen: React.FC = () => {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         <div>
           <h1 className="text-xl md:text-2xl font-bold text-zinc-100 tracking-tight flex items-center gap-2.5">
-            <CreditCard className="w-6 h-6 text-amber-400" />
+            <CreditCard className="w-6 h-6 text-blue-400" />
             <span>Formas de Pagamento & Frete</span>
           </h1>
           <p className="text-xs md:text-sm text-zinc-400 mt-0.5">
@@ -181,7 +181,7 @@ export const PagamentosScreen: React.FC = () => {
         <button
           type="button"
           onClick={handleSave}
-          className="px-5 py-2.5 text-xs font-bold bg-amber-500 hover:bg-amber-400 text-zinc-950 rounded-xl transition-all shadow-md flex items-center justify-center gap-1.5 self-start sm:self-auto cursor-pointer"
+          className="px-5 py-2.5 text-xs font-bold bg-blue-600 hover:bg-blue-500 text-white rounded-xl transition-all shadow-md flex items-center justify-center gap-1.5 self-start sm:self-auto cursor-pointer"
         >
           <Save className="w-4 h-4" />
           <span>Salvar Todas Alterações</span>
@@ -202,7 +202,7 @@ export const PagamentosScreen: React.FC = () => {
           onClick={() => setActiveTab('gateways')}
           className={`px-4 py-2 text-xs font-bold rounded-xl transition-all flex items-center gap-2 shrink-0 ${
             activeTab === 'gateways'
-              ? 'bg-amber-500/15 text-amber-400 border border-amber-500/30'
+              ? 'bg-blue-500/15 text-blue-400 border border-blue-500/30'
               : 'text-zinc-400 hover:text-zinc-200 hover:bg-zinc-900/60'
           }`}
         >
@@ -218,7 +218,7 @@ export const PagamentosScreen: React.FC = () => {
           onClick={() => setActiveTab('pix')}
           className={`px-4 py-2 text-xs font-bold rounded-xl transition-all flex items-center gap-2 shrink-0 ${
             activeTab === 'pix'
-              ? 'bg-amber-500/15 text-amber-400 border border-amber-500/30'
+              ? 'bg-blue-500/15 text-blue-400 border border-blue-500/30'
               : 'text-zinc-400 hover:text-zinc-200 hover:bg-zinc-900/60'
           }`}
         >
@@ -231,13 +231,13 @@ export const PagamentosScreen: React.FC = () => {
           onClick={() => setActiveTab('cupons')}
           className={`px-4 py-2 text-xs font-bold rounded-xl transition-all flex items-center gap-2 shrink-0 ${
             activeTab === 'cupons'
-              ? 'bg-amber-500/15 text-amber-400 border border-amber-500/30'
+              ? 'bg-blue-500/15 text-blue-400 border border-blue-500/30'
               : 'text-zinc-400 hover:text-zinc-200 hover:bg-zinc-900/60'
           }`}
         >
           <Tag className="w-4 h-4" />
           <span>Cupons de Desconto</span>
-          <span className="text-[10px] bg-amber-500/20 text-amber-400 px-1.5 py-0.5 rounded">
+          <span className="text-[10px] bg-blue-500/20 text-blue-400 px-1.5 py-0.5 rounded">
             {coupons.filter((c) => c.status === 'active').length}
           </span>
         </button>
@@ -247,7 +247,7 @@ export const PagamentosScreen: React.FC = () => {
           onClick={() => setActiveTab('frete')}
           className={`px-4 py-2 text-xs font-bold rounded-xl transition-all flex items-center gap-2 shrink-0 ${
             activeTab === 'frete'
-              ? 'bg-amber-500/15 text-amber-400 border border-amber-500/30'
+              ? 'bg-blue-500/15 text-blue-400 border border-blue-500/30'
               : 'text-zinc-400 hover:text-zinc-200 hover:bg-zinc-900/60'
           }`}
         >
@@ -311,7 +311,7 @@ export const PagamentosScreen: React.FC = () => {
                       value={asaasApiKey}
                       onChange={(e) => setAsaasApiKey(e.target.value)}
                       placeholder="$aact_YTU1..."
-                      className="w-full px-3.5 py-2.5 text-xs bg-zinc-950 border border-zinc-800 rounded-xl text-zinc-200 font-mono focus:outline-hidden focus:border-amber-500"
+                      className="w-full px-3.5 py-2.5 text-xs bg-zinc-950 border border-zinc-800 rounded-xl text-zinc-200 font-mono focus:outline-hidden focus:border-blue-500"
                     />
                     <p className="text-[10px] text-zinc-500 mt-1">
                       Encontre em Menu &gt; Configurações da Conta &gt; Integrações no painel do Asaas.
@@ -325,7 +325,7 @@ export const PagamentosScreen: React.FC = () => {
                     <select
                       value={asaasEnv}
                       onChange={(e) => setAsaasEnv(e.target.value as 'prod' | 'sandbox')}
-                      className="w-full px-3.5 py-2.5 text-xs bg-zinc-950 border border-zinc-800 rounded-xl text-zinc-200 focus:outline-hidden focus:border-amber-500"
+                      className="w-full px-3.5 py-2.5 text-xs bg-zinc-950 border border-zinc-800 rounded-xl text-zinc-200 focus:outline-hidden focus:border-blue-500"
                     >
                       <option value="prod">Produção (Real)</option>
                       <option value="sandbox">Sandbox (Testes)</option>
@@ -339,7 +339,7 @@ export const PagamentosScreen: React.FC = () => {
                       type="checkbox"
                       checked={asaasAutoPix}
                       onChange={(e) => setAsaasAutoPix(e.target.checked)}
-                      className="rounded border-zinc-700 text-amber-500 focus:ring-amber-400 bg-zinc-950"
+                      className="rounded border-zinc-700 text-blue-500 focus:ring-blue-400 bg-zinc-950"
                     />
                     <span>Gerar PIX Asaas automático</span>
                   </label>
@@ -349,7 +349,7 @@ export const PagamentosScreen: React.FC = () => {
                       type="checkbox"
                       checked={asaasAutoBoleto}
                       onChange={(e) => setAsaasAutoBoleto(e.target.checked)}
-                      className="rounded border-zinc-700 text-amber-500 focus:ring-amber-400 bg-zinc-950"
+                      className="rounded border-zinc-700 text-blue-500 focus:ring-blue-400 bg-zinc-950"
                     />
                     <span>Permitir Boleto Bancário</span>
                   </label>
@@ -359,7 +359,7 @@ export const PagamentosScreen: React.FC = () => {
                       type="checkbox"
                       checked={asaasAutoCard}
                       onChange={(e) => setAsaasAutoCard(e.target.checked)}
-                      className="rounded border-zinc-700 text-amber-500 focus:ring-amber-400 bg-zinc-950"
+                      className="rounded border-zinc-700 text-blue-500 focus:ring-blue-400 bg-zinc-950"
                     />
                     <span>Cartão de Crédito Online</span>
                   </label>
@@ -420,7 +420,7 @@ export const PagamentosScreen: React.FC = () => {
                       value={mpPublicKey}
                       onChange={(e) => setMpPublicKey(e.target.value)}
                       placeholder="APP_USR-..."
-                      className="w-full px-3.5 py-2.5 text-xs bg-zinc-950 border border-zinc-800 rounded-xl text-zinc-200 font-mono focus:outline-hidden focus:border-amber-500"
+                      className="w-full px-3.5 py-2.5 text-xs bg-zinc-950 border border-zinc-800 rounded-xl text-zinc-200 font-mono focus:outline-hidden focus:border-blue-500"
                     />
                   </div>
 
@@ -433,7 +433,7 @@ export const PagamentosScreen: React.FC = () => {
                       value={mpAccessToken}
                       onChange={(e) => setMpAccessToken(e.target.value)}
                       placeholder="APP_USR-..."
-                      className="w-full px-3.5 py-2.5 text-xs bg-zinc-950 border border-zinc-800 rounded-xl text-zinc-200 font-mono focus:outline-hidden focus:border-amber-500"
+                      className="w-full px-3.5 py-2.5 text-xs bg-zinc-950 border border-zinc-800 rounded-xl text-zinc-200 font-mono focus:outline-hidden focus:border-blue-500"
                     />
                   </div>
 
@@ -444,7 +444,7 @@ export const PagamentosScreen: React.FC = () => {
                     <select
                       value={mpMaxInstallments}
                       onChange={(e) => setMpMaxInstallments(e.target.value)}
-                      className="w-full px-3.5 py-2.5 text-xs bg-zinc-950 border border-zinc-800 rounded-xl text-zinc-200 focus:outline-hidden focus:border-amber-500"
+                      className="w-full px-3.5 py-2.5 text-xs bg-zinc-950 border border-zinc-800 rounded-xl text-zinc-200 focus:outline-hidden focus:border-blue-500"
                     >
                       <option value="1">1x (À vista apenas)</option>
                       <option value="3">Até 3x</option>
@@ -461,7 +461,7 @@ export const PagamentosScreen: React.FC = () => {
                     <select
                       value={mpInstallmentsWithoutInterest}
                       onChange={(e) => setMpInstallmentsWithoutInterest(e.target.value)}
-                      className="w-full px-3.5 py-2.5 text-xs bg-zinc-950 border border-zinc-800 rounded-xl text-zinc-200 focus:outline-hidden focus:border-amber-500"
+                      className="w-full px-3.5 py-2.5 text-xs bg-zinc-950 border border-zinc-800 rounded-xl text-zinc-200 focus:outline-hidden focus:border-blue-500"
                     >
                       <option value="1">Nenhuma (Juros por conta do cliente)</option>
                       <option value="2">Até 2x sem juros</option>
@@ -528,7 +528,7 @@ export const PagamentosScreen: React.FC = () => {
                         value={infinitePayHandle}
                         onChange={(e) => setInfinitePayHandle(e.target.value)}
                         placeholder="suagrafica"
-                        className="w-full pl-8 pr-3.5 py-2.5 text-xs bg-zinc-950 border border-zinc-800 rounded-xl text-zinc-200 font-mono focus:outline-hidden focus:border-amber-500"
+                        className="w-full pl-8 pr-3.5 py-2.5 text-xs bg-zinc-950 border border-zinc-800 rounded-xl text-zinc-200 font-mono focus:outline-hidden focus:border-blue-500"
                       />
                     </div>
                   </div>
@@ -542,7 +542,7 @@ export const PagamentosScreen: React.FC = () => {
                       value={infinitePayApiKey}
                       onChange={(e) => setInfinitePayApiKey(e.target.value)}
                       placeholder="inf_sec_..."
-                      className="w-full px-3.5 py-2.5 text-xs bg-zinc-950 border border-zinc-800 rounded-xl text-zinc-200 font-mono focus:outline-hidden focus:border-amber-500"
+                      className="w-full px-3.5 py-2.5 text-xs bg-zinc-950 border border-zinc-800 rounded-xl text-zinc-200 font-mono focus:outline-hidden focus:border-blue-500"
                     />
                   </div>
                 </div>
@@ -581,7 +581,7 @@ export const PagamentosScreen: React.FC = () => {
                 <select
                   value={pixKeyType}
                   onChange={(e) => setPixKeyType(e.target.value)}
-                  className="w-full px-3.5 py-2.5 text-xs bg-zinc-950 border border-zinc-800 rounded-xl text-zinc-200 focus:outline-hidden focus:border-amber-500"
+                  className="w-full px-3.5 py-2.5 text-xs bg-zinc-950 border border-zinc-800 rounded-xl text-zinc-200 focus:outline-hidden focus:border-blue-500"
                 >
                   <option value="cnpj">CNPJ</option>
                   <option value="cpf">CPF</option>
@@ -599,7 +599,7 @@ export const PagamentosScreen: React.FC = () => {
                   type="text"
                   value={pixKey}
                   onChange={(e) => setPixKey(e.target.value)}
-                  className="w-full px-3.5 py-2.5 text-xs bg-zinc-950 border border-zinc-800 rounded-xl text-zinc-200 font-mono focus:outline-hidden focus:border-amber-500"
+                  className="w-full px-3.5 py-2.5 text-xs bg-zinc-950 border border-zinc-800 rounded-xl text-zinc-200 font-mono focus:outline-hidden focus:border-blue-500"
                 />
               </div>
 
@@ -611,7 +611,7 @@ export const PagamentosScreen: React.FC = () => {
                   type="text"
                   value={pixBank}
                   onChange={(e) => setPixBank(e.target.value)}
-                  className="w-full px-3.5 py-2.5 text-xs bg-zinc-950 border border-zinc-800 rounded-xl text-zinc-200 focus:outline-hidden focus:border-amber-500"
+                  className="w-full px-3.5 py-2.5 text-xs bg-zinc-950 border border-zinc-800 rounded-xl text-zinc-200 focus:outline-hidden focus:border-blue-500"
                 />
               </div>
 
@@ -623,7 +623,7 @@ export const PagamentosScreen: React.FC = () => {
                   type="text"
                   value={pixHolder}
                   onChange={(e) => setPixHolder(e.target.value)}
-                  className="w-full px-3.5 py-2.5 text-xs bg-zinc-950 border border-zinc-800 rounded-xl text-zinc-200 focus:outline-hidden focus:border-amber-500"
+                  className="w-full px-3.5 py-2.5 text-xs bg-zinc-950 border border-zinc-800 rounded-xl text-zinc-200 focus:outline-hidden focus:border-blue-500"
                 />
               </div>
 
@@ -635,7 +635,7 @@ export const PagamentosScreen: React.FC = () => {
                   type="text"
                   value={pixCity}
                   onChange={(e) => setPixCity(e.target.value)}
-                  className="w-full px-3.5 py-2.5 text-xs bg-zinc-950 border border-zinc-800 rounded-xl text-zinc-200 focus:outline-hidden focus:border-amber-500"
+                  className="w-full px-3.5 py-2.5 text-xs bg-zinc-950 border border-zinc-800 rounded-xl text-zinc-200 focus:outline-hidden focus:border-blue-500"
                 />
               </div>
 
@@ -647,7 +647,7 @@ export const PagamentosScreen: React.FC = () => {
                   rows={2}
                   value={pixInstructions}
                   onChange={(e) => setPixInstructions(e.target.value)}
-                  className="w-full px-3.5 py-2.5 text-xs bg-zinc-950 border border-zinc-800 rounded-xl text-zinc-200 focus:outline-hidden focus:border-amber-500"
+                  className="w-full px-3.5 py-2.5 text-xs bg-zinc-950 border border-zinc-800 rounded-xl text-zinc-200 focus:outline-hidden focus:border-blue-500"
                 />
               </div>
             </div>
@@ -666,7 +666,7 @@ export const PagamentosScreen: React.FC = () => {
                     {pixHolder} • {pixBank}
                   </div>
                   <div className="text-xs font-mono text-zinc-400">
-                    Chave: <span className="text-amber-400">{pixKey}</span>
+                    Chave: <span className="text-blue-400">{pixKey}</span>
                   </div>
                 </div>
               </div>
@@ -701,7 +701,7 @@ export const PagamentosScreen: React.FC = () => {
             <button
               type="button"
               onClick={() => setShowCouponModal(true)}
-              className="px-4 py-2 text-xs font-bold bg-amber-500 hover:bg-amber-400 text-zinc-950 rounded-xl transition-all shadow-md flex items-center gap-1.5 self-start sm:self-auto"
+              className="px-4 py-2 text-xs font-bold bg-blue-600 hover:bg-blue-500 text-white rounded-xl transition-all shadow-md flex items-center gap-1.5 self-start sm:self-auto"
             >
               <Plus className="w-4 h-4" />
               <span>Novo Cupom</span>
@@ -721,7 +721,7 @@ export const PagamentosScreen: React.FC = () => {
               >
                 <div className="flex items-center justify-between mb-3">
                   <div className="flex items-center gap-2">
-                    <Tag className="w-4 h-4 text-amber-400" />
+                    <Tag className="w-4 h-4 text-blue-400" />
                     <span className="font-mono font-bold text-sm text-zinc-100 bg-zinc-950 px-2.5 py-1 rounded-lg border border-zinc-800">
                       {coupon.code}
                     </span>
@@ -742,7 +742,7 @@ export const PagamentosScreen: React.FC = () => {
                 <div className="space-y-1.5 text-xs text-zinc-300">
                   <div className="flex justify-between">
                     <span className="text-zinc-500">Desconto:</span>
-                    <span className="font-bold text-amber-400 font-mono">
+                    <span className="font-bold text-blue-400 font-mono">
                       {coupon.type === 'percent' ? `${coupon.value}% OFF` : `R$ ${coupon.value.toFixed(2)} OFF`}
                     </span>
                   </div>
@@ -801,7 +801,7 @@ export const PagamentosScreen: React.FC = () => {
                       placeholder="SILK2026"
                       value={newCouponCode}
                       onChange={(e) => setNewCouponCode(e.target.value.toUpperCase())}
-                      className="w-full px-3.5 py-2.5 text-xs bg-zinc-950 border border-zinc-800 rounded-xl text-zinc-200 font-mono uppercase focus:outline-hidden focus:border-amber-500"
+                      className="w-full px-3.5 py-2.5 text-xs bg-zinc-950 border border-zinc-800 rounded-xl text-zinc-200 font-mono uppercase focus:outline-hidden focus:border-blue-500"
                     />
                   </div>
 
@@ -813,7 +813,7 @@ export const PagamentosScreen: React.FC = () => {
                       <select
                         value={newCouponType}
                         onChange={(e) => setNewCouponType(e.target.value as 'percent' | 'fixed')}
-                        className="w-full px-3.5 py-2.5 text-xs bg-zinc-950 border border-zinc-800 rounded-xl text-zinc-200 focus:outline-hidden focus:border-amber-500"
+                        className="w-full px-3.5 py-2.5 text-xs bg-zinc-950 border border-zinc-800 rounded-xl text-zinc-200 focus:outline-hidden focus:border-blue-500"
                       >
                         <option value="percent">Porcentagem (%)</option>
                         <option value="fixed">Valor Fixo (R$)</option>
@@ -830,7 +830,7 @@ export const PagamentosScreen: React.FC = () => {
                         step="0.01"
                         value={newCouponValue}
                         onChange={(e) => setNewCouponValue(e.target.value)}
-                        className="w-full px-3.5 py-2.5 text-xs bg-zinc-950 border border-zinc-800 rounded-xl text-zinc-200 font-mono focus:outline-hidden focus:border-amber-500"
+                        className="w-full px-3.5 py-2.5 text-xs bg-zinc-950 border border-zinc-800 rounded-xl text-zinc-200 font-mono focus:outline-hidden focus:border-blue-500"
                       />
                     </div>
                   </div>
@@ -844,7 +844,7 @@ export const PagamentosScreen: React.FC = () => {
                         type="number"
                         value={newCouponMin}
                         onChange={(e) => setNewCouponMin(e.target.value)}
-                        className="w-full px-3.5 py-2.5 text-xs bg-zinc-950 border border-zinc-800 rounded-xl text-zinc-200 font-mono focus:outline-hidden focus:border-amber-500"
+                        className="w-full px-3.5 py-2.5 text-xs bg-zinc-950 border border-zinc-800 rounded-xl text-zinc-200 font-mono focus:outline-hidden focus:border-blue-500"
                       />
                     </div>
 
@@ -856,7 +856,7 @@ export const PagamentosScreen: React.FC = () => {
                         type="number"
                         value={newCouponUses}
                         onChange={(e) => setNewCouponUses(e.target.value)}
-                        className="w-full px-3.5 py-2.5 text-xs bg-zinc-950 border border-zinc-800 rounded-xl text-zinc-200 font-mono focus:outline-hidden focus:border-amber-500"
+                        className="w-full px-3.5 py-2.5 text-xs bg-zinc-950 border border-zinc-800 rounded-xl text-zinc-200 font-mono focus:outline-hidden focus:border-blue-500"
                       />
                     </div>
                   </div>
@@ -869,7 +869,7 @@ export const PagamentosScreen: React.FC = () => {
                       type="date"
                       value={newCouponDate}
                       onChange={(e) => setNewCouponDate(e.target.value)}
-                      className="w-full px-3.5 py-2.5 text-xs bg-zinc-950 border border-zinc-800 rounded-xl text-zinc-200 focus:outline-hidden focus:border-amber-500"
+                      className="w-full px-3.5 py-2.5 text-xs bg-zinc-950 border border-zinc-800 rounded-xl text-zinc-200 focus:outline-hidden focus:border-blue-500"
                     />
                   </div>
 
@@ -883,7 +883,7 @@ export const PagamentosScreen: React.FC = () => {
                     </button>
                     <button
                       type="submit"
-                      className="px-5 py-2 text-xs font-bold bg-amber-500 text-zinc-950 rounded-xl hover:bg-amber-400"
+                      className="px-5 py-2 text-xs font-bold bg-blue-600 text-white rounded-xl hover:bg-blue-400"
                     >
                       Criar Cupom
                     </button>
@@ -902,7 +902,7 @@ export const PagamentosScreen: React.FC = () => {
           <div className="p-5 md:p-6 rounded-2xl bg-zinc-900/90 border border-zinc-800/90 space-y-4 shadow-md">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-xl bg-amber-500/10 border border-amber-500/20 flex items-center justify-center text-amber-400">
+                <div className="w-10 h-10 rounded-xl bg-blue-500/10 border border-blue-500/20 flex items-center justify-center text-blue-400">
                   <Truck className="w-5 h-5" />
                 </div>
                 <div>
@@ -941,7 +941,7 @@ export const PagamentosScreen: React.FC = () => {
                     type="text"
                     value={pickupAddress}
                     onChange={(e) => setPickupAddress(e.target.value)}
-                    className="w-full px-3.5 py-2.5 text-xs bg-zinc-950 border border-zinc-800 rounded-xl text-zinc-200 focus:outline-hidden focus:border-amber-500"
+                    className="w-full px-3.5 py-2.5 text-xs bg-zinc-950 border border-zinc-800 rounded-xl text-zinc-200 focus:outline-hidden focus:border-blue-500"
                   />
                 </div>
 
@@ -953,7 +953,7 @@ export const PagamentosScreen: React.FC = () => {
                     type="text"
                     value={pickupTime}
                     onChange={(e) => setPickupTime(e.target.value)}
-                    className="w-full px-3.5 py-2.5 text-xs bg-zinc-950 border border-zinc-800 rounded-xl text-zinc-200 focus:outline-hidden focus:border-amber-500"
+                    className="w-full px-3.5 py-2.5 text-xs bg-zinc-950 border border-zinc-800 rounded-xl text-zinc-200 focus:outline-hidden focus:border-blue-500"
                   />
                 </div>
               </div>
@@ -1005,7 +1005,7 @@ export const PagamentosScreen: React.FC = () => {
                       type="text"
                       value={fixedFreightPrice}
                       onChange={(e) => setFixedFreightPrice(e.target.value)}
-                      className="w-full pl-9 pr-3.5 py-2.5 text-xs bg-zinc-950 border border-zinc-800 rounded-xl text-zinc-200 font-mono focus:outline-hidden focus:border-amber-500"
+                      className="w-full pl-9 pr-3.5 py-2.5 text-xs bg-zinc-950 border border-zinc-800 rounded-xl text-zinc-200 font-mono focus:outline-hidden focus:border-blue-500"
                     />
                   </div>
                 </div>
@@ -1018,7 +1018,7 @@ export const PagamentosScreen: React.FC = () => {
                     type="text"
                     value={fixedFreightDescription}
                     onChange={(e) => setFixedFreightDescription(e.target.value)}
-                    className="w-full px-3.5 py-2.5 text-xs bg-zinc-950 border border-zinc-800 rounded-xl text-zinc-200 focus:outline-hidden focus:border-amber-500"
+                    className="w-full px-3.5 py-2.5 text-xs bg-zinc-950 border border-zinc-800 rounded-xl text-zinc-200 focus:outline-hidden focus:border-blue-500"
                   />
                 </div>
               </div>
@@ -1070,7 +1070,7 @@ export const PagamentosScreen: React.FC = () => {
                       type="text"
                       value={freeShippingThreshold}
                       onChange={(e) => setFreeShippingThreshold(e.target.value)}
-                      className="w-full pl-9 pr-3.5 py-2.5 text-xs bg-zinc-950 border border-zinc-800 rounded-xl text-zinc-200 font-mono focus:outline-hidden focus:border-amber-500"
+                      className="w-full pl-9 pr-3.5 py-2.5 text-xs bg-zinc-950 border border-zinc-800 rounded-xl text-zinc-200 font-mono focus:outline-hidden focus:border-blue-500"
                     />
                   </div>
                   <span className="text-[10px] text-zinc-500 mt-1 block">

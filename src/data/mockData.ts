@@ -31,11 +31,11 @@ export const STATUS_CONFIG: Record<
   em_aberto: {
     label: 'Em Aberto',
     icon: '🕒',
-    bg: 'bg-amber-500/10',
-    border: 'border-amber-500/25',
-    text: 'text-amber-400',
-    badgeBg: 'bg-amber-500/20 text-amber-300 border-amber-500/30',
-    dotColor: 'bg-amber-500',
+    bg: 'bg-blue-500/10',
+    border: 'border-blue-500/25',
+    text: 'text-blue-400',
+    badgeBg: 'bg-blue-500/20 text-blue-300 border-blue-500/30',
+    dotColor: 'bg-blue-500',
   },
   em_producao: {
     label: 'Em Produção',

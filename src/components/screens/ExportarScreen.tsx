@@ -67,7 +67,7 @@ export const ExportarScreen: React.FC<ExportarScreenProps> = ({
         {/* Export Pedidos */}
         <div className="p-5 rounded-2xl bg-zinc-900/90 border border-zinc-800/90 space-y-3 flex flex-col justify-between shadow-md">
           <div className="space-y-1.5">
-            <div className="w-8 h-8 rounded-lg bg-amber-500/10 text-amber-400 flex items-center justify-center">
+            <div className="w-8 h-8 rounded-lg bg-blue-500/10 text-blue-400 flex items-center justify-center">
               <FileSpreadsheet className="w-4 h-4" />
             </div>
             <h3 className="text-sm font-bold text-zinc-100">Pedidos ({orders.length})</h3>
@@ -87,7 +87,7 @@ export const ExportarScreen: React.FC<ExportarScreenProps> = ({
         {/* Export Clientes */}
         <div className="p-5 rounded-2xl bg-zinc-900/90 border border-zinc-800/90 space-y-3 flex flex-col justify-between shadow-md">
           <div className="space-y-1.5">
-            <div className="w-8 h-8 rounded-lg bg-amber-500/10 text-amber-400 flex items-center justify-center">
+            <div className="w-8 h-8 rounded-lg bg-blue-500/10 text-blue-400 flex items-center justify-center">
               <FileSpreadsheet className="w-4 h-4" />
             </div>
             <h3 className="text-sm font-bold text-zinc-100">Clientes ({clients.length})</h3>
@@ -107,7 +107,7 @@ export const ExportarScreen: React.FC<ExportarScreenProps> = ({
         {/* Export Financeiro */}
         <div className="p-5 rounded-2xl bg-zinc-900/90 border border-zinc-800/90 space-y-3 flex flex-col justify-between shadow-md">
           <div className="space-y-1.5">
-            <div className="w-8 h-8 rounded-lg bg-amber-500/10 text-amber-400 flex items-center justify-center">
+            <div className="w-8 h-8 rounded-lg bg-blue-500/10 text-blue-400 flex items-center justify-center">
               <FileSpreadsheet className="w-4 h-4" />
             </div>
             <h3 className="text-sm font-bold text-zinc-100">
@@ -129,7 +129,7 @@ export const ExportarScreen: React.FC<ExportarScreenProps> = ({
         {/* Export Produtos Catálogo */}
         <div className="p-5 rounded-2xl bg-zinc-900/90 border border-zinc-800/90 space-y-3 flex flex-col justify-between shadow-md">
           <div className="space-y-1.5">
-            <div className="w-8 h-8 rounded-lg bg-amber-500/10 text-amber-400 flex items-center justify-center">
+            <div className="w-8 h-8 rounded-lg bg-blue-500/10 text-blue-400 flex items-center justify-center">
               <Database className="w-4 h-4" />
             </div>
             <h3 className="text-sm font-bold text-zinc-100">

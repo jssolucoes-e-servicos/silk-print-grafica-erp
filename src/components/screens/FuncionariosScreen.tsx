@@ -84,7 +84,7 @@ export const FuncionariosScreen: React.FC = () => {
 
         <button
           onClick={() => setIsModalOpen(true)}
-          className="px-4 py-2 text-xs font-bold bg-amber-500 hover:bg-amber-400 text-zinc-950 rounded-xl transition-all shadow-sm flex items-center gap-1.5 self-start sm:self-auto"
+          className="px-4 py-2 text-xs font-bold bg-blue-600 hover:bg-blue-500 text-white rounded-xl transition-all shadow-sm flex items-center gap-1.5 self-start sm:self-auto"
         >
           <UserPlus className="w-3.5 h-3.5 stroke-[3]" />
           <span>Convidar Membro</span>
@@ -124,12 +124,12 @@ export const FuncionariosScreen: React.FC = () => {
                   <td className="py-3.5">
                     <span
                       className={`text-[10px] font-semibold flex items-center gap-1 ${
-                        emp.status === 'Ativo' ? 'text-emerald-400' : 'text-amber-400'
+                        emp.status === 'Ativo' ? 'text-emerald-400' : 'text-blue-400'
                       }`}
                     >
                       <span
                         className={`w-1.5 h-1.5 rounded-full ${
-                          emp.status === 'Ativo' ? 'bg-emerald-400' : 'bg-amber-400 animate-pulse'
+                          emp.status === 'Ativo' ? 'bg-emerald-400' : 'bg-blue-400 animate-pulse'
                         }`}
                       />
                       {emp.status}
@@ -167,7 +167,7 @@ export const FuncionariosScreen: React.FC = () => {
                   value={novoNome}
                   onChange={(e) => setNovoNome(e.target.value)}
                   placeholder="Ex: Marina Silva"
-                  className="w-full px-3.5 py-2 text-xs bg-zinc-950 border border-zinc-800 rounded-xl text-zinc-200 focus:outline-hidden focus:border-amber-500"
+                  className="w-full px-3.5 py-2 text-xs bg-zinc-950 border border-zinc-800 rounded-xl text-zinc-200 focus:outline-hidden focus:border-blue-500"
                 />
               </div>
 
@@ -179,7 +179,7 @@ export const FuncionariosScreen: React.FC = () => {
                   value={novoEmail}
                   onChange={(e) => setNovoEmail(e.target.value)}
                   placeholder="marina@empresa.com"
-                  className="w-full px-3.5 py-2 text-xs bg-zinc-950 border border-zinc-800 rounded-xl text-zinc-200 focus:outline-hidden focus:border-amber-500"
+                  className="w-full px-3.5 py-2 text-xs bg-zinc-950 border border-zinc-800 rounded-xl text-zinc-200 focus:outline-hidden focus:border-blue-500"
                 />
               </div>
 
@@ -188,7 +188,7 @@ export const FuncionariosScreen: React.FC = () => {
                 <select
                   value={novoCargo}
                   onChange={(e) => setNovoCargo(e.target.value as any)}
-                  className="w-full px-3.5 py-2 text-xs bg-zinc-950 border border-zinc-800 rounded-xl text-zinc-200 focus:outline-hidden focus:border-amber-500"
+                  className="w-full px-3.5 py-2 text-xs bg-zinc-950 border border-zinc-800 rounded-xl text-zinc-200 focus:outline-hidden focus:border-blue-500"
                 >
                   <option value="Vendedor">Vendedor (Orçamentos e Pedidos)</option>
                   <option value="Designer">Designer (Aprovações e Artes)</option>
@@ -207,7 +207,7 @@ export const FuncionariosScreen: React.FC = () => {
                 </button>
                 <button
                   type="submit"
-                  className="px-5 py-2 text-xs font-bold bg-amber-500 hover:bg-amber-400 text-zinc-950 rounded-xl transition-all"
+                  className="px-5 py-2 text-xs font-bold bg-blue-600 hover:bg-blue-500 text-white rounded-xl transition-all"
                 >
                   Enviar Convite
                 </button>

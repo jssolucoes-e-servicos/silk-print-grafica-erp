@@ -57,10 +57,10 @@ export const AparenciaScreen: React.FC<AparenciaScreenProps> = ({
   );
 
   // State for Cores
-  const [corEscuroPrincipal, setCorEscuroPrincipal] = useState('#d4a843');
-  const [corEscuroDestaque, setCorEscuroDestaque] = useState('#d4a843');
-  const [corClaroPrincipal, setCorClaroPrincipal] = useState('#6b4c9a');
-  const [corClaroDestaque, setCorClaroDestaque] = useState('#6b4c9a');
+  const [corEscuroPrincipal, setCorEscuroPrincipal] = useState('#2563eb');
+  const [corEscuroDestaque, setCorEscuroDestaque] = useState('#3b82f6');
+  const [corClaroPrincipal, setCorClaroPrincipal] = useState('#2563eb');
+  const [corClaroDestaque, setCorClaroDestaque] = useState('#1d4ed8');
 
   const [savedSuccessMessage, setSavedSuccessMessage] = useState<string | null>(null);
 
@@ -90,7 +90,7 @@ export const AparenciaScreen: React.FC<AparenciaScreenProps> = ({
           onClick={onOpenCatalogPreview}
           className="px-3.5 py-2 rounded-xl bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 text-xs font-semibold text-zinc-300 transition-colors flex items-center gap-1.5 self-start sm:self-auto"
         >
-          <ExternalLink className="w-3.5 h-3.5 text-amber-400" />
+          <ExternalLink className="w-3.5 h-3.5 text-blue-400" />
           <span>Ver Catálogo</span>
         </button>
       </div>
@@ -112,7 +112,7 @@ export const AparenciaScreen: React.FC<AparenciaScreenProps> = ({
             className="w-full px-5 py-4 flex items-center justify-between text-left hover:bg-zinc-800/40 transition-colors"
           >
             <div className="flex items-center gap-3">
-              <div className="w-8 h-8 rounded-lg bg-zinc-800 border border-zinc-700/60 flex items-center justify-center text-amber-400">
+              <div className="w-8 h-8 rounded-lg bg-zinc-800 border border-zinc-700/60 flex items-center justify-center text-blue-400">
                 <ImageIcon className="w-4 h-4" />
               </div>
               <span className="text-sm font-bold text-zinc-100">Imagem de Capa</span>
@@ -133,7 +133,7 @@ export const AparenciaScreen: React.FC<AparenciaScreenProps> = ({
           {openSection === 'capa' && (
             <div className="p-5 md:p-6 border-t border-zinc-800/80 bg-zinc-950/40 space-y-5">
               {/* Drop Area */}
-              <div className="border-2 border-dashed border-zinc-800 hover:border-amber-500/50 rounded-xl p-8 text-center bg-zinc-950/80 flex flex-col items-center justify-center space-y-3 transition-colors">
+              <div className="border-2 border-dashed border-zinc-800 hover:border-blue-500/50 rounded-xl p-8 text-center bg-zinc-950/80 flex flex-col items-center justify-center space-y-3 transition-colors">
                 <div className="w-12 h-12 rounded-full bg-zinc-900 flex items-center justify-center text-zinc-500">
                   <ImageIcon className="w-6 h-6" />
                 </div>
@@ -144,7 +144,7 @@ export const AparenciaScreen: React.FC<AparenciaScreenProps> = ({
                     setCapaImages(['https://images.unsplash.com/photo-1544816155-12df9643f363?w=1200']);
                     triggerSaveNotification('Imagem de capa padrão adicionada!');
                   }}
-                  className="px-4 py-2 text-xs font-bold bg-amber-500 hover:bg-amber-400 text-zinc-950 rounded-xl transition-all shadow-sm flex items-center gap-1.5"
+                  className="px-4 py-2 text-xs font-bold bg-blue-600 hover:bg-blue-500 text-white rounded-xl transition-all shadow-sm flex items-center gap-1.5"
                 >
                   <Upload className="w-3.5 h-3.5 stroke-[2.5]" />
                   <span>+ Adicionar imagem</span>
@@ -173,7 +173,7 @@ export const AparenciaScreen: React.FC<AparenciaScreenProps> = ({
                   </div>
                 </div>
 
-                <div className="pt-2 border-t border-zinc-800 text-[11px] text-amber-400/90 font-medium">
+                <div className="pt-2 border-t border-zinc-800 text-[11px] text-blue-400/90 font-medium">
                   💡 As imagens passam automaticamente a cada 5 segundos no topo do catálogo.
                 </div>
               </div>
@@ -188,7 +188,7 @@ export const AparenciaScreen: React.FC<AparenciaScreenProps> = ({
             className="w-full px-5 py-4 flex items-center justify-between text-left hover:bg-zinc-800/40 transition-colors"
           >
             <div className="flex items-center gap-3">
-              <div className="w-8 h-8 rounded-lg bg-zinc-800 border border-zinc-700/60 flex items-center justify-center text-amber-400">
+              <div className="w-8 h-8 rounded-lg bg-zinc-800 border border-zinc-700/60 flex items-center justify-center text-blue-400">
                 <User className="w-4 h-4" />
               </div>
               <span className="text-sm font-bold text-zinc-100">Logo da Loja</span>
@@ -209,7 +209,7 @@ export const AparenciaScreen: React.FC<AparenciaScreenProps> = ({
           {openSection === 'logo' && (
             <div className="p-5 md:p-6 border-t border-zinc-800/80 bg-zinc-950/40 space-y-5">
               <div className="flex flex-col sm:flex-row items-center sm:items-start gap-4 p-5 rounded-xl bg-zinc-950/80 border border-zinc-800">
-                <div className="w-16 h-16 rounded-2xl bg-amber-500 text-zinc-950 text-2xl font-black flex items-center justify-center shadow-lg shrink-0">
+                <div className="w-16 h-16 rounded-2xl bg-blue-600 text-white text-2xl font-black flex items-center justify-center shadow-lg shrink-0">
                   S
                 </div>
                 <div className="flex-1 text-center sm:text-left space-y-1">
@@ -224,7 +224,7 @@ export const AparenciaScreen: React.FC<AparenciaScreenProps> = ({
                 <button
                   type="button"
                   onClick={() => triggerSaveNotification('Logo atualizado com sucesso!')}
-                  className="px-4 py-2 text-xs font-bold bg-amber-500 hover:bg-amber-400 text-zinc-950 rounded-xl transition-all shadow-sm shrink-0 flex items-center gap-1.5"
+                  className="px-4 py-2 text-xs font-bold bg-blue-600 hover:bg-blue-500 text-white rounded-xl transition-all shadow-sm shrink-0 flex items-center gap-1.5"
                 >
                   <Upload className="w-3.5 h-3.5 stroke-[2.5]" />
                   <span>+ Adicionar logo</span>
@@ -241,7 +241,7 @@ export const AparenciaScreen: React.FC<AparenciaScreenProps> = ({
             className="w-full px-5 py-4 flex items-center justify-between text-left hover:bg-zinc-800/40 transition-colors"
           >
             <div className="flex items-center gap-3">
-              <div className="w-8 h-8 rounded-lg bg-zinc-800 border border-zinc-700/60 flex items-center justify-center text-amber-400">
+              <div className="w-8 h-8 rounded-lg bg-zinc-800 border border-zinc-700/60 flex items-center justify-center text-blue-400">
                 <FileText className="w-4 h-4" />
               </div>
               <span className="text-sm font-bold text-zinc-100">Informações do PDF</span>
@@ -289,7 +289,7 @@ export const AparenciaScreen: React.FC<AparenciaScreenProps> = ({
                     type="text"
                     value={pdfNome}
                     onChange={(e) => setPdfNome(e.target.value)}
-                    className="w-full px-3 py-2 text-xs bg-zinc-900 border border-zinc-800 rounded-xl text-zinc-200 focus:outline-hidden focus:border-amber-500"
+                    className="w-full px-3 py-2 text-xs bg-zinc-900 border border-zinc-800 rounded-xl text-zinc-200 focus:outline-hidden focus:border-blue-500"
                   />
                 </div>
 
@@ -301,7 +301,7 @@ export const AparenciaScreen: React.FC<AparenciaScreenProps> = ({
                     type="text"
                     value={pdfTelefone}
                     onChange={(e) => setPdfTelefone(e.target.value)}
-                    className="w-full px-3 py-2 text-xs bg-zinc-900 border border-zinc-800 rounded-xl text-zinc-200 focus:outline-hidden focus:border-amber-500"
+                    className="w-full px-3 py-2 text-xs bg-zinc-900 border border-zinc-800 rounded-xl text-zinc-200 focus:outline-hidden focus:border-blue-500"
                   />
                 </div>
 
@@ -313,7 +313,7 @@ export const AparenciaScreen: React.FC<AparenciaScreenProps> = ({
                     type="text"
                     value={pdfEndereco}
                     onChange={(e) => setPdfEndereco(e.target.value)}
-                    className="w-full px-3 py-2 text-xs bg-zinc-900 border border-zinc-800 rounded-xl text-zinc-200 focus:outline-hidden focus:border-amber-500"
+                    className="w-full px-3 py-2 text-xs bg-zinc-900 border border-zinc-800 rounded-xl text-zinc-200 focus:outline-hidden focus:border-blue-500"
                   />
                 </div>
 
@@ -325,7 +325,7 @@ export const AparenciaScreen: React.FC<AparenciaScreenProps> = ({
                     type="text"
                     value={pdfCnpj}
                     onChange={(e) => setPdfCnpj(e.target.value)}
-                    className="w-full px-3 py-2 text-xs bg-zinc-900 border border-zinc-800 rounded-xl text-zinc-200 focus:outline-hidden focus:border-amber-500"
+                    className="w-full px-3 py-2 text-xs bg-zinc-900 border border-zinc-800 rounded-xl text-zinc-200 focus:outline-hidden focus:border-blue-500"
                   />
                 </div>
 
@@ -337,7 +337,7 @@ export const AparenciaScreen: React.FC<AparenciaScreenProps> = ({
                     type="text"
                     value={pdfEmail}
                     onChange={(e) => setPdfEmail(e.target.value)}
-                    className="w-full px-3 py-2 text-xs bg-zinc-900 border border-zinc-800 rounded-xl text-zinc-200 focus:outline-hidden focus:border-amber-500"
+                    className="w-full px-3 py-2 text-xs bg-zinc-900 border border-zinc-800 rounded-xl text-zinc-200 focus:outline-hidden focus:border-blue-500"
                   />
                 </div>
 
@@ -349,7 +349,7 @@ export const AparenciaScreen: React.FC<AparenciaScreenProps> = ({
                     type="text"
                     value={pdfPix}
                     onChange={(e) => setPdfPix(e.target.value)}
-                    className="w-full px-3 py-2 text-xs bg-zinc-900 border border-zinc-800 rounded-xl text-zinc-200 focus:outline-hidden focus:border-amber-500"
+                    className="w-full px-3 py-2 text-xs bg-zinc-900 border border-zinc-800 rounded-xl text-zinc-200 focus:outline-hidden focus:border-blue-500"
                   />
                   <span className="text-[10px] text-zinc-500 block mt-1">
                     Será exibido apenas no PDF de Pedidos (não aparece em Orçamentos).
@@ -361,7 +361,7 @@ export const AparenciaScreen: React.FC<AparenciaScreenProps> = ({
                 <button
                   type="button"
                   onClick={() => triggerSaveNotification('Informações do PDF salvas!')}
-                  className="px-5 py-2 text-xs font-bold bg-amber-500 hover:bg-amber-400 text-zinc-950 rounded-xl transition-all shadow-sm"
+                  className="px-5 py-2 text-xs font-bold bg-blue-600 hover:bg-blue-500 text-white rounded-xl transition-all shadow-sm"
                 >
                   Salvar Informações
                 </button>
@@ -377,14 +377,14 @@ export const AparenciaScreen: React.FC<AparenciaScreenProps> = ({
             className="w-full px-5 py-4 flex items-center justify-between text-left hover:bg-zinc-800/40 transition-colors"
           >
             <div className="flex items-center gap-3">
-              <div className="w-8 h-8 rounded-lg bg-zinc-800 border border-zinc-700/60 flex items-center justify-center text-amber-400">
+              <div className="w-8 h-8 rounded-lg bg-zinc-800 border border-zinc-700/60 flex items-center justify-center text-blue-400">
                 <LayoutGrid className="w-4 h-4" />
               </div>
               <span className="text-sm font-bold text-zinc-100">Tema do Catálogo</span>
             </div>
 
             <div className="flex items-center gap-2.5">
-              <span className="text-[11px] font-semibold text-amber-400 bg-amber-500/10 border border-amber-500/20 px-2.5 py-0.5 rounded-full capitalize">
+              <span className="text-[11px] font-semibold text-blue-400 bg-blue-500/10 border border-blue-500/20 px-2.5 py-0.5 rounded-full capitalize">
                 {selectedTheme}
               </span>
               {openSection === 'tema' ? (
@@ -407,7 +407,7 @@ export const AparenciaScreen: React.FC<AparenciaScreenProps> = ({
                   onClick={() => setSelectedTheme('lista')}
                   className={`p-4 rounded-xl border transition-all cursor-pointer flex flex-col justify-between ${
                     selectedTheme === 'lista'
-                      ? 'bg-zinc-900 border-amber-500/60 shadow-md ring-1 ring-amber-500/40'
+                      ? 'bg-zinc-900 border-blue-500/60 shadow-md ring-1 ring-blue-500/40'
                       : 'bg-zinc-950/80 border-zinc-800 hover:border-zinc-700'
                   }`}
                 >
@@ -419,7 +419,7 @@ export const AparenciaScreen: React.FC<AparenciaScreenProps> = ({
                   </div>
                   <div className="mt-3 flex justify-end">
                     {selectedTheme === 'lista' && (
-                      <span className="w-5 h-5 rounded-full bg-amber-500 text-zinc-950 flex items-center justify-center">
+                      <span className="w-5 h-5 rounded-full bg-blue-600 text-white flex items-center justify-center">
                         <Check className="w-3 h-3 stroke-[3]" />
                       </span>
                     )}
@@ -431,7 +431,7 @@ export const AparenciaScreen: React.FC<AparenciaScreenProps> = ({
                   onClick={() => setSelectedTheme('cards')}
                   className={`p-4 rounded-xl border transition-all cursor-pointer flex flex-col justify-between ${
                     selectedTheme === 'cards'
-                      ? 'bg-zinc-900 border-amber-500/60 shadow-md ring-1 ring-amber-500/40'
+                      ? 'bg-zinc-900 border-blue-500/60 shadow-md ring-1 ring-blue-500/40'
                       : 'bg-zinc-950/80 border-zinc-800 hover:border-zinc-700'
                   }`}
                 >
@@ -443,7 +443,7 @@ export const AparenciaScreen: React.FC<AparenciaScreenProps> = ({
                   </div>
                   <div className="mt-3 flex justify-end">
                     {selectedTheme === 'cards' && (
-                      <span className="w-5 h-5 rounded-full bg-amber-500 text-zinc-950 flex items-center justify-center">
+                      <span className="w-5 h-5 rounded-full bg-blue-600 text-white flex items-center justify-center">
                         <Check className="w-3 h-3 stroke-[3]" />
                       </span>
                     )}
@@ -458,7 +458,7 @@ export const AparenciaScreen: React.FC<AparenciaScreenProps> = ({
                   <div className="space-y-1">
                     <div className="flex items-center gap-1.5">
                       <span className="text-xs font-bold text-zinc-300">Vitrine</span>
-                      <span className="px-1.5 py-0.2 text-[9px] font-bold bg-amber-500/20 text-amber-400 rounded">
+                      <span className="px-1.5 py-0.2 text-[9px] font-bold bg-blue-500/20 text-blue-400 rounded">
                         PRO
                       </span>
                     </div>
@@ -482,7 +482,7 @@ export const AparenciaScreen: React.FC<AparenciaScreenProps> = ({
             className="w-full px-5 py-4 flex items-center justify-between text-left hover:bg-zinc-800/40 transition-colors"
           >
             <div className="flex items-center gap-3">
-              <div className="w-8 h-8 rounded-lg bg-zinc-800 border border-zinc-700/60 flex items-center justify-center text-amber-400">
+              <div className="w-8 h-8 rounded-lg bg-zinc-800 border border-zinc-700/60 flex items-center justify-center text-blue-400">
                 <Type className="w-4 h-4" />
               </div>
               <span className="text-sm font-bold text-zinc-100">Texto do Rodapé</span>
@@ -525,7 +525,7 @@ export const AparenciaScreen: React.FC<AparenciaScreenProps> = ({
                       maxLength={100}
                       value={textoEntrega}
                       onChange={(e) => setTextoEntrega(e.target.value)}
-                      className="w-full px-3 py-2 text-xs bg-zinc-900 border border-zinc-800 rounded-xl text-zinc-200 focus:outline-hidden focus:border-amber-500"
+                      className="w-full px-3 py-2 text-xs bg-zinc-900 border border-zinc-800 rounded-xl text-zinc-200 focus:outline-hidden focus:border-blue-500"
                     />
                   </div>
 
@@ -541,7 +541,7 @@ export const AparenciaScreen: React.FC<AparenciaScreenProps> = ({
                       maxLength={150}
                       value={textoWhatsApp}
                       onChange={(e) => setTextoWhatsApp(e.target.value)}
-                      className="w-full px-3 py-2 text-xs bg-zinc-900 border border-zinc-800 rounded-xl text-zinc-200 focus:outline-hidden focus:border-amber-500"
+                      className="w-full px-3 py-2 text-xs bg-zinc-900 border border-zinc-800 rounded-xl text-zinc-200 focus:outline-hidden focus:border-blue-500"
                     />
                   </div>
                 </div>
@@ -549,7 +549,7 @@ export const AparenciaScreen: React.FC<AparenciaScreenProps> = ({
                 {/* Preview Card do Rodapé (Branco como no print) */}
                 <div className="p-4 rounded-xl bg-white text-zinc-900 shadow-md space-y-2">
                   <div className="flex items-center gap-2">
-                    <span className="p-1 rounded-md bg-amber-400/20 text-amber-600">
+                    <span className="p-1 rounded-md bg-blue-400/20 text-blue-600">
                       <Truck className="w-4 h-4" />
                     </span>
                     <span className="text-xs font-bold text-zinc-800">{textoEntrega}</span>
@@ -581,7 +581,7 @@ export const AparenciaScreen: React.FC<AparenciaScreenProps> = ({
                   <button
                     type="button"
                     onClick={() => triggerSaveNotification('Rodapé salvo com sucesso!')}
-                    className="px-4 py-1.5 text-xs font-bold bg-amber-500 hover:bg-amber-400 text-zinc-950 rounded-lg transition-all"
+                    className="px-4 py-1.5 text-xs font-bold bg-blue-600 hover:bg-blue-500 text-white rounded-lg transition-all"
                   >
                     Salvar rodapé
                   </button>
@@ -607,7 +607,7 @@ export const AparenciaScreen: React.FC<AparenciaScreenProps> = ({
                       maxLength={100}
                       value={bannerTitulo}
                       onChange={(e) => setBannerTitulo(e.target.value)}
-                      className="w-full px-3 py-2 text-xs bg-zinc-900 border border-zinc-800 rounded-xl text-zinc-200 focus:outline-hidden focus:border-amber-500 font-semibold"
+                      className="w-full px-3 py-2 text-xs bg-zinc-900 border border-zinc-800 rounded-xl text-zinc-200 focus:outline-hidden focus:border-blue-500 font-semibold"
                     />
                   </div>
 
@@ -623,14 +623,14 @@ export const AparenciaScreen: React.FC<AparenciaScreenProps> = ({
                       maxLength={500}
                       value={bannerTexto}
                       onChange={(e) => setBannerTexto(e.target.value)}
-                      className="w-full px-3 py-2 text-xs bg-zinc-900 border border-zinc-800 rounded-xl text-zinc-200 focus:outline-hidden focus:border-amber-500 resize-none leading-relaxed"
+                      className="w-full px-3 py-2 text-xs bg-zinc-900 border border-zinc-800 rounded-xl text-zinc-200 focus:outline-hidden focus:border-blue-500 resize-none leading-relaxed"
                     />
                   </div>
                 </div>
 
                 {/* Preview Banner Branco */}
-                <div className="p-4 rounded-xl bg-white text-zinc-900 shadow-md border-l-4 border-amber-500 space-y-1.5">
-                  <h5 className="text-xs font-black text-amber-600 tracking-tight">
+                <div className="p-4 rounded-xl bg-white text-zinc-900 shadow-md border-l-4 border-blue-500 space-y-1.5">
+                  <h5 className="text-xs font-black text-blue-600 tracking-tight">
                     {bannerTitulo}
                   </h5>
                   <p className="text-xs text-zinc-700 whitespace-pre-line leading-relaxed font-medium">
@@ -657,7 +657,7 @@ export const AparenciaScreen: React.FC<AparenciaScreenProps> = ({
                   <button
                     type="button"
                     onClick={() => triggerSaveNotification('Banner de categorias salvo!')}
-                    className="px-4 py-1.5 text-xs font-bold bg-amber-500 hover:bg-amber-400 text-zinc-950 rounded-lg transition-all"
+                    className="px-4 py-1.5 text-xs font-bold bg-blue-600 hover:bg-blue-500 text-white rounded-lg transition-all"
                   >
                     Salvar banner
                   </button>
@@ -674,7 +674,7 @@ export const AparenciaScreen: React.FC<AparenciaScreenProps> = ({
             className="w-full px-5 py-4 flex items-center justify-between text-left hover:bg-zinc-800/40 transition-colors"
           >
             <div className="flex items-center gap-3">
-              <div className="w-8 h-8 rounded-lg bg-zinc-800 border border-zinc-700/60 flex items-center justify-center text-amber-400">
+              <div className="w-8 h-8 rounded-lg bg-zinc-800 border border-zinc-700/60 flex items-center justify-center text-blue-400">
                 <Palette className="w-4 h-4" />
               </div>
               <span className="text-sm font-bold text-zinc-100">Cores do Catálogo</span>
@@ -752,7 +752,7 @@ export const AparenciaScreen: React.FC<AparenciaScreenProps> = ({
                     <button
                       type="button"
                       style={{ backgroundColor: corEscuroPrincipal }}
-                      className="w-full py-2 rounded-lg text-zinc-950 font-bold text-xs shadow-sm transition-all"
+                      className="w-full py-2 rounded-lg text-white font-bold text-xs shadow-sm transition-all"
                     >
                       Exemplo no Modo Escuro
                     </button>
@@ -825,7 +825,7 @@ export const AparenciaScreen: React.FC<AparenciaScreenProps> = ({
                 <button
                   type="button"
                   onClick={() => triggerSaveNotification('Cores do catálogo atualizadas!')}
-                  className="px-5 py-2.5 text-xs font-bold bg-amber-500 hover:bg-amber-400 text-zinc-950 rounded-xl transition-all shadow-sm"
+                  className="px-5 py-2.5 text-xs font-bold bg-blue-600 hover:bg-blue-500 text-white rounded-xl transition-all shadow-sm"
                 >
                   Salvar Cores
                 </button>

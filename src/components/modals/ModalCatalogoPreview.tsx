@@ -46,12 +46,12 @@ export const ModalCatalogoPreview: React.FC<ModalCatalogoPreviewProps> = ({
           <div className="flex items-center gap-2">
             <div className="flex space-x-1.5">
               <div className="w-2.5 h-2.5 rounded-full bg-red-500/80" />
-              <div className="w-2.5 h-2.5 rounded-full bg-amber-500/80" />
+              <div className="w-2.5 h-2.5 rounded-full bg-blue-500/80" />
               <div className="w-2.5 h-2.5 rounded-full bg-emerald-500/80" />
             </div>
             <div className="ml-3 px-3 py-1 bg-zinc-900 border border-zinc-800 rounded-md text-[11px] text-zinc-400 font-mono flex items-center gap-1.5">
               <span>cataloglab.app/</span>
-              <span className="text-amber-400 font-bold">@silkprint</span>
+              <span className="text-blue-400 font-bold">@silkprint</span>
             </div>
           </div>
 
@@ -78,8 +78,8 @@ export const ModalCatalogoPreview: React.FC<ModalCatalogoPreviewProps> = ({
         {/* Public Storefront Body */}
         <div className="flex-1 overflow-y-auto bg-zinc-950 custom-scrollbar">
           {/* Hero store header */}
-          <div className="p-6 bg-gradient-to-b from-amber-500/10 via-zinc-900 to-zinc-950 border-b border-zinc-800/80 text-center">
-            <div className="w-16 h-16 rounded-2xl bg-amber-500 mx-auto flex items-center justify-center font-black text-2xl text-zinc-950 shadow-lg shadow-amber-500/20 mb-3">
+          <div className="p-6 bg-gradient-to-b from-blue-500/10 via-zinc-900 to-zinc-950 border-b border-zinc-800/80 text-center">
+            <div className="w-16 h-16 rounded-2xl bg-blue-600 mx-auto flex items-center justify-center font-black text-2xl text-white shadow-lg shadow-blue-500/20 mb-3">
               S
             </div>
             <h2 className="text-lg font-bold text-zinc-100">Silk Print Gráfica</h2>
@@ -108,7 +108,7 @@ export const ModalCatalogoPreview: React.FC<ModalCatalogoPreviewProps> = ({
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
                 placeholder="Buscar produtos no catálogo..."
-                className="w-full pl-9 pr-3 py-2 text-xs bg-zinc-950 border border-zinc-800 rounded-lg text-zinc-200 placeholder-zinc-500 focus:outline-hidden focus:border-amber-500"
+                className="w-full pl-9 pr-3 py-2 text-xs bg-zinc-950 border border-zinc-800 rounded-lg text-zinc-200 placeholder-zinc-500 focus:outline-hidden focus:border-blue-500"
               />
             </div>
 
@@ -119,7 +119,7 @@ export const ModalCatalogoPreview: React.FC<ModalCatalogoPreviewProps> = ({
                   onClick={() => setSelectedCategory(cat)}
                   className={`px-3 py-1 rounded-full text-xs font-medium whitespace-nowrap transition-colors ${
                     selectedCategory === cat
-                      ? 'bg-amber-500 text-zinc-950 font-bold'
+                      ? 'bg-blue-600 text-white font-bold'
                       : 'bg-zinc-900 border border-zinc-800 text-zinc-400 hover:text-zinc-200'
                   }`}
                 >
@@ -134,11 +134,11 @@ export const ModalCatalogoPreview: React.FC<ModalCatalogoPreviewProps> = ({
             {publicProducts.map((product) => (
               <div
                 key={product.id}
-                className="p-3.5 rounded-xl bg-zinc-900/90 border border-zinc-800 hover:border-amber-500/40 transition-colors flex flex-col justify-between"
+                className="p-3.5 rounded-xl bg-zinc-900/90 border border-zinc-800 hover:border-blue-500/40 transition-colors flex flex-col justify-between"
               >
                 <div>
                   <div className="flex items-start justify-between gap-2">
-                    <span className="text-[10px] uppercase font-bold text-amber-400 bg-amber-500/10 px-2 py-0.5 rounded border border-amber-500/20">
+                    <span className="text-[10px] uppercase font-bold text-blue-400 bg-blue-500/10 px-2 py-0.5 rounded border border-blue-500/20">
                       {product.category}
                     </span>
                     <span className="text-xs font-bold text-zinc-100 font-mono">
@@ -159,7 +159,7 @@ export const ModalCatalogoPreview: React.FC<ModalCatalogoPreviewProps> = ({
                       `Produto "${product.name}" adicionado ao pedido do cliente!`
                     )
                   }
-                  className="mt-3 w-full py-1.5 rounded-lg bg-zinc-800 hover:bg-amber-500 hover:text-zinc-950 text-zinc-200 text-xs font-semibold transition-colors flex items-center justify-center gap-1.5"
+                  className="mt-3 w-full py-1.5 rounded-lg bg-zinc-800 hover:bg-blue-500 hover:text-white text-zinc-200 text-xs font-semibold transition-colors flex items-center justify-center gap-1.5"
                 >
                   <ShoppingCart className="w-3.5 h-3.5" />
                   <span>Solicitar Orçamento</span>

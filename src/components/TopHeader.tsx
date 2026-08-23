@@ -33,7 +33,7 @@ export const TopHeader: React.FC<TopHeaderProps> = ({
 }) => {
   const getBreadcrumb = () => {
     const isGestao = sidebarMode === 'gestao';
-    const mainSection = isGestao ? 'Gestão Gráfica' : 'CatalogLab Admin';
+    const mainSection = isGestao ? 'Gestão Gráfica' : 'smartGraph';
 
     const routeNames: Record<string, string> = {
       dashboard: 'Dashboard',
@@ -57,7 +57,7 @@ export const TopHeader: React.FC<TopHeaderProps> = ({
       aparencia: 'Aparência',
       pagamentos: 'Pagamentos',
       integracoes: 'Integrações',
-      funcionarios: 'Funcionários',
+      funcionarios: 'Colaboradores',
     };
 
     return {
@@ -83,9 +83,9 @@ export const TopHeader: React.FC<TopHeaderProps> = ({
         <div className="flex items-center gap-1.5 text-xs text-zinc-400">
           <span className="font-medium text-zinc-300 flex items-center gap-1.5">
             {sidebarMode === 'gestao' ? (
-              <Layers className="w-3.5 h-3.5 text-amber-400" />
+              <Layers className="w-3.5 h-3.5 text-blue-400" />
             ) : (
-              <Sparkles className="w-3.5 h-3.5 text-amber-400" />
+              <Sparkles className="w-3.5 h-3.5 text-blue-400" />
             )}
             {breadcrumb.main}
           </span>
@@ -94,7 +94,7 @@ export const TopHeader: React.FC<TopHeaderProps> = ({
         </div>
       </div>
 
-      {/* Right: Actions and Store indicator */}
+      {/* Right: Actions */}
       <div className="flex items-center gap-2 md:gap-3">
         {/* Toggle Mode Button */}
         <button
@@ -103,26 +103,15 @@ export const TopHeader: React.FC<TopHeaderProps> = ({
         >
           {sidebarMode === 'admin' ? (
             <>
-              <Layers className="w-3.5 h-3.5 text-amber-400" />
+              <Layers className="w-3.5 h-3.5 text-blue-400" />
               <span>Ir para Módulo Gestão</span>
             </>
           ) : (
             <>
-              <Sparkles className="w-3.5 h-3.5 text-amber-400" />
+              <Sparkles className="w-3.5 h-3.5 text-blue-400" />
               <span>Voltar ao CatalogLab</span>
             </>
           )}
-        </button>
-
-        {/* Public Store Preview Link */}
-        <button
-          onClick={onOpenCatalogPreview}
-          className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-zinc-900/80 hover:bg-zinc-800 border border-zinc-800 text-xs text-amber-400 hover:text-amber-300 transition-colors"
-          title="Abrir Catálogo Público da Silk Print"
-        >
-          <Store className="w-3.5 h-3.5" />
-          <span className="hidden md:inline font-mono">@silkprint</span>
-          <ExternalLink className="w-3 h-3 text-zinc-500" />
         </button>
 
         {/* Notification Bell */}
@@ -132,7 +121,7 @@ export const TopHeader: React.FC<TopHeaderProps> = ({
           title="Notificações"
         >
           <Bell className="w-4 h-4" />
-          <span className="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-amber-500 ring-2 ring-zinc-950" />
+          <span className="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-blue-500 ring-2 ring-zinc-950" />
         </button>
       </div>
     </header>

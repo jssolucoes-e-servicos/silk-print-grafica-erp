@@ -48,7 +48,7 @@ export const ClientesScreen: React.FC<ClientesScreenProps> = ({
 
         <button
           onClick={onOpenNovoClienteModal}
-          className="px-4 py-2 rounded-lg bg-amber-500 hover:bg-amber-400 text-zinc-950 text-xs font-bold transition-all flex items-center gap-1.5 self-start sm:self-auto"
+          className="px-4 py-2 rounded-lg bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold transition-all flex items-center gap-1.5 self-start sm:self-auto"
         >
           <Plus className="w-3.5 h-3.5 stroke-[3]" />
           <span>Novo Cliente</span>
@@ -63,7 +63,7 @@ export const ClientesScreen: React.FC<ClientesScreenProps> = ({
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
           placeholder="Buscar por nome, WhatsApp ou e-mail..."
-          className="w-full pl-10 pr-4 py-2.5 text-xs bg-zinc-900/90 border border-zinc-800 rounded-xl text-zinc-200 placeholder-zinc-500 focus:outline-hidden focus:border-amber-500"
+          className="w-full pl-10 pr-4 py-2.5 text-xs bg-zinc-900/90 border border-zinc-800 rounded-xl text-zinc-200 placeholder-zinc-500 focus:outline-hidden focus:border-blue-500"
         />
       </div>
 
@@ -73,7 +73,7 @@ export const ClientesScreen: React.FC<ClientesScreenProps> = ({
           <p className="text-sm text-zinc-400 font-medium">Nenhum cliente cadastrado</p>
           <button
             onClick={onOpenNovoClienteModal}
-            className="px-5 py-2.5 rounded-xl bg-amber-500 hover:bg-amber-400 text-zinc-950 text-xs font-bold transition-all flex items-center gap-2"
+            className="px-5 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold transition-all flex items-center gap-2"
           >
             <Plus className="w-4 h-4 stroke-[3]" />
             <span>Cadastrar Primeiro Cliente</span>
@@ -131,13 +131,13 @@ export const ClientesScreen: React.FC<ClientesScreenProps> = ({
                       <td className="py-3 px-4 text-center font-mono font-bold text-zinc-200">
                         {client.ordersCount}
                       </td>
-                      <td className="py-3 px-4 text-right font-mono font-bold text-amber-400">
+                      <td className="py-3 px-4 text-right font-mono font-bold text-blue-400">
                         {formatCurrency(client.totalSpent)}
                       </td>
                       <td className="py-3 px-4 text-right">
                         <button
                           onClick={onNavigateToNovoOrcamento}
-                          className="px-2.5 py-1 bg-zinc-800 hover:bg-amber-500 hover:text-zinc-950 text-zinc-300 text-[11px] font-semibold rounded-md transition-colors"
+                          className="px-2.5 py-1 bg-zinc-800 hover:bg-blue-500 hover:text-white text-zinc-300 text-[11px] font-semibold rounded-md transition-colors"
                         >
                           + Orçamento
                         </button>

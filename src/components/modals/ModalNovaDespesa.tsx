@@ -81,7 +81,7 @@ export const ModalNovaDespesa: React.FC<ModalNovaDespesaProps> = ({
             <select
               value={tipo}
               onChange={(e) => setTipo(e.target.value as 'despesa' | 'receita')}
-              className="w-full px-3.5 py-2.5 text-xs bg-zinc-950 border border-zinc-800 rounded-lg text-zinc-200 focus:outline-hidden focus:border-amber-500"
+              className="w-full px-3.5 py-2.5 text-xs bg-zinc-950 border border-zinc-800 rounded-lg text-zinc-200 focus:outline-hidden focus:border-blue-500"
             >
               <option value="despesa">Despesa</option>
               <option value="receita">Receita</option>
@@ -91,7 +91,7 @@ export const ModalNovaDespesa: React.FC<ModalNovaDespesaProps> = ({
           {/* Descrição */}
           <div>
             <label className="block text-xs font-semibold text-zinc-300 mb-1.5">
-              Descrição <span className="text-amber-400">*</span>
+              Descrição <span className="text-blue-400">*</span>
             </label>
             <input
               type="text"
@@ -99,7 +99,7 @@ export const ModalNovaDespesa: React.FC<ModalNovaDespesaProps> = ({
               value={descricao}
               onChange={(e) => setDescricao(e.target.value)}
               placeholder="Ex: Conta de energia"
-              className="w-full px-3.5 py-2.5 text-xs bg-zinc-950 border border-zinc-800 rounded-lg text-zinc-200 placeholder-zinc-500 focus:outline-hidden focus:border-amber-500"
+              className="w-full px-3.5 py-2.5 text-xs bg-zinc-950 border border-zinc-800 rounded-lg text-zinc-200 placeholder-zinc-500 focus:outline-hidden focus:border-blue-500"
             />
           </div>
 
@@ -107,7 +107,7 @@ export const ModalNovaDespesa: React.FC<ModalNovaDespesaProps> = ({
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <div>
               <label className="block text-xs font-semibold text-zinc-300 mb-1.5">
-                Valor (R$) <span className="text-amber-400">*</span>
+                Valor (R$) <span className="text-blue-400">*</span>
               </label>
               <input
                 type="text"
@@ -115,7 +115,7 @@ export const ModalNovaDespesa: React.FC<ModalNovaDespesaProps> = ({
                 value={valor}
                 onChange={(e) => setValor(e.target.value)}
                 placeholder="0,00"
-                className="w-full px-3.5 py-2.5 text-xs bg-zinc-950 border border-zinc-800 rounded-lg text-zinc-200 placeholder-zinc-500 font-mono focus:outline-hidden focus:border-amber-500"
+                className="w-full px-3.5 py-2.5 text-xs bg-zinc-950 border border-zinc-800 rounded-lg text-zinc-200 placeholder-zinc-500 font-mono focus:outline-hidden focus:border-blue-500"
               />
             </div>
 
@@ -126,7 +126,7 @@ export const ModalNovaDespesa: React.FC<ModalNovaDespesaProps> = ({
               <select
                 value={metodoPagamento}
                 onChange={(e) => setMetodoPagamento(e.target.value)}
-                className="w-full px-3.5 py-2.5 text-xs bg-zinc-950 border border-zinc-800 rounded-lg text-zinc-200 focus:outline-hidden focus:border-amber-500"
+                className="w-full px-3.5 py-2.5 text-xs bg-zinc-950 border border-zinc-800 rounded-lg text-zinc-200 focus:outline-hidden focus:border-blue-500"
               >
                 <option value="">Selecione</option>
                 <option value="PIX">PIX</option>
@@ -146,7 +146,7 @@ export const ModalNovaDespesa: React.FC<ModalNovaDespesaProps> = ({
               <select
                 value={status}
                 onChange={(e) => setStatus(e.target.value as 'pago' | 'pendente')}
-                className="w-full px-3.5 py-2.5 text-xs bg-zinc-950 border border-zinc-800 rounded-lg text-zinc-200 focus:outline-hidden focus:border-amber-500"
+                className="w-full px-3.5 py-2.5 text-xs bg-zinc-950 border border-zinc-800 rounded-lg text-zinc-200 focus:outline-hidden focus:border-blue-500"
               >
                 <option value="pendente">Pendente</option>
                 <option value="pago">Pago</option>
@@ -162,7 +162,7 @@ export const ModalNovaDespesa: React.FC<ModalNovaDespesaProps> = ({
                   type="date"
                   value={vencimento}
                   onChange={(e) => setVencimento(e.target.value)}
-                  className="w-full px-3.5 py-2.5 text-xs bg-zinc-950 border border-zinc-800 rounded-lg text-zinc-200 focus:outline-hidden focus:border-amber-500"
+                  className="w-full px-3.5 py-2.5 text-xs bg-zinc-950 border border-zinc-800 rounded-lg text-zinc-200 focus:outline-hidden focus:border-blue-500"
                 />
               </div>
             </div>
@@ -175,7 +175,7 @@ export const ModalNovaDespesa: React.FC<ModalNovaDespesaProps> = ({
               rows={3}
               value={observacoes}
               onChange={(e) => setObservacoes(e.target.value)}
-              className="w-full px-3.5 py-2 text-xs bg-zinc-950 border border-zinc-800 rounded-lg text-zinc-200 placeholder-zinc-600 focus:outline-hidden focus:border-amber-500"
+              className="w-full px-3.5 py-2 text-xs bg-zinc-950 border border-zinc-800 rounded-lg text-zinc-200 placeholder-zinc-600 focus:outline-hidden focus:border-blue-500"
             />
           </div>
 
@@ -190,7 +190,7 @@ export const ModalNovaDespesa: React.FC<ModalNovaDespesaProps> = ({
             </button>
             <button
               type="submit"
-              className="px-5 py-2 text-xs font-bold bg-amber-500 hover:bg-amber-400 text-zinc-950 rounded-lg transition-all"
+              className="px-5 py-2 text-xs font-bold bg-blue-600 hover:bg-blue-500 text-white rounded-lg transition-all"
             >
               Cadastrar
             </button>

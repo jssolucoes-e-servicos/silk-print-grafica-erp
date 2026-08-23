@@ -49,7 +49,7 @@ export const OrcamentosListScreen: React.FC<OrcamentosListScreenProps> = ({
 
         <button
           onClick={onNavigateToNovoOrcamento}
-          className="px-4 py-2 rounded-lg bg-amber-500 hover:bg-amber-400 text-zinc-950 text-xs font-bold transition-all shadow-sm flex items-center gap-1.5 self-start sm:self-auto"
+          className="px-4 py-2 rounded-lg bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold transition-all shadow-sm flex items-center gap-1.5 self-start sm:self-auto"
         >
           <Plus className="w-4 h-4 stroke-[3]" />
           <span>Novo Orçamento</span>
@@ -65,7 +65,7 @@ export const OrcamentosListScreen: React.FC<OrcamentosListScreenProps> = ({
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               placeholder="Buscar por número ou cliente..."
-              className="w-full pl-8 pr-3 py-1.5 text-xs bg-zinc-900 border border-zinc-800 rounded-lg text-zinc-200 placeholder-zinc-500 focus:outline-hidden focus:border-amber-500"
+              className="w-full pl-8 pr-3 py-1.5 text-xs bg-zinc-900 border border-zinc-800 rounded-lg text-zinc-200 placeholder-zinc-500 focus:outline-hidden focus:border-blue-500"
             />
           </div>
         </div>
@@ -93,7 +93,7 @@ export const OrcamentosListScreen: React.FC<OrcamentosListScreenProps> = ({
               ) : (
                 filtered.map((quote) => (
                   <tr key={quote.id} className="hover:bg-zinc-800/40 transition-colors">
-                    <td className="py-3 px-4 font-mono font-bold text-amber-400">
+                    <td className="py-3 px-4 font-mono font-bold text-blue-400">
                       {quote.number}
                     </td>
                     <td className="py-3 px-4">
@@ -107,7 +107,7 @@ export const OrcamentosListScreen: React.FC<OrcamentosListScreenProps> = ({
                       {formatDate(quote.validityDate)}
                     </td>
                     <td className="py-3 px-4">
-                      <span className="px-2 py-0.5 rounded text-[10px] font-bold uppercase bg-amber-500/15 text-amber-400 border border-amber-500/30">
+                      <span className="px-2 py-0.5 rounded text-[10px] font-bold uppercase bg-blue-500/15 text-blue-400 border border-blue-500/30">
                         {quote.status}
                       </span>
                     </td>
@@ -131,7 +131,7 @@ export const OrcamentosListScreen: React.FC<OrcamentosListScreenProps> = ({
 
                       <button
                         onClick={() => onConvertToOrder(quote)}
-                        className="px-2 py-1 bg-amber-500/20 hover:bg-amber-500 text-amber-400 hover:text-zinc-950 font-semibold text-[11px] rounded transition-colors"
+                        className="px-2 py-1 bg-blue-500/20 hover:bg-blue-500 text-blue-400 hover:text-white font-semibold text-[11px] rounded transition-colors"
                         title="Converter em Pedido de Produção"
                       >
                         + Pedido

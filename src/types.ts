@@ -5,6 +5,10 @@ export type AdminRoute =
   | 'gestao'
   | 'produtos'
   | 'categorias'
+  | 'clientes'
+  | 'acabamentos'
+  | 'financeiro'
+  | 'relatorios'
   | 'precificacao'
   | 'metricas'
   | 'exportar'
@@ -17,17 +21,16 @@ export type AdminRoute =
 export type GestaoRoute =
   | 'visao-geral'
   | 'clientes'
+  | 'produtos'
   | 'produtos-internos'
-  | 'acabamentos'
   | 'orcamentos'
   | 'novo-orcamento'
   | 'pedidos'
   | 'novo-pedido'
   | 'agenda'
   | 'pedidos-online'
-  | 'declaracao-conteudo'
-  | 'financeiro'
-  | 'relatorios';
+  | 'logistica'
+  | 'declaracao-conteudo';
 
 export type AppRoute = AdminRoute | GestaoRoute;
 
@@ -40,6 +43,13 @@ export type OrderStatus =
   | 'entregue'
   | 'aguardando_pagamento'
   | 'cancelado';
+
+export interface OrderMessage {
+  id: string;
+  sender: 'grafica' | 'cliente' | 'sistema';
+  text: string;
+  timestamp: string;
+}
 
 export interface Client {
   id: string;
@@ -109,12 +119,18 @@ export interface Order {
   items?: QuoteItem[];
   itemsCount: number;
   total: number;
+  paidAmount?: number;
   status: OrderStatus;
   paymentStatus: 'pago' | 'pendente' | 'parcial';
+  paymentMethod?: string;
+  pixKey?: string;
+  trackingCode?: string;
+  shippingCarrier?: string;
   deliveryDate: string;
   createdAt: string;
   notes?: string;
   isOnlineOrder?: boolean;
+  messages?: OrderMessage[];
 }
 
 export interface PriceTier {

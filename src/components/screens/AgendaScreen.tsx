@@ -180,7 +180,7 @@ export const AgendaScreen: React.FC<AgendaScreenProps> = ({ orders, onSelectOrde
                     {activeToday && <span className="w-1.5 h-1.5 rounded-full bg-blue-400"></span>}
                   </span>
                   {currentDayOrders.length > 0 && (
-                    <span className="text-[10px] px-1.5 py-0.5 rounded-md bg-zinc-800 text-amber-400 font-semibold font-mono">
+                    <span className="text-[10px] px-1.5 py-0.5 rounded-md bg-zinc-800 text-blue-400 font-semibold font-mono">
                       {currentDayOrders.length}
                     </span>
                   )}
