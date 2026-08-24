@@ -493,11 +493,11 @@ export const CatalogoEcommerceProdutosScreen: React.FC<CatalogoEcommerceProdutos
               Limpar Filtros
             </button>
             <button
-              onClick={handleImportMock}
+              onClick={() => handleOpenAddModal(false)}
               className="px-4 py-2 rounded-xl bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold transition-all flex items-center gap-1.5 shadow-sm cursor-pointer"
             >
-              <Upload className="w-3.5 h-3.5" />
-              <span>Importar Kit Modelo</span>
+              <Plus className="w-3.5 h-3.5" />
+              <span>Cadastrar Novo Produto</span>
             </button>
           </div>
         </div>

@@ -273,8 +273,8 @@ export const INITIAL_ACCESS_PROFILES: AccessProfile[] = [
 export const INITIAL_EMPLOYEES: UserEmployee[] = [
   {
     id: 'emp-1',
-    name: 'Carlos Oliveira (Você / Admin Master)',
-    email: 'carlos@silkprint.com.br',
+    name: 'Carlos Oliveira (Admin Master)',
+    email: 'admin@silkprint.com.br',
     whatsapp: '(11) 99123-4567',
     jobTitle: 'Diretor Geral & Administrador',
     department: 'Diretoria',
@@ -283,69 +283,6 @@ export const INITIAL_EMPLOYEES: UserEmployee[] = [
     customPermissions: [],
     createdAt: '2026-01-01T08:00:00Z',
     lastLogin: 'Agora mesmo',
-  },
-  {
-    id: 'emp-2',
-    name: 'Juliana Mendes',
-    email: 'juliana.arte@silkprint.com.br',
-    whatsapp: '(11) 98765-1122',
-    jobTitle: 'Arte-Finalista & Atendimento VIP',
-    department: 'Arte & Pré-Impressão',
-    status: 'Ativo',
-    profileIds: ['prof_designer', 'prof_comercial'], // Múltiplos perfis ativos!
-    customPermissions: [
-      {
-        id: 'cust-1',
-        permissionId: 'quotes.discount',
-        permissionType: 'action',
-        permissionName: 'Aplicar Desconto Especial (> 10%)',
-        grantType: 'allow',
-        expiresAt: '2026-09-01T23:59:59Z', // Temporário! Válido até setembro
-        grantedAt: '2026-08-15T14:00:00Z',
-        grantedBy: 'Carlos Oliveira',
-        reason: 'Campanha de vendas - autorizada a fechar propostas comerciais com desconto especial',
-      },
-    ],
-    createdAt: '2026-02-10T09:00:00Z',
-    lastLogin: 'Há 15 minutos',
-  },
-  {
-    id: 'emp-3',
-    name: 'Roberto Souza',
-    email: 'roberto.impressao@silkprint.com.br',
-    whatsapp: '(11) 97654-3344',
-    jobTitle: 'Líder de Produção & Acabamento',
-    department: 'Produção',
-    status: 'Ativo',
-    profileIds: ['prof_producao', 'prof_logistica'], // Múltiplos perfis!
-    customPermissions: [
-      {
-        id: 'cust-2',
-        permissionId: 'financial.view',
-        permissionType: 'action',
-        permissionName: 'Visualizar Fluxo Financeiro da Gráfica',
-        grantType: 'allow',
-        expiresAt: null, // Permissão permanente avulsa
-        grantedAt: '2026-07-01T10:00:00Z',
-        grantedBy: 'Carlos Oliveira',
-        reason: 'Conferência direta de compras de bobinas e insumos de produção',
-      },
-    ],
-    createdAt: '2026-03-01T08:30:00Z',
-    lastLogin: 'Há 1 hora',
-  },
-  {
-    id: 'emp-4',
-    name: 'Fernanda Lima',
-    email: 'fernanda.vendas@silkprint.com.br',
-    whatsapp: '(11) 98888-7766',
-    jobTitle: 'Consultora de Vendas & Balcão',
-    department: 'Comercial',
-    status: 'Ativo',
-    profileIds: ['prof_comercial'],
-    customPermissions: [],
-    createdAt: '2026-04-15T10:00:00Z',
-    lastLogin: 'Há 3 horas',
   },
 ];
 

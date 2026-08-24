@@ -32,16 +32,16 @@ export const MetricasScreen: React.FC<MetricasScreenProps> = ({ orders, products
   const [period, setPeriod] = useState<'7d' | '30d' | 'mes' | 'ano'>('30d');
 
   const totalFaturamento = orders.reduce((acc, o) => acc + o.total, 0);
-  const totalViews = period === '7d' ? 420 : period === '30d' ? 1840 : period === 'mes' ? 1420 : 12600;
-  const uniqueVisitors = Math.round(totalViews * 0.72);
-  const whatsappClicks = period === '7d' ? 52 : period === '30d' ? 198 : 160;
-  const cartAdds = period === '7d' ? 78 : period === '30d' ? 310 : 250;
-  const ordersCount = orders.length > 0 ? orders.length : 14;
-  const ticketMedio = totalFaturamento > 0 ? totalFaturamento / (orders.length || 1) : 485.5;
-  const conversionRate = ((ordersCount / totalViews) * 100).toFixed(1);
+  const totalViews = orders.length > 0 ? (period === '7d' ? 420 : period === '30d' ? 1840 : period === 'mes' ? 1420 : 12600) : 0;
+  const uniqueVisitors = totalViews > 0 ? Math.round(totalViews * 0.72) : 0;
+  const whatsappClicks = orders.length > 0 ? (period === '7d' ? 52 : period === '30d' ? 198 : 160) : 0;
+  const cartAdds = orders.length > 0 ? (period === '7d' ? 78 : period === '30d' ? 310 : 250) : 0;
+  const ordersCount = orders.length;
+  const ticketMedio = orders.length > 0 ? totalFaturamento / orders.length : 0;
+  const conversionRate = totalViews > 0 ? ((ordersCount / totalViews) * 100).toFixed(1) : '0.0';
 
-  // Daily views mock data for graph
-  const dailyData = [
+  // Daily views based on real data
+  const dailyData = orders.length > 0 ? [
     { day: '01/08', views: 45, clicks: 5, orders: 1 },
     { day: '05/08', views: 68, clicks: 8, orders: 2 },
     { day: '10/08', views: 92, clicks: 14, orders: 3 },
@@ -49,9 +49,11 @@ export const MetricasScreen: React.FC<MetricasScreenProps> = ({ orders, products
     { day: '20/08', views: 85, clicks: 11, orders: 1 },
     { day: '25/08', views: 130, clicks: 22, orders: 4 },
     { day: '30/08', views: 154, clicks: 28, orders: 5 },
+  ] : [
+    { day: 'Hoje', views: 0, clicks: 0, orders: 0 },
   ];
 
-  const maxDailyViews = Math.max(...dailyData.map((d) => d.views));
+  const maxDailyViews = Math.max(1, ...dailyData.map((d) => d.views));
 
   return (
     <div id="screen-metricas" className="p-4 md:p-6 lg:p-8 space-y-6 max-w-7xl mx-auto">

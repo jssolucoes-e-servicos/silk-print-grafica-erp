@@ -1,10 +1,9 @@
-import { PrismaClient } from '@prisma/client';
+import { getPrisma } from '../server/prisma';
 import { hashPassword, MASTER_ADMIN_SEED } from '../server/auth';
 import { INITIAL_ACCESS_PROFILES } from '../src/lib/permissionsEngine';
 
-const prisma = new PrismaClient();
-
 async function main() {
+  const prisma = getPrisma();
   console.log('🌱 [Prisma Seed] Iniciando seed de produção mínima para o ERP SilkPrint...');
 
   // 1. Seed Access Profiles
@@ -77,10 +76,13 @@ async function main() {
 
 main()
   .then(async () => {
+    const prisma = getPrisma();
     await prisma.$disconnect();
+    process.exit(0);
   })
   .catch(async (e) => {
     console.error('❌ Erro no seed do Prisma:', e);
+    const prisma = getPrisma();
     await prisma.$disconnect();
     process.exit(1);
   });

@@ -72,6 +72,21 @@ function initStore() {
     if (fs.existsSync(STORE_FILE)) {
       const content = fs.readFileSync(STORE_FILE, 'utf-8');
       const parsed = JSON.parse(content);
+      
+      let loadedEmployees = parsed.employees || [];
+      if (loadedEmployees.length === 0 || !loadedEmployees.some((e: any) => e.email === MASTER_ADMIN_SEED.email)) {
+        loadedEmployees = [defaultMasterAdmin, ...loadedEmployees];
+      } else {
+        // Ensure master admin has valid hash
+        const adminIdx = loadedEmployees.findIndex((e: any) => e.email === MASTER_ADMIN_SEED.email);
+        if (adminIdx >= 0 && (!loadedEmployees[adminIdx].passwordHash || !loadedEmployees[adminIdx].salt)) {
+          const { hash, salt } = hashPassword(MASTER_ADMIN_SEED.defaultPassword);
+          loadedEmployees[adminIdx].passwordHash = hash;
+          loadedEmployees[adminIdx].salt = salt;
+          loadedEmployees[adminIdx].isMaster = true;
+        }
+      }
+
       store = {
         clients: parsed.clients || [],
         orders: parsed.orders || [],
@@ -79,12 +94,12 @@ function initStore() {
         transactions: parsed.transactions || [],
         products: parsed.products || [],
         finishings: parsed.finishings || [],
-        employees: parsed.employees || [],
-        accessProfiles: parsed.accessProfiles || [],
-        isRealDataOnly: parsed.isRealDataOnly || false,
+        employees: loadedEmployees,
+        accessProfiles: (parsed.accessProfiles && parsed.accessProfiles.length > 0) ? parsed.accessProfiles : [...INITIAL_ACCESS_PROFILES],
+        isRealDataOnly: true,
         lastUpdated: parsed.lastUpdated || new Date().toISOString(),
       };
-      console.log(`[Store] Dados carregados do arquivo local (${store.clients.length} clientes, ${store.orders.length} pedidos).`);
+      console.log(`[Store] Dados carregados do arquivo local (${store.clients.length} clientes, ${store.orders.length} pedidos, ${store.products.length} produtos).`);
     } else {
       saveStoreToFile();
       console.log('[Store] Arquivo local de persistência criado em:', STORE_FILE);
