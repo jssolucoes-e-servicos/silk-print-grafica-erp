@@ -10,14 +10,17 @@ import {
   Shield,
   Layers,
   ArrowUpRight,
+  Server,
+  Code2,
 } from 'lucide-react';
 import { EvolutionTab } from './integracoes/EvolutionTab';
 import { PostgresTab } from './integracoes/PostgresTab';
 import { MinioTab } from './integracoes/MinioTab';
 import { N8nTab } from './integracoes/N8nTab';
+import { NestJsApiDocsScreen } from './NestJsApiDocsScreen';
 
 export const IntegracoesScreen: React.FC = () => {
-  const [activeTab, setActiveTab] = useState<'evolution' | 'postgres' | 'minio' | 'n8n' | 'outras'>('postgres');
+  const [activeTab, setActiveTab] = useState<'nestjs' | 'evolution' | 'postgres' | 'minio' | 'n8n' | 'outras'>('nestjs');
 
   // Additional mock settings for minor ERP/Logistics
   const [melhorEnvio, setMelhorEnvio] = useState(false);
@@ -42,6 +45,19 @@ export const IntegracoesScreen: React.FC = () => {
 
       {/* Main Tabs Navigation */}
       <div className="flex items-center gap-2 border-b border-zinc-800 pb-3 overflow-x-auto">
+        <button
+          type="button"
+          onClick={() => setActiveTab('nestjs')}
+          className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-bold transition-all cursor-pointer whitespace-nowrap ${
+            activeTab === 'nestjs'
+              ? 'bg-red-600/20 text-red-400 border border-red-500/30 shadow-xs'
+              : 'text-zinc-400 hover:text-zinc-200 hover:bg-zinc-800/50'
+          }`}
+        >
+          <Server className="w-4 h-4" />
+          <span>API NestJS & Contratos DTO</span>
+        </button>
+
         <button
           type="button"
           onClick={() => setActiveTab('postgres')}
@@ -109,6 +125,7 @@ export const IntegracoesScreen: React.FC = () => {
       </div>
 
       {/* Tab Contents */}
+      {activeTab === 'nestjs' && <NestJsApiDocsScreen />}
       {activeTab === 'postgres' && <PostgresTab />}
       {activeTab === 'minio' && <MinioTab />}
       {activeTab === 'n8n' && <N8nTab />}
