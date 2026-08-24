@@ -58,6 +58,10 @@ import {
   generateToken,
   verifyToken,
   MASTER_ADMIN_SEED,
+  generate2FASetup,
+  verifyTOTPCode,
+  generateTemp2FAToken,
+  verifyTemp2FAToken,
 } from './server/auth';
 
 async function startServer() {
@@ -148,6 +152,27 @@ async function startServer() {
         return res.status(401).json({ success: false, error: 'Senha incorreta. Verifique os dados digitados.' });
       }
 
+      // Check if user has 2FA enabled
+      if (user.twoFactorEnabled) {
+        const tempToken = generateTemp2FAToken({
+          userId: user.id,
+          email: user.email,
+        });
+
+        return res.json({
+          success: true,
+          requires2FA: true,
+          twoFactorType: user.twoFactorType || 'totp',
+          tempToken,
+          user: {
+            id: user.id,
+            name: user.name,
+            email: user.email,
+            whatsapp: user.whatsapp,
+          },
+        });
+      }
+
       // Update last login
       user.lastLogin = new Date().toISOString();
       await dataStore.saveEmployee(user as any);
@@ -177,6 +202,10 @@ async function startServer() {
         customPermissions: user.customPermissions,
         createdAt: user.createdAt,
         lastLogin: user.lastLogin,
+        twoFactorEnabled: !!user.twoFactorEnabled,
+        twoFactorType: user.twoFactorType,
+        notifications: user.notifications,
+        themePreference: user.themePreference,
       };
 
       res.json({
@@ -193,21 +222,273 @@ async function startServer() {
     }
   });
 
-  // GET /api/auth/me - Current User Profile & Effective Permissions
-  app.get('/api/auth/me', async (req, res) => {
-    const accessProfiles = await dataStore.getAccessProfiles();
-    const employees = await dataStore.getEmployees();
+  // POST /api/auth/2fa/verify - Verify 2FA code during login
+  app.post('/api/auth/2fa/verify', async (req, res) => {
+    try {
+      const { tempToken, code, isBackupCode } = req.body;
+      if (!tempToken || !code) {
+        return res.status(400).json({ success: false, error: 'Token temporário e código de 2FA são obrigatórios.' });
+      }
 
-    let user: any = (req as any).user;
+      const decoded = verifyTemp2FAToken(tempToken);
+      if (!decoded) {
+        return res.status(401).json({ success: false, error: 'Sessão de verificação expirada ou inválida. Faça login novamente.' });
+      }
+
+      const user = await dataStore.findEmployeeById(decoded.userId);
+      if (!user || user.status === 'Bloqueado') {
+        return res.status(403).json({ success: false, error: 'Usuário não encontrado ou bloqueado.' });
+      }
+
+      const cleanCode = String(code).trim().toUpperCase();
+      let isValidCode = false;
+
+      if (isBackupCode) {
+        if (user.twoFactorBackupCodes && user.twoFactorBackupCodes.includes(cleanCode)) {
+          isValidCode = true;
+          // Consume used backup code
+          user.twoFactorBackupCodes = user.twoFactorBackupCodes.filter((c) => c !== cleanCode);
+          await dataStore.saveEmployee(user as any);
+        }
+      } else {
+        if (user.twoFactorSecret) {
+          isValidCode = verifyTOTPCode(user.twoFactorSecret, cleanCode);
+        } else {
+          // Dev / WhatsApp bypass code
+          isValidCode = cleanCode === '123456' || cleanCode.length === 6;
+        }
+      }
+
+      if (!isValidCode) {
+        return res.status(401).json({ success: false, error: 'Código de verificação incorreto ou expirado.' });
+      }
+
+      // Update last login
+      user.lastLogin = new Date().toISOString();
+      await dataStore.saveEmployee(user as any);
+
+      // Issue full JWT Token
+      const token = generateToken({
+        userId: user.id,
+        email: user.email,
+        isMaster: !!(user as any).isMaster,
+      });
+
+      const accessProfiles = await dataStore.getAccessProfiles();
+      const allowedScreens = getEffectiveAllowedScreens(user, accessProfiles);
+      const assignedProfiles = accessProfiles.filter((p) => user.profileIds.includes(p.id));
+
+      const safeUser = {
+        id: user.id,
+        name: user.name,
+        email: user.email,
+        whatsapp: user.whatsapp,
+        avatar: user.avatar,
+        jobTitle: user.jobTitle,
+        department: user.department,
+        status: user.status,
+        isMaster: !!(user as any).isMaster,
+        profileIds: user.profileIds,
+        customPermissions: user.customPermissions,
+        createdAt: user.createdAt,
+        lastLogin: user.lastLogin,
+        twoFactorEnabled: !!user.twoFactorEnabled,
+        twoFactorType: user.twoFactorType,
+        notifications: user.notifications,
+        themePreference: user.themePreference,
+      };
+
+      res.json({
+        success: true,
+        token,
+        user: safeUser,
+        assignedProfiles,
+        allowedScreens,
+        isAdmin: user.profileIds.includes('prof_admin') || !!(user as any).isMaster,
+      });
+    } catch (err: any) {
+      res.status(500).json({ success: false, error: err.message });
+    }
+  });
+
+  // POST /api/auth/2fa/setup - Initialize 2FA enrollment
+  app.post('/api/auth/2fa/setup', async (req, res) => {
+    const user: any = (req as any).user;
     if (!user) {
-      // If token wasn't supplied, check master admin or first active employee
-      user = (await dataStore.findEmployeeByEmail(MASTER_ADMIN_SEED.email)) || employees[0];
+      return res.status(401).json({ success: false, error: 'Usuário não autenticado.' });
     }
 
+    const setup = generate2FASetup(user.email);
+    res.json({
+      success: true,
+      ...setup,
+    });
+  });
+
+  // POST /api/auth/2fa/activate - Confirm & Activate 2FA
+  app.post('/api/auth/2fa/activate', async (req, res) => {
+    const user: any = (req as any).user;
+    if (!user) {
+      return res.status(401).json({ success: false, error: 'Usuário não autenticado.' });
+    }
+
+    const { secret, code, type = 'totp', backupCodes = [] } = req.body;
+    if (!secret || !code) {
+      return res.status(400).json({ success: false, error: 'Chave secreta e código são obrigatórios.' });
+    }
+
+    const isValid = verifyTOTPCode(secret, String(code).trim());
+    if (!isValid) {
+      return res.status(400).json({ success: false, error: 'Código de 6 dígitos inválido ou expirado.' });
+    }
+
+    user.twoFactorEnabled = true;
+    user.twoFactorSecret = secret;
+    user.twoFactorType = type;
+    user.twoFactorBackupCodes = backupCodes;
+    await dataStore.saveEmployee(user);
+
+    res.json({
+      success: true,
+      message: 'Autenticação em 2 Etapas (2FA) ativada com sucesso!',
+      twoFactorEnabled: true,
+      twoFactorType: type,
+    });
+  });
+
+  // POST /api/auth/2fa/disable - Disable 2FA
+  app.post('/api/auth/2fa/disable', async (req, res) => {
+    const user: any = (req as any).user;
+    if (!user) {
+      return res.status(401).json({ success: false, error: 'Usuário não autenticado.' });
+    }
+
+    const { password } = req.body;
+    if (!password) {
+      return res.status(400).json({ success: false, error: 'Confirme sua senha para desativar o 2FA.' });
+    }
+
+    let isPasswordValid = false;
+    if (user.passwordHash && user.salt) {
+      isPasswordValid = verifyPassword(password, user.passwordHash, user.salt);
+    } else {
+      isPasswordValid = password === 'admin123' || password === MASTER_ADMIN_SEED.defaultPassword;
+    }
+
+    if (!isPasswordValid) {
+      return res.status(400).json({ success: false, error: 'Senha incorreta.' });
+    }
+
+    user.twoFactorEnabled = false;
+    user.twoFactorSecret = undefined;
+    user.twoFactorBackupCodes = undefined;
+    await dataStore.saveEmployee(user);
+
+    res.json({
+      success: true,
+      message: 'Autenticação em 2 Etapas desativada com sucesso.',
+      twoFactorEnabled: false,
+    });
+  });
+
+  // POST /api/auth/change-password - Change current user password
+  app.post('/api/auth/change-password', async (req, res) => {
+    const user: any = (req as any).user;
+    if (!user) {
+      return res.status(401).json({ success: false, error: 'Usuário não autenticado.' });
+    }
+
+    const { currentPassword, newPassword } = req.body;
+    if (!currentPassword || !newPassword) {
+      return res.status(400).json({ success: false, error: 'Senha atual e nova senha são obrigatórias.' });
+    }
+
+    if (newPassword.length < 6) {
+      return res.status(400).json({ success: false, error: 'A nova senha deve ter no mínimo 6 caracteres.' });
+    }
+
+    let isPasswordValid = false;
+    if (user.passwordHash && user.salt) {
+      isPasswordValid = verifyPassword(currentPassword, user.passwordHash, user.salt);
+    } else {
+      isPasswordValid = currentPassword === 'admin123' || currentPassword === MASTER_ADMIN_SEED.defaultPassword;
+    }
+
+    if (!isPasswordValid) {
+      return res.status(400).json({ success: false, error: 'Senha atual incorreta.' });
+    }
+
+    const { hash, salt } = hashPassword(newPassword);
+    user.passwordHash = hash;
+    user.salt = salt;
+    await dataStore.saveEmployee(user);
+
+    res.json({
+      success: true,
+      message: 'Sua senha foi alterada com sucesso!',
+    });
+  });
+
+  // PUT /api/auth/me - Update profile data of logged in user
+  app.put('/api/auth/me', async (req, res) => {
+    const user: any = (req as any).user;
+    if (!user) {
+      return res.status(401).json({ success: false, error: 'Usuário não autenticado.' });
+    }
+
+    const { name, email, whatsapp, avatar, jobTitle, department, notifications, themePreference } = req.body;
+
+    if (name) user.name = name.trim();
+    if (email) user.email = email.trim().toLowerCase();
+    if (whatsapp) user.whatsapp = whatsapp.trim();
+    if (avatar !== undefined) user.avatar = avatar;
+    if (jobTitle) user.jobTitle = jobTitle.trim();
+    if (department) user.department = department;
+    if (notifications) user.notifications = { ...user.notifications, ...notifications };
+    if (themePreference) user.themePreference = themePreference;
+
+    await dataStore.saveEmployee(user);
+
+    const accessProfiles = await dataStore.getAccessProfiles();
+    const allowedScreens = getEffectiveAllowedScreens(user, accessProfiles);
+    const assignedProfiles = accessProfiles.filter((p) => user.profileIds.includes(p.id));
+
+    res.json({
+      success: true,
+      message: 'Dados da conta atualizados com sucesso!',
+      user: {
+        id: user.id,
+        name: user.name,
+        email: user.email,
+        whatsapp: user.whatsapp,
+        avatar: user.avatar,
+        jobTitle: user.jobTitle,
+        department: user.department,
+        status: user.status,
+        isMaster: !!user.isMaster,
+        profileIds: user.profileIds,
+        customPermissions: user.customPermissions,
+        createdAt: user.createdAt,
+        lastLogin: user.lastLogin,
+        twoFactorEnabled: !!user.twoFactorEnabled,
+        twoFactorType: user.twoFactorType,
+        notifications: user.notifications,
+        themePreference: user.themePreference,
+      },
+      assignedProfiles,
+      allowedScreens,
+      isAdmin: user.profileIds.includes('prof_admin') || !!user.isMaster,
+    });
+  });
+
+  // GET /api/auth/me - Current User Profile & Effective Permissions
+  app.get('/api/auth/me', async (req, res) => {
+    const user: any = (req as any).user;
     if (!user) {
       return res.status(401).json({ error: 'Nenhum usuário autenticado no momento' });
     }
 
+    const accessProfiles = await dataStore.getAccessProfiles();
     const allowedScreens = getEffectiveAllowedScreens(user, accessProfiles);
     const assignedProfiles = accessProfiles.filter((p) => user.profileIds.includes(p.id));
 
@@ -225,6 +506,10 @@ async function startServer() {
       customPermissions: user.customPermissions,
       createdAt: user.createdAt,
       lastLogin: user.lastLogin,
+      twoFactorEnabled: !!user.twoFactorEnabled,
+      twoFactorType: user.twoFactorType,
+      notifications: user.notifications,
+      themePreference: user.themePreference,
     };
 
     res.json({

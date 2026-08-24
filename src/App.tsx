@@ -116,6 +116,7 @@ import { PedidosOnlineScreen } from './components/screens/PedidosOnlineScreen';
 import { DeclaracaoConteudoScreen } from './components/screens/DeclaracaoConteudoScreen';
 import { LogisticaScreen } from './components/screens/LogisticaScreen';
 import { RelatoriosScreen } from './components/screens/RelatoriosScreen';
+import { MyAccountScreen } from './components/screens/MyAccountScreen';
 
 const INITIAL_FINISHINGS: FinishingItem[] = [
   {
@@ -805,6 +806,7 @@ export default function App() {
           <SidebarAdmin
             currentRoute={currentRoute}
             onNavigate={handleNavigate}
+            onLogout={handleLogout}
             onOpenUpgradeModal={() => setIsUpgradeModalOpen(true)}
             onOpenCatalogPreview={() => setIsCatalogPreviewOpen(true)}
             ordersCount={orders.length}
@@ -815,6 +817,7 @@ export default function App() {
           <SidebarGestao
             currentRoute={currentRoute}
             onNavigate={handleNavigate}
+            onLogout={handleLogout}
             ordersCount={orders.length}
             quotesCount={quotes.length}
             clientsCount={clients.length}
@@ -836,6 +839,7 @@ export default function App() {
               <SidebarAdmin
                 currentRoute={currentRoute}
                 onNavigate={handleNavigate}
+                onLogout={handleLogout}
                 onOpenUpgradeModal={() => {
                   setIsMobileMenuOpen(false);
                   setIsUpgradeModalOpen(true);
@@ -852,6 +856,7 @@ export default function App() {
               <SidebarGestao
                 currentRoute={currentRoute}
                 onNavigate={handleNavigate}
+                onLogout={handleLogout}
                 ordersCount={orders.length}
                 quotesCount={quotes.length}
                 clientsCount={clients.length}
@@ -879,6 +884,7 @@ export default function App() {
           currentRoute={currentRoute}
           activeUser={activeUser}
           onLogout={handleLogout}
+          onNavigateToMyAccount={() => handleNavigate('minha-conta')}
           onToggleSidebarMode={toggleSidebarMode}
           onOpenCatalogPreview={() => setIsCatalogPreviewOpen(true)}
           onOpenNovaReceita={() => setIsNovaReceitaOpen(true)}
@@ -1152,6 +1158,24 @@ export default function App() {
               products={products}
               transactions={transactions}
             />
+          )}
+
+          {(currentRoute === 'minha-conta' || currentRoute === 'perfil') && (
+            <div className="p-4 sm:p-6 lg:p-8">
+              <MyAccountScreen
+                currentUser={activeUser}
+                assignedProfiles={accessProfiles.filter((p) =>
+                  activeUser.profileIds?.includes(p.id)
+                )}
+                onUserUpdated={(updatedUser) => {
+                  setActiveUser(updatedUser);
+                  setEmployees((prev) =>
+                    prev.map((e) => (e.id === updatedUser.id ? updatedUser : e))
+                  );
+                }}
+                onLogout={handleLogout}
+              />
+            </div>
           )}
         </main>
       </div>

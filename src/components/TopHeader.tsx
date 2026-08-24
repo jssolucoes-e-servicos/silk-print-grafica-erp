@@ -19,6 +19,7 @@ interface TopHeaderProps {
   currentRoute: string;
   activeUser?: UserEmployee;
   onLogout?: () => void;
+  onNavigateToMyAccount?: () => void;
   onToggleSidebarMode: () => void;
   onOpenCatalogPreview: () => void;
   onOpenNovaReceita: () => void;
@@ -32,6 +33,7 @@ export const TopHeader: React.FC<TopHeaderProps> = ({
   currentRoute,
   activeUser,
   onLogout,
+  onNavigateToMyAccount,
   onToggleSidebarMode,
   onOpenCatalogPreview,
   onOpenNovaReceita,
@@ -67,6 +69,7 @@ export const TopHeader: React.FC<TopHeaderProps> = ({
       integracoes: 'Integrações',
       funcionarios: 'Colaboradores',
       perfis: 'Perfis de Acesso',
+      'minha-conta': 'Minha Conta',
     };
 
     return {
@@ -139,18 +142,36 @@ export const TopHeader: React.FC<TopHeaderProps> = ({
         {/* User Info & Logout */}
         {activeUser && (
           <div className="flex items-center gap-2 pl-2 border-l border-zinc-800">
-            <div className="hidden lg:flex flex-col text-right">
-              <span className="text-xs font-medium text-zinc-200 leading-tight truncate max-w-[140px]">
-                {activeUser.name}
-              </span>
-              <span className="text-[10px] text-blue-400 font-semibold tracking-wide uppercase">
-                {activeUser.jobTitle || 'Admin'}
-              </span>
-            </div>
+            <button
+              type="button"
+              onClick={onNavigateToMyAccount}
+              className="flex items-center gap-2 px-2 py-1 rounded-lg hover:bg-zinc-900 border border-transparent hover:border-zinc-800 transition-colors text-left cursor-pointer"
+              title="Minha Conta e Segurança 2FA"
+            >
+              {activeUser.avatar ? (
+                <img
+                  src={activeUser.avatar}
+                  alt={activeUser.name}
+                  className="w-7 h-7 rounded-lg object-cover border border-zinc-700"
+                />
+              ) : (
+                <div className="w-7 h-7 rounded-lg bg-blue-600/20 border border-blue-500/30 text-blue-400 font-bold text-xs flex items-center justify-center">
+                  {activeUser.name.charAt(0)}
+                </div>
+              )}
+              <div className="hidden lg:flex flex-col text-right">
+                <span className="text-xs font-medium text-zinc-200 leading-tight truncate max-w-[140px]">
+                  {activeUser.name}
+                </span>
+                <span className="text-[10px] text-blue-400 font-semibold tracking-wide uppercase">
+                  {activeUser.jobTitle || 'Minha Conta'}
+                </span>
+              </div>
+            </button>
             {onLogout && (
               <button
                 onClick={onLogout}
-                className="p-1.5 rounded-lg bg-zinc-900 hover:bg-red-950/40 hover:text-red-400 hover:border-red-800/50 border border-zinc-800 text-zinc-400 transition-colors"
+                className="p-1.5 rounded-lg bg-zinc-900 hover:bg-red-950/40 hover:text-red-400 hover:border-red-800/50 border border-zinc-800 text-zinc-400 transition-colors cursor-pointer"
                 title="Encerrar Sessão (Logout)"
               >
                 <LogOut className="w-4 h-4" />

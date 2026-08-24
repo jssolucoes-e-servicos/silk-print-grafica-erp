@@ -120,6 +120,16 @@ export interface UserEmployee {
   customPermissions: UserCustomPermission[]; // Permissões avulsas (temporárias ou permanentes)
   createdAt: string;
   lastLogin?: string;
+  twoFactorEnabled?: boolean;
+  twoFactorType?: 'totp' | 'whatsapp';
+  twoFactorSecret?: string;
+  twoFactorBackupCodes?: string[];
+  notifications?: {
+    email?: boolean;
+    whatsapp?: boolean;
+    system?: boolean;
+  };
+  themePreference?: 'dark' | 'light' | 'system';
 }
 
 export type OrderStatus =

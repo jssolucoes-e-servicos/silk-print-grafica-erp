@@ -14,6 +14,7 @@ import {
   UserCheck,
   ShieldCheck,
   LogOut,
+  User,
 } from 'lucide-react';
 import { AdminRoute, SidebarMode, UserEmployee, AccessProfile } from '../types';
 import { hasScreenPermission } from '../lib/permissionsEngine';
@@ -21,6 +22,7 @@ import { hasScreenPermission } from '../lib/permissionsEngine';
 interface SidebarAdminProps {
   currentRoute: string;
   onNavigate: (route: string, mode?: SidebarMode) => void;
+  onLogout?: () => void;
   onOpenUpgradeModal?: () => void;
   onOpenCatalogPreview?: () => void;
   ordersCount: number;
@@ -40,6 +42,7 @@ interface MenuItem {
 export const SidebarAdmin: React.FC<SidebarAdminProps> = ({
   currentRoute,
   onNavigate,
+  onLogout,
   activeUser,
   profiles,
 }) => {
@@ -205,28 +208,50 @@ export const SidebarAdmin: React.FC<SidebarAdminProps> = ({
 
       {/* Footer */}
       <div className="p-3 border-t border-zinc-800/80 space-y-2 bg-zinc-950/70">
-        {/* User profile snippet */}
-        <div className="flex items-center gap-2.5 px-2.5 py-2 rounded-lg bg-zinc-900/60 border border-zinc-800/60">
-          <div className="w-7 h-7 rounded-md bg-blue-500/20 border border-blue-500/30 text-blue-400 font-bold text-xs flex items-center justify-center shrink-0">
-            S
-          </div>
+        {/* User profile snippet - Clickable to open Minha Conta */}
+        <button
+          type="button"
+          onClick={() => onNavigate('minha-conta', 'admin')}
+          className={`w-full flex items-center gap-2.5 px-2.5 py-2 rounded-xl text-left transition-all cursor-pointer ${
+            currentRoute === 'minha-conta'
+              ? 'bg-blue-600/20 border border-blue-500/40 text-white'
+              : 'bg-zinc-900/60 hover:bg-zinc-900 border border-zinc-800/60 text-zinc-300 hover:border-zinc-700'
+          }`}
+          title="Ver e editar Minha Conta / 2FA"
+        >
+          {activeUser?.avatar ? (
+            <img
+              src={activeUser.avatar}
+              alt={activeUser.name}
+              className="w-7 h-7 rounded-lg object-cover border border-zinc-700 shrink-0"
+            />
+          ) : (
+            <div className="w-7 h-7 rounded-lg bg-blue-500/20 border border-blue-500/30 text-blue-400 font-bold text-xs flex items-center justify-center shrink-0">
+              {activeUser ? activeUser.name.charAt(0) : 'S'}
+            </div>
+          )}
           <div className="min-w-0 flex-1">
             <div className="text-xs font-semibold text-zinc-200 truncate">
-              Silk Print Gráfica
+              {activeUser ? activeUser.name : 'Silk Print Gráfica'}
             </div>
-            <div className="text-[11px] text-zinc-500 truncate">@silkprint</div>
+            <div className="text-[10px] text-zinc-400 truncate">
+              {activeUser?.jobTitle || 'Minha Conta'}
+            </div>
           </div>
-          <ShieldCheck className="w-3.5 h-3.5 text-blue-400 shrink-0" />
-        </div>
+          {activeUser?.twoFactorEnabled ? (
+            <span title="2FA Ativo" className="w-2 h-2 rounded-full bg-emerald-400 shrink-0" />
+          ) : (
+            <ShieldCheck className="w-3.5 h-3.5 text-blue-400 shrink-0" />
+          )}
+        </button>
 
         <button
-          onClick={() => {
-            alert('Sessão encerrada com segurança.');
-          }}
-          className="w-full flex items-center gap-2 px-2.5 py-1.5 text-xs text-zinc-400 hover:text-red-400 hover:bg-red-500/10 rounded-md transition-colors"
+          type="button"
+          onClick={onLogout}
+          className="w-full flex items-center gap-2 px-2.5 py-1.5 text-xs text-zinc-400 hover:text-red-400 hover:bg-red-500/10 rounded-lg transition-colors cursor-pointer"
         >
           <LogOut className="w-3.5 h-3.5" />
-          <span>Sair</span>
+          <span>Sair do Sistema</span>
         </button>
       </div>
     </aside>

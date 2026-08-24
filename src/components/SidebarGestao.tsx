@@ -17,6 +17,7 @@ import { hasScreenPermission } from '../lib/permissionsEngine';
 interface SidebarGestaoProps {
   currentRoute: string;
   onNavigate: (route: string, mode?: SidebarMode) => void;
+  onLogout?: () => void;
   ordersCount: number;
   quotesCount: number;
   clientsCount: number;
@@ -27,6 +28,7 @@ interface SidebarGestaoProps {
 export const SidebarGestao: React.FC<SidebarGestaoProps> = ({
   currentRoute,
   onNavigate,
+  onLogout,
   ordersCount,
   quotesCount,
   clientsCount,
@@ -161,23 +163,59 @@ export const SidebarGestao: React.FC<SidebarGestaoProps> = ({
 
       {/* Footer */}
       <div className="p-3 border-t border-zinc-800/80 space-y-2 bg-zinc-950/70">
+        {/* User profile snippet - Clickable to open Minha Conta */}
+        {activeUser && (
+          <button
+            type="button"
+            onClick={() => onNavigate('minha-conta', 'gestao')}
+            className={`w-full flex items-center gap-2.5 px-2.5 py-2 rounded-xl text-left transition-all cursor-pointer ${
+              currentRoute === 'minha-conta'
+                ? 'bg-blue-600/20 border border-blue-500/40 text-white'
+                : 'bg-zinc-900/60 hover:bg-zinc-900 border border-zinc-800/60 text-zinc-300 hover:border-zinc-700'
+            }`}
+            title="Ver e editar Minha Conta / 2FA"
+          >
+            {activeUser.avatar ? (
+              <img
+                src={activeUser.avatar}
+                alt={activeUser.name}
+                className="w-7 h-7 rounded-lg object-cover border border-zinc-700 shrink-0"
+              />
+            ) : (
+              <div className="w-7 h-7 rounded-lg bg-blue-500/20 border border-blue-500/30 text-blue-400 font-bold text-xs flex items-center justify-center shrink-0">
+                {activeUser.name.charAt(0)}
+              </div>
+            )}
+            <div className="min-w-0 flex-1">
+              <div className="text-xs font-semibold text-zinc-200 truncate">
+                {activeUser.name}
+              </div>
+              <div className="text-[10px] text-zinc-400 truncate">
+                {activeUser.jobTitle || 'Minha Conta'}
+              </div>
+            </div>
+            {activeUser.twoFactorEnabled && (
+              <span title="2FA Ativo" className="w-2 h-2 rounded-full bg-emerald-400 shrink-0" />
+            )}
+          </button>
+        )}
+
         {/* Back to Admin button */}
         <button
           onClick={() => onNavigate('dashboard', 'admin')}
-          className="w-full flex items-center gap-2 px-2.5 py-2 text-xs font-medium text-blue-400 hover:text-blue-300 hover:bg-blue-500/10 rounded-lg border border-blue-500/20 transition-colors"
+          className="w-full flex items-center gap-2 px-2.5 py-2 text-xs font-medium text-blue-400 hover:text-blue-300 hover:bg-blue-500/10 rounded-lg border border-blue-500/20 transition-colors cursor-pointer"
         >
           <ArrowLeft className="w-4 h-4" />
           <span>Voltar ao Admin</span>
         </button>
 
         <button
-          onClick={() => {
-            alert('Sessão encerrada com segurança.');
-          }}
-          className="w-full flex items-center gap-2 px-2.5 py-1.5 text-xs text-zinc-400 hover:text-red-400 hover:bg-red-500/10 rounded-md transition-colors"
+          type="button"
+          onClick={onLogout}
+          className="w-full flex items-center gap-2 px-2.5 py-1.5 text-xs text-zinc-400 hover:text-red-400 hover:bg-red-500/10 rounded-lg transition-colors cursor-pointer"
         >
           <LogOut className="w-3.5 h-3.5" />
-          <span>Sair</span>
+          <span>Sair do Sistema</span>
         </button>
       </div>
     </aside>

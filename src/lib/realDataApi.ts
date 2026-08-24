@@ -429,12 +429,31 @@ export function clearStoredAuth() {
   try {
     localStorage.removeItem(AUTH_TOKEN_KEY);
     localStorage.removeItem(AUTH_USER_KEY);
-  } catch {
-    // ignore
+    // Clear all silkprint-related local storage and session storage keys
+    Object.keys(localStorage).forEach((k) => {
+      if (k.startsWith('silkprint_') || k.includes('auth') || k.includes('token') || k.includes('user')) {
+        localStorage.removeItem(k);
+      }
+    });
+    sessionStorage.clear();
+
+    // Expire all cookies across all paths and domains
+    if (typeof document !== 'undefined' && document.cookie) {
+      const cookies = document.cookie.split(';');
+      for (let i = 0; i < cookies.length; i++) {
+        const cookie = cookies[i];
+        const eqPos = cookie.indexOf('=');
+        const name = eqPos > -1 ? cookie.substr(0, eqPos).trim() : cookie.trim();
+        document.cookie = `${name}=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/;`;
+        document.cookie = `${name}=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/;domain=${window.location.hostname};`;
+      }
+    }
+  } catch (err) {
+    console.error('[Logout] Erro ao limpar armazenamento local e cookies:', err);
   }
 }
 
-function getAuthHeaders(): Record<string, string> {
+export function getAuthHeaders(): Record<string, string> {
   const token = getStoredAuthToken();
   const headers: Record<string, string> = {
     'Content-Type': 'application/json',
@@ -452,6 +471,9 @@ export async function loginApi(email: string, password: string): Promise<{
   assignedProfiles?: AccessProfile[];
   allowedScreens?: string[];
   isAdmin?: boolean;
+  requires2FA?: boolean;
+  twoFactorType?: 'totp' | 'whatsapp';
+  tempToken?: string;
   error?: string;
 }> {
   try {
@@ -461,12 +483,142 @@ export async function loginApi(email: string, password: string): Promise<{
       body: JSON.stringify({ email, password }),
     });
     const data = await res.json();
-    if (res.ok && data.success && data.token) {
+    if (res.ok && data.success && data.token && !data.requires2FA) {
       setStoredAuth(data.token, data.user);
     }
     return data;
   } catch (err: any) {
     return { success: false, error: err.message || 'Erro ao comunicar com o servidor' };
+  }
+}
+
+export async function verify2FAApi(
+  tempToken: string,
+  code: string,
+  isBackupCode = false
+): Promise<{
+  success: boolean;
+  token?: string;
+  user?: UserEmployee;
+  assignedProfiles?: AccessProfile[];
+  allowedScreens?: string[];
+  isAdmin?: boolean;
+  error?: string;
+}> {
+  try {
+    const res = await fetch('/api/auth/2fa/verify', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ tempToken, code, isBackupCode }),
+    });
+    const data = await res.json();
+    if (res.ok && data.success && data.token) {
+      setStoredAuth(data.token, data.user);
+    }
+    return data;
+  } catch (err: any) {
+    return { success: false, error: err.message || 'Erro ao verificar código 2FA' };
+  }
+}
+
+export async function setup2FAApi(): Promise<{
+  success: boolean;
+  secret: string;
+  formattedKey: string;
+  otpauthUrl: string;
+  backupCodes: string[];
+  error?: string;
+}> {
+  try {
+    const res = await fetch('/api/auth/2fa/setup', {
+      method: 'POST',
+      headers: getAuthHeaders(),
+    });
+    return await res.json();
+  } catch (err: any) {
+    return {
+      success: false,
+      secret: '',
+      formattedKey: '',
+      otpauthUrl: '',
+      backupCodes: [],
+      error: err.message,
+    };
+  }
+}
+
+export async function activate2FAApi(
+  secret: string,
+  code: string,
+  type: 'totp' | 'whatsapp' = 'totp',
+  backupCodes: string[] = []
+): Promise<{ success: boolean; message: string; error?: string }> {
+  try {
+    const res = await fetch('/api/auth/2fa/activate', {
+      method: 'POST',
+      headers: getAuthHeaders(),
+      body: JSON.stringify({ secret, code, type, backupCodes }),
+    });
+    return await res.json();
+  } catch (err: any) {
+    return { success: false, message: '', error: err.message };
+  }
+}
+
+export async function disable2FAApi(password: string): Promise<{ success: boolean; message: string; error?: string }> {
+  try {
+    const res = await fetch('/api/auth/2fa/disable', {
+      method: 'POST',
+      headers: getAuthHeaders(),
+      body: JSON.stringify({ password }),
+    });
+    return await res.json();
+  } catch (err: any) {
+    return { success: false, message: '', error: err.message };
+  }
+}
+
+export async function updateMyProfileApi(userData: Partial<UserEmployee>): Promise<{
+  success: boolean;
+  user?: UserEmployee;
+  assignedProfiles?: AccessProfile[];
+  allowedScreens?: string[];
+  isAdmin?: boolean;
+  message?: string;
+  error?: string;
+}> {
+  try {
+    const res = await fetch('/api/auth/me', {
+      method: 'PUT',
+      headers: getAuthHeaders(),
+      body: JSON.stringify(userData),
+    });
+    const data = await res.json();
+    if (res.ok && data.success && data.user) {
+      const currentToken = getStoredAuthToken();
+      if (currentToken) {
+        setStoredAuth(currentToken, data.user);
+      }
+    }
+    return data;
+  } catch (err: any) {
+    return { success: false, error: err.message || 'Erro ao atualizar dados' };
+  }
+}
+
+export async function changePasswordApi(
+  currentPassword: string,
+  newPassword: string
+): Promise<{ success: boolean; message?: string; error?: string }> {
+  try {
+    const res = await fetch('/api/auth/change-password', {
+      method: 'POST',
+      headers: getAuthHeaders(),
+      body: JSON.stringify({ currentPassword, newPassword }),
+    });
+    return await res.json();
+  } catch (err: any) {
+    return { success: false, error: err.message || 'Erro ao alterar senha' };
   }
 }
 
@@ -477,6 +629,9 @@ export async function fetchCurrentUserProfile(): Promise<{
   isAdmin: boolean;
 } | null> {
   try {
+    const token = getStoredAuthToken();
+    if (!token) return null;
+
     const res = await fetch('/api/auth/me', {
       headers: getAuthHeaders(),
     });
